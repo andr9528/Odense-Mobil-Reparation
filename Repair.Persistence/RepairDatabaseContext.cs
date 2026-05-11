@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Repair.Models.Entity.Model;
 using Repair.Persistence.Configuration;
 using Repair.Persistence.Core;
 using Repair.Persistence.Core.Abstraction;
@@ -12,6 +13,10 @@ public class RepairDatabaseContext : BaseDatabaseContext<RepairDatabaseContext>
     public RepairDatabaseContext(DbContextOptions<RepairDatabaseContext> options) : base(options)
     {
     }
+
+    public DbSet<Customer> Customers { get; set; }
+
+    public DbSet<Order> Orders { get; set; }
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,6 +1,9 @@
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Repair.Models.Entity.Model;
+using Repair.Models.Entity.Searchable;
 using Repair.Persistence;
+using Repair.Persistence.Services;
 using Repair.Services;
 using Repair.Startup;
 using Repair.Startup.Modules;
@@ -27,6 +30,9 @@ internal class UnoStartup : ModularStartup<IApplicationBuilder>
 
         AddModule(
             new DatabaseContextStartupModule<RepairDatabaseContext>(configurationService.ConfigureDatabaseOptions));
+
+        AddModule(new EntityQueryServiceStartupModule<CustomerQueryService, Customer, SearchableCustomer>());
+        AddModule(new EntityQueryServiceStartupModule<OrderQueryService, Order, SearchableOrder>());
     }
 
     protected override void ConfigureApplication(IApplicationBuilder app)
