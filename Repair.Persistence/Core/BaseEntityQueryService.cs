@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Repair.Abstractions.Persistence;
 
 namespace Repair.Persistence.Core;
 

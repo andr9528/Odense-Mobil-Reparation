@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Repair.Abstractions.Persistence;
 using Repair.Persistence.Core.Abstraction;
 
 namespace Repair.Persistence.Core;

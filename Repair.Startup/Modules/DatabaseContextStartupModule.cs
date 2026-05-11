@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Repair.Abstractions.Startup;
+using Repair.Persistence.Core;
 
 namespace Repair.Startup.Modules;
 

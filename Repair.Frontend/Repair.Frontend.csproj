@@ -35,5 +35,10 @@
       SkiaRenderer;
     </UnoFeatures>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Repair.Persistence\Repair.Persistence.csproj" />
+    <ProjectReference Include="..\Repair.Services\Repair.Services.csproj" />
+    <ProjectReference Include="..\Repair.Startup\Repair.Startup.csproj" />
+  </ItemGroup>
 
 </Project>
