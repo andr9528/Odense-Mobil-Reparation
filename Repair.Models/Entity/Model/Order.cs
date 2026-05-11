@@ -32,6 +32,8 @@ public class Order : IOrder
 
     public bool IsOrderComplete { get; set; }
 
+    public bool HasBorrowedPhone { get; set; }
+
     public ICustomer Customer { get; set; } = null!;
 
     [JsonConstructor]
