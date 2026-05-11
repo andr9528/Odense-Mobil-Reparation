@@ -6,9 +6,14 @@
     <File Path="Directory.Packages.props" />
     <File Path="global.json" />
   </Folder>
+  <Project Path="Repair.Models/Repair.Models.csproj" />
+  <Project Path="Repair.Persistence/Repair.Persistence.csproj" />
+  <Project Path="Repair.Services/Repair.Services.csproj" />
+  <Project Path="Repair.Startup/Repair.Startup.csproj" />
   <Project Path="Repair.Tests/Repair.Tests.csproj">
     <Deploy />
   </Project>
+  <Project Path="Repair.Abstractions/Repair.Abstractions.csproj" />
   <Project Path="Repair.Frontend/Repair.Frontend.csproj">
     <Deploy />
   </Project>
