@@ -47,4 +47,18 @@
     <ProjectReference Include="..\Repair.Startup\Repair.Startup.csproj" />
   </ItemGroup>
 
+<ItemGroup>
+  <Compile Update="Presentation\PageSelector.PageSelectorLogic.cs">
+    <DependentUpon>PageSelector.cs</DependentUpon>
+  </Compile>
+
+  <Compile Update="Presentation\PageSelector.PageSelectorUi.cs">
+    <DependentUpon>PageSelector.cs</DependentUpon>
+  </Compile>
+
+  <Compile Update="Presentation\PageSelector.PageSelectorViewModel.cs">
+    <DependentUpon>PageSelector.cs</DependentUpon>
+  </Compile>
+</ItemGroup>
+
 </Project>

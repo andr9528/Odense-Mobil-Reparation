@@ -1,5 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Repair.Frontend.Abstraction;
+using Repair.Frontend.Services;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 using Repair.Persistence;
@@ -65,5 +67,6 @@ internal class UnoStartup : ModularStartup<IApplicationBuilder>
         base.ConfigureServices(services);
 
         services.AddSingleton(configurationService);
+        services.AddSingleton<INavigationService, NavigationService>();
     }
 }
