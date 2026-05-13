@@ -66,7 +66,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.STEP_TIMEOUT_MINUTES) }}
         uses: "./.github/steps/install_dependencies"
 
-      - name: Build Repair.Frontend.Tests (Release)
+      - name: Build Repair.Tests (Release)
         shell: bash
         run: dotnet build ./Repair.Tests/Repair.Tests.csproj /p:Configuration=Release /p:OverrideTargetFramework=net10.0 /r
 
