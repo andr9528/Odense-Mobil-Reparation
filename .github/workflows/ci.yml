@@ -27,6 +27,19 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.STEP_TIMEOUT_MINUTES) }}
         uses: "./.github/steps/install_dependencies"
 
+      - name: Install Uno Workloads
+        shell: pwsh
+        run: |
+          dotnet tool install -g uno.check
+          ("all ".Split(' ') | ForEach-Object {
+            $target = $_.Replace("_win", "").Replace("_macos", "")
+            if (![string]::IsNullOrEmpty($target)) {
+              echo "target: $target"
+              uno-check -v --ci --non-interactive --fix --target $target --skip vswin --skip vsmac --skip xcode --skip vswinworkloads --skip androidemulator --skip dotnetnewunotemplates
+              echo "uno-check finished for target: $target "
+            }
+          })
+
       # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.3.1
