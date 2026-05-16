@@ -48,17 +48,13 @@
   </ItemGroup>
 
 <ItemGroup>
-  <Compile Update="Presentation\PageSelector.PageSelectorLogic.cs">
-    <DependentUpon>PageSelector.cs</DependentUpon>
+  <Compile Update="Presentation\**\*.*.cs">
+    <DependentUpon>$([System.String]::Copy('%(Filename)').Split('.')[0]).cs</DependentUpon>
   </Compile>
+</ItemGroup>
 
-  <Compile Update="Presentation\PageSelector.PageSelectorUi.cs">
-    <DependentUpon>PageSelector.cs</DependentUpon>
-  </Compile>
-
-  <Compile Update="Presentation\PageSelector.PageSelectorViewModel.cs">
-    <DependentUpon>PageSelector.cs</DependentUpon>
-  </Compile>
+<ItemGroup>
+  <Folder Include="Presentation\Pages\" />
 </ItemGroup>
 
 </Project>

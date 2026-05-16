@@ -58,5 +58,18 @@ namespace Repair.Frontend.Extensions
 
             return grid;
         }
+
+        public static Grid DefineColumns(this Grid grid, params GridLength[] sizes)
+        {
+            foreach (GridLength size in sizes)
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition
+                {
+                    Width = size,
+                });
+            }
+
+            return grid;
+        }
     }
 }
