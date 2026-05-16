@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Repair.Abstractions\Repair.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entity\ComplexSearchable\" />
+  </ItemGroup>
+
 </Project>

@@ -27,9 +27,9 @@ namespace Repair.Frontend.Presentation
                 if (sender is not ListView {SelectedItem: IPageRegion region,})
                     return;
 
-                dispatcherQueue.TryEnqueue(async () =>
+                dispatcherQueue.TryEnqueue(() =>
                 {
-                    UIElement control = await region.CreateControl(serviceProvider);
+                    UIElement control = region.CreateControl(serviceProvider);
                     navigationService.NavigateTo(control);
                 });
             }

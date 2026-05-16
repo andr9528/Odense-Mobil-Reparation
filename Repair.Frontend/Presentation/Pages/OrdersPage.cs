@@ -1,3 +1,9 @@
+using CommunityToolkit.WinUI.UI.Controls;
+using Microsoft.UI.Dispatching;
+using Repair.Abstractions.Persistence;
+using Repair.Models.Entity.Model;
+using Repair.Models.Entity.Searchable;
+
 namespace Repair.Frontend.Presentation.Pages;
 
 /// <summary>
@@ -5,14 +11,15 @@ namespace Repair.Frontend.Presentation.Pages;
 /// </summary>
 internal sealed partial class OrdersPage : Border
 {
-    public OrdersPage()
+    public OrdersPage(IEntityQueryService<Order, SearchableOrder> orderQueryService, DispatcherQueue dispatcherQueue)
     {
         DataContext = new OrdersPageViewModel();
         Margin = new Thickness(0);
 
         var viewModel = (OrdersPageViewModel) DataContext;
         var logic = new OrdersPageLogic(viewModel);
-        var ui = new OrdersPageUi(logic, viewModel);
+        var ui = new OrdersPageUi(logic, viewModel, orderQueryService, dispatcherQueue);
+
 
         Child = ui.CreateContentGrid();
     }

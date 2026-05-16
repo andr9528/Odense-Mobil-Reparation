@@ -15,6 +15,6 @@ namespace Repair.Frontend.Abstraction
         /// <summary>
         /// Creates the region control (usually a Border wrapping the UI grid).
         /// </summary>
-        Task<UIElement> CreateControl(IServiceProvider services);
+        UIElement CreateControl(IServiceProvider services);
     }
 }

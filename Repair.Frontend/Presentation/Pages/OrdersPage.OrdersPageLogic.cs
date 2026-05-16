@@ -1,4 +1,6 @@
+using CommunityToolkit.WinUI.UI.Controls;
 using Repair.Frontend.Presentation.Core;
+using Repair.Models.Entity.Model;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -10,14 +12,20 @@ internal sealed partial class OrdersPage
         {
         }
 
-        internal void SearchTextChanged(object sender, TextChangedEventArgs e)
+        internal void OrderClicked(object sender, SelectionChangedEventArgs e)
         {
-            // TODO: Update search text and refresh shown orders.
-        }
+            if (sender is not DataGrid dataGrid)
+            {
+                return;
+            }
 
-        internal void OrderClicked(object sender, ItemClickEventArgs e)
-        {
+            if (dataGrid.SelectedItem is not Order order)
+            {
+                return;
+            }
+
             // TODO: Navigate to OrderDetailsPage for the selected order.
+            // order.Id can be used here.
         }
 
         internal void CreateOrderClicked(object sender, RoutedEventArgs e)

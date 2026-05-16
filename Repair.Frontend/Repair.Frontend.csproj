@@ -40,8 +40,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Repair.Models\Repair.Models.csproj" />
     <ProjectReference Include="..\Repair.Persistence\Repair.Persistence.csproj" />
     <ProjectReference Include="..\Repair.Services\Repair.Services.csproj" />
     <ProjectReference Include="..\Repair.Startup\Repair.Startup.csproj" />

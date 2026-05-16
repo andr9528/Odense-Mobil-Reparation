@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Repair.Abstractions.Persistence;
+using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 using Repair.Persistence.Core;
@@ -12,9 +14,27 @@ public class OrderQueryService : BaseEntityQueryService<RepairDatabaseContext, O
     }
 
     protected override IQueryable<Order> AddComplexQueryArguments(
-        IQueryable<Order> query,
-        IComplexSearchable<SearchableOrder> complex)
+        IQueryable<Order> query, IComplexSearchable<SearchableOrder> complex)
     {
+        if (complex is not ComplexSearchableOrder orderComplex)
+        {
+            return query;
+        }
+
+        if (!string.IsNullOrWhiteSpace(orderComplex.HandInWhat))
+        {
+            var keyword = $"%{orderComplex.HandInWhat}%";
+
+            query = query.Where(x => EF.Functions.Like(x.HandInWhat, keyword));
+        }
+
+        if (!string.IsNullOrWhiteSpace(orderComplex.RepairWhat))
+        {
+            var keyword = $"%{orderComplex.RepairWhat}%";
+
+            query = query.Where(x => EF.Functions.Like(x.RepairWhat, keyword));
+        }
+
         return query;
     }
 

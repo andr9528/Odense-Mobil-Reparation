@@ -1,5 +1,10 @@
+using Microsoft.UI.Dispatching;
+using Repair.Abstractions.Persistence;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Pieces;
+using Repair.Models.Entity.Model;
+using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -7,8 +12,16 @@ internal sealed partial class OrdersPage
 {
     private sealed class OrdersPageUi : BaseUi<OrdersPageLogic, OrdersPageViewModel>
     {
-        public OrdersPageUi(OrdersPageLogic logic, OrdersPageViewModel viewModel) : base(logic, viewModel)
+        private readonly IEntityQueryService<Order, SearchableOrder> orderQueryService;
+        private readonly DispatcherQueue dispatcherQueue;
+
+        public OrdersPageUi(
+            OrdersPageLogic logic, OrdersPageViewModel viewModel,
+            IEntityQueryService<Order, SearchableOrder> orderQueryService,
+            DispatcherQueue dispatcherQueue) : base(logic, viewModel)
         {
+            this.orderQueryService = orderQueryService;
+            this.dispatcherQueue = dispatcherQueue;
         }
 
         protected override void ConfigureGrid(Grid grid)
@@ -23,27 +36,39 @@ internal sealed partial class OrdersPage
         protected override void AddControlsToGrid(Grid grid)
         {
             grid.Children.Add(CreateHeader().SetRow(0));
-            grid.Children.Add(CreateSearchBox().SetRow(1));
-            grid.Children.Add(CreateOrdersList().SetRow(2));
+            grid.Children.Add(CreateCreateOrderButton().SetRow(1));
+            grid.Children.Add(CreateOrderGrid().SetRow(2));
         }
 
         private UIElement CreateHeader()
         {
-            return new TextBlock {Text = "Orders", FontSize = 24,};
+            return new TextBlock
+            {
+                Text = "Orders",
+                FontSize = 24,
+            };
         }
 
-        private TextBox CreateSearchBox()
+        private Button CreateCreateOrderButton()
         {
-            ViewModel.SearchBox = new TextBox {PlaceholderText = "Search orders",};
-            ViewModel.SearchBox.TextChanged += Logic.SearchTextChanged;
-            return ViewModel.SearchBox;
+            var button = new Button
+            {
+                Content = "Create order",
+                HorizontalAlignment = HorizontalAlignment.Left,
+            };
+
+            button.Click += Logic.CreateOrderClicked;
+
+            return button;
         }
 
-        private ListView CreateOrdersList()
+        private OrderGrid CreateOrderGrid()
         {
-            ViewModel.OrdersList = new ListView {IsItemClickEnabled = true,};
-            ViewModel.OrdersList.ItemClick += Logic.OrderClicked;
-            return ViewModel.OrdersList;
+            ViewModel.OrderGrid = new OrderGrid(orderQueryService, dispatcherQueue);
+
+            ViewModel.OrderGrid.DataGrid.SelectionChanged += Logic.OrderClicked;
+
+            return ViewModel.OrderGrid;
         }
     }
 }

@@ -1,6 +1,8 @@
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Microsoft.UI.Dispatching;
 using Repair.Frontend.Abstraction;
+using Repair.Frontend.NavigationRegions;
 using Repair.Frontend.Services;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
@@ -68,5 +70,11 @@ internal class UnoStartup : ModularStartup<IApplicationBuilder>
 
         services.AddSingleton(configurationService);
         services.AddSingleton<INavigationService, NavigationService>();
+
+        DispatcherQueue? uiDispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        services.AddSingleton(uiDispatcherQueue);
+
+        services.AddSingleton<IPageRegion, CustomersPageRegionDefinition>();
+        services.AddSingleton<IPageRegion, OrdersPageRegionDefinition>();
     }
 }
