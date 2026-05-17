@@ -2,6 +2,7 @@ using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Factory;
 using Repair.Frontend.Presentation.Pieces;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
@@ -42,11 +43,7 @@ internal sealed partial class OrdersPage
 
         private UIElement CreateHeader()
         {
-            return new TextBlock
-            {
-                Text = "Orders",
-                FontSize = 24,
-            };
+            return TextBlockFactory.CreateHeader("Orders");
         }
 
         private Button CreateCreateOrderButton()
@@ -66,7 +63,7 @@ internal sealed partial class OrdersPage
         {
             ViewModel.OrderGrid = new OrderGrid(orderQueryService, dispatcherQueue);
 
-            ViewModel.OrderGrid.DataGrid.SelectionChanged += Logic.OrderClicked;
+            ViewModel.OrderGrid.ViewModel.DataGrid.SelectionChanged += Logic.OrderClicked;
 
             return ViewModel.OrderGrid;
         }

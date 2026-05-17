@@ -2,7 +2,7 @@ namespace Repair.Frontend.Presentation.Factory
 {
     public static class TextBlockFactory
     {
-        public static TextBlock BuildSectionHeader(string text)
+        public static TextBlock CreateHeader(string text)
         {
             return new TextBlock
             {
@@ -10,6 +10,17 @@ namespace Repair.Frontend.Presentation.Factory
                 FontSize = 24,
                 Margin = new Thickness(0, 0, 0, 10),
                 HorizontalAlignment = HorizontalAlignment.Center,
+                Foreground = new SolidColorBrush(Colors.Black),
+            };
+        }
+
+        public static TextBlock CreateBlackText(string text = "")
+        {
+            return new TextBlock
+            {
+                Text = text,
+                Foreground = new SolidColorBrush(Colors.Black),
+                VerticalAlignment = VerticalAlignment.Center,
             };
         }
     }

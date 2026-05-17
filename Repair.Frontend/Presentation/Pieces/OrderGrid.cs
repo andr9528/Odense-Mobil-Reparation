@@ -8,7 +8,7 @@ namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class OrderGrid : Border
 {
-    internal DataGrid DataGrid { get; private set; } = null!;
+    internal OrderGridViewModel ViewModel => (OrderGridViewModel) DataContext;
 
     public OrderGrid(
         IEntityQueryService<Order, SearchableOrder> orderQueryService, DispatcherQueue dispatcherQueue,
@@ -23,8 +23,6 @@ internal sealed partial class OrderGrid : Border
         var ui = new OrderGridUi(logic, viewModel);
 
         Child = ui.CreateContentGrid();
-
-        DataGrid = ui.DataGrid;
 
         _ = logic.RefreshOrders();
     }

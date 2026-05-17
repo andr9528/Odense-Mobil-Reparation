@@ -1,5 +1,6 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Repair.Frontend.Extensions;
+using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.Model;
 
@@ -7,95 +8,115 @@ namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class OrderGrid
 {
-    internal sealed partial class OrderGridUi
+    internal sealed partial class OrderGridUi : BaseUi<OrderGridLogic, OrderGridViewModel>
     {
-        internal DataGrid DataGrid { get; private set; } = null!;
-
-        private readonly OrderGridLogic logic;
-        private readonly OrderGridViewModel viewModel;
-
-        public OrderGridUi(OrderGridLogic logic, OrderGridViewModel viewModel)
+        public OrderGridUi(OrderGridLogic logic, OrderGridViewModel viewModel) : base(logic, viewModel)
         {
-            this.logic = logic;
-            this.viewModel = viewModel;
         }
 
-        public Grid CreateContentGrid()
+        /// <inheritdoc />
+        protected override void ConfigureGrid(Grid grid)
         {
-            var grid = new Grid
-            {
-                RowSpacing = 8,
-            };
+            grid.RowSpacing = 8;
+            grid.DefineRows(new GridLength(1, GridUnitType.Star), GridLength.Auto, GridLength.Auto, GridLength.Auto);
+            grid.DefineColumns(GridUnitType.Star, [1, 1, 1, 1,]);
+        }
 
-            grid.DefineRows(GridUnitType.Auto, [1, 1, 1,]);
-            grid.RowDefinitions.Add(new RowDefinition {Height = new GridLength(1, GridUnitType.Star),});
+        /// <inheritdoc />
+        protected override void AddControlsToGrid(Grid grid)
+        {
+            DataGrid dataGrid = CreateOrderDataGrid().SetRow(0).SetColumn(0, 4);
+            TextBox handInWhatSearchBox = CreateHandInWhatSearchBox().SetRow(1).SetColumn(0);
+            TextBox repairWhatSearchBox = CreateRepairWhatSearchBox().SetRow(2).SetColumn(0);
+            Grid fuzzyToggle = CreateFuzzySearchGrid().SetRow(3).SetColumn(0);
 
-            TextBox handInWhatSearchBox = CreateHandInWhatSearchBox();
-            TextBox repairWhatSearchBox = CreateRepairWhatSearchBox();
-            ToggleSwitch fuzzyToggle = CreateFuzzyToggle();
-            var dataGrid = CreateOrderDataGrid();
-
-            Grid.SetRow(handInWhatSearchBox, 0);
-            Grid.SetRow(repairWhatSearchBox, 1);
-            Grid.SetRow(fuzzyToggle, 2);
-            Grid.SetRow(dataGrid, 3);
-
+            grid.Children.Add(dataGrid);
             grid.Children.Add(handInWhatSearchBox);
             grid.Children.Add(repairWhatSearchBox);
             grid.Children.Add(fuzzyToggle);
-            grid.Children.Add(dataGrid);
-
-            return grid;
         }
 
         private TextBox CreateHandInWhatSearchBox()
         {
-            return CreateSearchBox("Search handed in...", nameof(OrderGridViewModel.HandInWhatSearchText));
+            ViewModel.HandInWhatSearchBox = TextBoxFactory.CreateSearchBox("Handed in", "Search handed in...",
+                nameof(OrderGridViewModel.HandInWhatSearchText));
+
+            return ViewModel.HandInWhatSearchBox;
         }
 
         private TextBox CreateRepairWhatSearchBox()
         {
-            return CreateSearchBox("Search repair...", nameof(OrderGridViewModel.RepairWhatSearchText));
+            ViewModel.RepairWhatSearchBox = TextBoxFactory.CreateSearchBox("Repair", "Search repair...",
+                nameof(OrderGridViewModel.RepairWhatSearchText));
+
+            return ViewModel.RepairWhatSearchBox;
         }
 
-        private TextBox CreateSearchBox(string placeholderText, string bindingPath)
+        private Grid CreateFuzzySearchGrid()
         {
-            var textBox = new TextBox
-            {
-                PlaceholderText = placeholderText,
-            };
+            Grid grid = GridFactory.CreateDefaultGrid();
 
-            textBox.SetBinding(TextBox.TextProperty, new Binding
-            {
-                Path = new PropertyPath(bindingPath),
-                Mode = BindingMode.TwoWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-            });
+            grid.RowSpacing = 4;
+            grid.ColumnSpacing = 8;
+            grid.Margin = new Thickness(4);
 
-            return textBox;
+            grid.DefineRows(GridLength.Auto, GridLength.Auto);
+            grid.DefineColumns(GridLength.Auto, GridLength.Auto);
+
+            TextBlock header = TextBlockFactory.CreateBlackText("Use fuzzy search").SetRow(0).SetColumn(0, 2);
+
+            header.Margin = new Thickness(4);
+
+            ViewModel.FuzzySearchToggle = CreateFuzzyToggle().SetRow(1).SetColumn(0);
+
+            TextBlock searchModeTextBlock = CreateSearchModeTextBlock().SetRow(1).SetColumn(1);
+
+            grid.Children.Add(header);
+            grid.Children.Add(ViewModel.FuzzySearchToggle);
+            grid.Children.Add(searchModeTextBlock);
+
+            return grid;
         }
 
-        private ToggleSwitch CreateFuzzyToggle()
+        private CheckBox CreateFuzzyToggle()
         {
-            var toggleSwitch = new ToggleSwitch
+            var fuzzySearchToggle = new CheckBox
             {
-                Header = "Fuzzy search",
+                Foreground = new SolidColorBrush(Colors.Black),
+                Margin = new Thickness(4),
+                BorderBrush = new SolidColorBrush(Colors.Black),
             };
 
-            toggleSwitch.SetBinding(ToggleSwitch.IsOnProperty, new Binding
+            fuzzySearchToggle.SetBinding(ToggleButton.IsCheckedProperty, new Binding
             {
                 Path = new PropertyPath(nameof(OrderGridViewModel.UseFuzzySearch)),
                 Mode = BindingMode.TwoWay,
             });
 
-            return toggleSwitch;
+            return fuzzySearchToggle;
+        }
+
+        private TextBlock CreateSearchModeTextBlock()
+        {
+            TextBlock textBlock = TextBlockFactory.CreateBlackText();
+
+            textBlock.Margin = new Thickness(4);
+
+            textBlock.SetBinding(TextBlock.TextProperty, new Binding
+            {
+                Path = new PropertyPath(nameof(OrderGridViewModel.SearchModeText)),
+                Mode = BindingMode.OneWay,
+            });
+
+            return textBlock;
         }
 
         private DataGrid CreateOrderDataGrid()
         {
-            DataGrid = DataGridFactory.Create<OrderGridColumns>(viewModel.Orders, GetColumnBindingPath);
+            ViewModel.DataGrid = DataGridFactory.Create<OrderGridColumns>(ViewModel.Orders, GetColumnBindingPath);
+            ViewModel.DataGrid.Margin = new Thickness(4);
 
-            return DataGrid;
+            return ViewModel.DataGrid;
         }
 
         private string GetColumnBindingPath(OrderGridColumns column)

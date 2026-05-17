@@ -12,7 +12,8 @@ public partial class App : Application
     /// </summary>
     public App()
     {
-        this.InitializeComponent();
+        InitializeComponent();
+        //RequestedTheme = ApplicationTheme.Light;
     }
 
     protected Window? MainWindow { get; private set; }
@@ -22,6 +23,8 @@ public partial class App : Application
     [SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Uno.Extensions APIs are used in a way that is safe for trimming in this template context.")]
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        //RequestedTheme = ApplicationTheme.Light;
+
         Startup = new UnoStartup();
 
         // Load WinUI Resources
