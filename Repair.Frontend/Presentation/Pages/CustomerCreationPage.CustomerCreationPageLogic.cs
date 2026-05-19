@@ -1,4 +1,10 @@
+using Microsoft.UI.Dispatching;
+using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Pieces;
+using Repair.Models.Entity.Model;
+using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -6,18 +12,57 @@ internal sealed partial class CustomerCreationPage
 {
     private sealed class CustomerCreationPageLogic : BaseLogic<CustomerCreationPageViewModel>
     {
-        public CustomerCreationPageLogic(CustomerCreationPageViewModel viewModel) : base(viewModel)
+        private readonly IEntityQueryService<Customer, SearchableCustomer> queryService;
+        private readonly DispatcherQueue dispatcherQueue;
+        private readonly INavigationService navigationService;
+
+        public CustomerCreationPageLogic(
+            CustomerCreationPageViewModel viewModel, IEntityQueryService<Customer, SearchableCustomer> queryService,
+            DispatcherQueue dispatcherQueue, INavigationService navigationService) : base(viewModel)
         {
+            this.queryService = queryService;
+            this.dispatcherQueue = dispatcherQueue;
+            this.navigationService = navigationService;
         }
 
-        internal void SaveClicked(object sender, RoutedEventArgs e)
+        internal async Task SaveClicked(object sender, RoutedEventArgs e)
         {
-            // TODO: Create customer and navigate to CustomerDetailsPage.
+            if (!IsUserInputValid())
+            {
+                return;
+            }
+
+            Customer newCustomer = BuildNewCustomer();
+            await queryService.AddEntity(newCustomer);
+
+            dispatcherQueue.TryEnqueue(() =>
+            {
+                var details = new CustomerDetailsPage(newCustomer.Id, queryService);
+                navigationService.NavigateTo(details);
+            });
+        }
+
+        private bool IsUserInputValid()
+        {
+            CustomerEditor.CustomerEditorViewModel customer = ViewModel.CustomerEditor.ViewModel;
+
+            return !string.IsNullOrWhiteSpace(customer.Name) && !string.IsNullOrWhiteSpace(customer.Phone) &&
+                   !string.IsNullOrWhiteSpace(customer.Email) && customer.Email.Count(x => x == '@') == 1;
+        }
+
+        private Customer BuildNewCustomer()
+        {
+            return new Customer
+            {
+                Name = ViewModel.CustomerEditor.ViewModel.Name,
+                Phone = ViewModel.CustomerEditor.ViewModel.Phone,
+                Email = ViewModel.CustomerEditor.ViewModel.Email,
+            };
         }
 
         internal void CancelClicked(object sender, RoutedEventArgs e)
         {
-            // TODO: Navigate back without creating the customer.
+            dispatcherQueue.TryEnqueue(() => { navigationService.NavigateBack(); });
         }
     }
 }

@@ -1,3 +1,7 @@
+using Repair.Abstractions.Persistence;
+using Repair.Models.Entity.Model;
+using Repair.Models.Entity.Searchable;
+
 namespace Repair.Frontend.Presentation.Pages;
 
 /// <summary>
@@ -5,7 +9,7 @@ namespace Repair.Frontend.Presentation.Pages;
 /// </summary>
 internal sealed partial class CustomerDetailsPage : Border
 {
-    public CustomerDetailsPage()
+    public CustomerDetailsPage(int customerId, IEntityQueryService<Customer, SearchableCustomer> queryService)
     {
         DataContext = new CustomerDetailsPageViewModel();
         Margin = new Thickness(0);

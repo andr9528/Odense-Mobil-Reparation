@@ -2,6 +2,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
+using Repair.Frontend.Presentation.Pieces;
 using Repair.Models.Entity.Model;
 
 namespace Repair.Frontend.Presentation.Pages;
@@ -28,9 +29,7 @@ internal sealed partial class CustomersPage
             grid.Children.Add(CreateHeader().SetRow(0).SetColumn(0, 3));
             grid.Children.Add(CreateCreateCustomerButton().SetRow(1));
             grid.Children.Add(CreateCustomersDataGrid().SetRow(2).SetColumn(0, 3));
-            grid.Children.Add(CreateNameSearchBox().SetRow(3).SetColumn(0));
-            grid.Children.Add(CreatePhoneSearchBox().SetRow(3).SetColumn(1));
-            grid.Children.Add(CreateEmailSearchBox().SetRow(3).SetColumn(2));
+            grid.Children.Add(CreateCustomerEditor().SetRow(3).SetColumn(0, 3));
             grid.Children.Add(CreateFuzzySearchGrid().SetRow(4).SetColumn(1));
         }
 
@@ -52,29 +51,16 @@ internal sealed partial class CustomersPage
             return button;
         }
 
-        private TextBox CreateNameSearchBox()
+        private CustomerEditor CreateCustomerEditor()
         {
-            ViewModel.NameSearchBox = TextBoxFactory.CreateSearchBox("Name", "Search name...",
-                nameof(CustomersPageViewModel.NameSearchText));
+            var customerEditor = new CustomerEditor(true);
 
-            return ViewModel.NameSearchBox;
+            ViewModel.ConnectCustomerEditor(customerEditor);
+            ViewModel.CustomerEditor.ViewModel.IsReadOnly = false;
+
+            return ViewModel.CustomerEditor;
         }
 
-        private TextBox CreatePhoneSearchBox()
-        {
-            ViewModel.PhoneSearchBox = TextBoxFactory.CreateSearchBox("Phone", "Search phone...",
-                nameof(CustomersPageViewModel.PhoneSearchText));
-
-            return ViewModel.PhoneSearchBox;
-        }
-
-        private TextBox CreateEmailSearchBox()
-        {
-            ViewModel.EmailSearchBox = TextBoxFactory.CreateSearchBox("Email", "Search email...",
-                nameof(CustomersPageViewModel.EmailSearchText));
-
-            return ViewModel.EmailSearchBox;
-        }
 
         private Grid CreateFuzzySearchGrid()
         {

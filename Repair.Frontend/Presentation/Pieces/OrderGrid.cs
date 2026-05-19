@@ -18,10 +18,9 @@ internal sealed partial class OrderGrid : Border
 
         DataContext = new OrderGridViewModel(customerId);
 
-        var viewModel = (OrderGridViewModel) DataContext;
-        var logic = new OrderGridLogic(orderQueryService, viewModel, dispatcherQueue,
+        var logic = new OrderGridLogic(orderQueryService, ViewModel, dispatcherQueue,
             loggerFactory.CreateLogger<OrderGridLogic>());
-        var ui = new OrderGridUi(logic, viewModel);
+        var ui = new OrderGridUi(logic, ViewModel);
 
         Child = ui.CreateContentGrid();
 

@@ -26,19 +26,14 @@ internal sealed partial class CustomersPage
             this.dispatcherQueue = dispatcherQueue;
             this.logger = logger;
 
-            ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
+            ViewModel.SearchChanged += SearchChanged;
         }
 
-        private async void HandleViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private async void SearchChanged(object? sender, EventArgs e)
         {
             try
             {
-                if (e.PropertyName is nameof(CustomersPageViewModel.NameSearchText)
-                    or nameof(CustomersPageViewModel.PhoneSearchText) or nameof(CustomersPageViewModel.EmailSearchText)
-                    or nameof(CustomersPageViewModel.UseFuzzySearch))
-                {
-                    await RefreshCustomers();
-                }
+                await RefreshCustomers();
             }
             catch (Exception exe)
             {
@@ -67,15 +62,15 @@ internal sealed partial class CustomersPage
 
             if (ViewModel.UseFuzzySearch)
             {
-                complex.Name = ViewModel.NameSearchText;
-                complex.Phone = ViewModel.PhoneSearchText;
-                complex.Email = ViewModel.EmailSearchText;
+                complex.Name = ViewModel.CustomerEditor.ViewModel.Name;
+                complex.Phone = ViewModel.CustomerEditor.ViewModel.Phone;
+                complex.Email = ViewModel.CustomerEditor.ViewModel.Email;
             }
             else
             {
-                complex.Searchable.Name = ViewModel.NameSearchText;
-                complex.Searchable.Phone = ViewModel.PhoneSearchText;
-                complex.Searchable.Email = ViewModel.EmailSearchText;
+                complex.Searchable.Name = ViewModel.CustomerEditor.ViewModel.Name;
+                complex.Searchable.Phone = ViewModel.CustomerEditor.ViewModel.Phone;
+                complex.Searchable.Email = ViewModel.CustomerEditor.ViewModel.Email;
             }
 
             return complex;

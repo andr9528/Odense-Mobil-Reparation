@@ -1,6 +1,7 @@
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
+using Repair.Frontend.Presentation.Pieces;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -18,33 +19,48 @@ internal sealed partial class CustomerCreationPage
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.Margin = new Thickness(0);
             grid.Padding = new Thickness(10);
-            grid.DefineRows(GridLength.Auto, GridLength.Auto, GridLength.Auto);
+
+            grid.DefineRows(GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star));
+
+            grid.DefineColumns(new GridLength(1, GridUnitType.Star), GridLength.Auto);
         }
 
         protected override void AddControlsToGrid(Grid grid)
         {
-            grid.Children.Add(CreateHeader().SetRow(0));
-            grid.Children.Add(CreateCustomerDetailsGrid().SetRow(1));
-            grid.Children.Add(CreateButtonsGrid().SetRow(2));
+            grid.Children.Add(CreateHeader().SetRow(0).SetColumn(0, 2));
+            grid.Children.Add(CreateButtonsGrid().SetRow(0).SetColumn(1));
+            grid.Children.Add(CreateCustomerEditor().SetRow(1).SetColumn(0, 3));
         }
 
         private UIElement CreateHeader()
         {
-            return new TextBlock {Text = "Create customer", FontSize = 24,};
+            return TextBlockFactory.CreateHeader("Create customer");
         }
 
-        private Grid CreateCustomerDetailsGrid()
+        private CustomerEditor CreateCustomerEditor()
         {
-            // TODO: Add customer input fields.
-            return GridFactory.CreateDefaultGrid();
+            ViewModel.CustomerEditor = new CustomerEditor
+            {
+                ViewModel =
+                {
+                    IsReadOnly = false,
+                },
+            };
+
+            return ViewModel.CustomerEditor;
         }
 
         private Grid CreateButtonsGrid()
         {
-            Grid grid = GridFactory.CreateDefaultGrid().DefineColumns(GridLength.Auto, GridLength.Auto);
+            Grid grid = GridFactory.CreateDefaultGrid();
+
+            grid.HorizontalAlignment = HorizontalAlignment.Right;
+            grid.VerticalAlignment = VerticalAlignment.Top;
+            grid.ColumnSpacing = 8;
+            grid.DefineColumns(GridLength.Auto, GridLength.Auto);
 
             var saveButton = new Button {Content = "Save",};
-            saveButton.Click += Logic.SaveClicked;
+            saveButton.Click += async (sender, args) => await Logic.SaveClicked(sender, args);
 
             var cancelButton = new Button {Content = "Cancel",};
             cancelButton.Click += Logic.CancelClicked;
