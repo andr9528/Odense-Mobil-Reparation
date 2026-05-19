@@ -15,14 +15,16 @@ internal sealed partial class OrdersPage
     {
         private readonly IEntityQueryService<Order, SearchableOrder> orderQueryService;
         private readonly DispatcherQueue dispatcherQueue;
+        private readonly ILoggerFactory loggerFactory;
 
         public OrdersPageUi(
             OrdersPageLogic logic, OrdersPageViewModel viewModel,
-            IEntityQueryService<Order, SearchableOrder> orderQueryService,
-            DispatcherQueue dispatcherQueue) : base(logic, viewModel)
+            IEntityQueryService<Order, SearchableOrder> orderQueryService, DispatcherQueue dispatcherQueue,
+            ILoggerFactory loggerFactory) : base(logic, viewModel)
         {
             this.orderQueryService = orderQueryService;
             this.dispatcherQueue = dispatcherQueue;
+            this.loggerFactory = loggerFactory;
         }
 
         protected override void ConfigureGrid(Grid grid)
@@ -61,7 +63,7 @@ internal sealed partial class OrdersPage
 
         private OrderGrid CreateOrderGrid()
         {
-            ViewModel.OrderGrid = new OrderGrid(orderQueryService, dispatcherQueue);
+            ViewModel.OrderGrid = new OrderGrid(orderQueryService, dispatcherQueue, loggerFactory);
 
             ViewModel.OrderGrid.ViewModel.DataGrid.SelectionChanged += Logic.OrderClicked;
 

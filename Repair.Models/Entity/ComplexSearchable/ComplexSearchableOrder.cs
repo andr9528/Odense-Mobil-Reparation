@@ -7,8 +7,8 @@ public class ComplexSearchableOrder : IComplexSearchable<SearchableOrder>
 {
     public SearchableOrder Searchable { get; set; } = new();
 
-    public string HandInWhat { get; set; } = string.Empty;
+    public string? HandInWhat { get; set; }
 
-    public string RepairWhat { get; set; } = string.Empty;
+    public string? RepairWhat { get; set; }
 }
 

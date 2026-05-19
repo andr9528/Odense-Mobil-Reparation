@@ -12,14 +12,15 @@ internal sealed partial class OrderGrid : Border
 
     public OrderGrid(
         IEntityQueryService<Order, SearchableOrder> orderQueryService, DispatcherQueue dispatcherQueue,
-        int customerId = 0)
+        ILoggerFactory loggerFactory, int customerId = 0)
     {
         ArgumentNullException.ThrowIfNull(orderQueryService);
 
         DataContext = new OrderGridViewModel(customerId);
 
         var viewModel = (OrderGridViewModel) DataContext;
-        var logic = new OrderGridLogic(orderQueryService, viewModel, dispatcherQueue);
+        var logic = new OrderGridLogic(orderQueryService, viewModel, dispatcherQueue,
+            loggerFactory.CreateLogger<OrderGridLogic>());
         var ui = new OrderGridUi(logic, viewModel);
 
         Child = ui.CreateContentGrid();

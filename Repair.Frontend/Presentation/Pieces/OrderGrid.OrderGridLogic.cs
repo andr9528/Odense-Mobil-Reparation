@@ -1,5 +1,7 @@
+using System.ComponentModel;
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Presentation.Core;
 using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
@@ -8,28 +10,37 @@ namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class OrderGrid
 {
-    internal sealed partial class OrderGridLogic
+    internal sealed partial class OrderGridLogic : BaseLogic<OrderGridViewModel>
     {
         private readonly IEntityQueryService<Order, SearchableOrder> orderQueryService;
-        private readonly OrderGridViewModel viewModel;
         private readonly DispatcherQueue dispatcherQueue;
+        private readonly ILogger<OrderGridLogic> logger;
 
         public OrderGridLogic(
             IEntityQueryService<Order, SearchableOrder> orderQueryService, OrderGridViewModel viewModel,
-            DispatcherQueue dispatcherQueue)
+            DispatcherQueue dispatcherQueue, ILogger<OrderGridLogic> logger) : base(viewModel)
         {
             this.orderQueryService = orderQueryService;
-            this.viewModel = viewModel;
             this.dispatcherQueue = dispatcherQueue;
+            this.logger = logger;
 
-            this.viewModel.PropertyChanged += async (_, args) =>
+            ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
+        }
+
+        private async void HandleViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            try
             {
-                if (args.PropertyName is nameof(OrderGridViewModel.HandInWhatSearchText)
+                if (e.PropertyName is nameof(OrderGridViewModel.HandInWhatSearchText)
                     or nameof(OrderGridViewModel.RepairWhatSearchText) or nameof(OrderGridViewModel.UseFuzzySearch))
                 {
                     await RefreshOrders();
                 }
-            };
+            }
+            catch (Exception exe)
+            {
+                logger.LogError(exe, $"Exception caught during refresh of Orders");
+            }
         }
 
         public async Task RefreshOrders()
@@ -38,11 +49,11 @@ internal sealed partial class OrderGrid
 
             dispatcherQueue.TryEnqueue(() =>
             {
-                viewModel.Orders.Clear();
+                ViewModel.Orders.Clear();
 
                 foreach (Order order in orders)
                 {
-                    viewModel.Orders.Add(order);
+                    ViewModel.Orders.Add(order);
                 }
             });
         }
@@ -53,19 +64,19 @@ internal sealed partial class OrderGrid
             {
                 Searchable = new SearchableOrder
                 {
-                    CustomerId = viewModel.CustomerId,
+                    CustomerId = ViewModel.CustomerId,
                 },
             };
 
-            if (viewModel.UseFuzzySearch)
+            if (ViewModel.UseFuzzySearch)
             {
-                complex.HandInWhat = viewModel.HandInWhatSearchText;
-                complex.RepairWhat = viewModel.RepairWhatSearchText;
+                complex.HandInWhat = ViewModel.HandInWhatSearchText;
+                complex.RepairWhat = ViewModel.RepairWhatSearchText;
             }
             else
             {
-                complex.Searchable.HandInWhat = viewModel.HandInWhatSearchText;
-                complex.Searchable.RepairWhat = viewModel.RepairWhatSearchText;
+                complex.Searchable.HandInWhat = ViewModel.HandInWhatSearchText;
+                complex.Searchable.RepairWhat = ViewModel.RepairWhatSearchText;
             }
 
             return complex;

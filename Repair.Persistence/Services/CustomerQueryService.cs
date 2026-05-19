@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Repair.Abstractions.Persistence;
+using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 using Repair.Persistence.Core;
@@ -12,9 +14,34 @@ public class CustomerQueryService : BaseEntityQueryService<RepairDatabaseContext
     }
 
     protected override IQueryable<Customer> AddComplexQueryArguments(
-        IQueryable<Customer> query,
-        IComplexSearchable<SearchableCustomer> complex)
+        IQueryable<Customer> query, IComplexSearchable<SearchableCustomer> complex)
     {
+        if (complex is not ComplexSearchableCustomer customerComplex)
+        {
+            return query;
+        }
+
+        if (!string.IsNullOrWhiteSpace(customerComplex.Name))
+        {
+            var keyword = $"%{customerComplex.Name}%";
+
+            query = query.Where(x => EF.Functions.Like(x.Name, keyword));
+        }
+
+        if (!string.IsNullOrWhiteSpace(customerComplex.Phone))
+        {
+            var keyword = $"%{customerComplex.Phone}%";
+
+            query = query.Where(x => EF.Functions.Like(x.Phone, keyword));
+        }
+
+        if (!string.IsNullOrWhiteSpace(customerComplex.Email))
+        {
+            var keyword = $"%{customerComplex.Email}%";
+
+            query = query.Where(x => EF.Functions.Like(x.Email, keyword));
+        }
+
         return query;
     }
 

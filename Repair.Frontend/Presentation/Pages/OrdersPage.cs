@@ -11,15 +11,16 @@ namespace Repair.Frontend.Presentation.Pages;
 /// </summary>
 internal sealed partial class OrdersPage : Border
 {
-    public OrdersPage(IEntityQueryService<Order, SearchableOrder> orderQueryService, DispatcherQueue dispatcherQueue)
+    public OrdersPage(
+        IEntityQueryService<Order, SearchableOrder> orderQueryService, DispatcherQueue dispatcherQueue,
+        ILoggerFactory loggerFactory)
     {
         DataContext = new OrdersPageViewModel();
         Margin = new Thickness(0);
 
         var viewModel = (OrdersPageViewModel) DataContext;
         var logic = new OrdersPageLogic(viewModel);
-        var ui = new OrdersPageUi(logic, viewModel, orderQueryService, dispatcherQueue);
-
+        var ui = new OrdersPageUi(logic, viewModel, orderQueryService, dispatcherQueue, loggerFactory);
 
         Child = ui.CreateContentGrid();
     }

@@ -54,61 +54,12 @@ internal sealed partial class OrderGrid
 
         private Grid CreateFuzzySearchGrid()
         {
-            Grid grid = GridFactory.CreateDefaultGrid();
+            Grid grid = SearchModeFactory.CreateFuzzySearchGrid(nameof(OrderGridViewModel.UseFuzzySearch),
+                nameof(OrderGridViewModel.SearchModeText), out CheckBox fuzzySearchCheckBox);
 
-            grid.RowSpacing = 4;
-            grid.ColumnSpacing = 8;
-            grid.Margin = new Thickness(4);
-
-            grid.DefineRows(GridLength.Auto, GridLength.Auto);
-            grid.DefineColumns(GridLength.Auto, GridLength.Auto);
-
-            TextBlock header = TextBlockFactory.CreateBlackText("Use fuzzy search").SetRow(0).SetColumn(0, 2);
-
-            header.Margin = new Thickness(4);
-
-            ViewModel.FuzzySearchToggle = CreateFuzzyToggle().SetRow(1).SetColumn(0);
-
-            TextBlock searchModeTextBlock = CreateSearchModeTextBlock().SetRow(1).SetColumn(1);
-
-            grid.Children.Add(header);
-            grid.Children.Add(ViewModel.FuzzySearchToggle);
-            grid.Children.Add(searchModeTextBlock);
+            ViewModel.FuzzySearchToggle = fuzzySearchCheckBox;
 
             return grid;
-        }
-
-        private CheckBox CreateFuzzyToggle()
-        {
-            var fuzzySearchToggle = new CheckBox
-            {
-                Foreground = new SolidColorBrush(Colors.Black),
-                Margin = new Thickness(4),
-                BorderBrush = new SolidColorBrush(Colors.Black),
-            };
-
-            fuzzySearchToggle.SetBinding(ToggleButton.IsCheckedProperty, new Binding
-            {
-                Path = new PropertyPath(nameof(OrderGridViewModel.UseFuzzySearch)),
-                Mode = BindingMode.TwoWay,
-            });
-
-            return fuzzySearchToggle;
-        }
-
-        private TextBlock CreateSearchModeTextBlock()
-        {
-            TextBlock textBlock = TextBlockFactory.CreateBlackText();
-
-            textBlock.Margin = new Thickness(4);
-
-            textBlock.SetBinding(TextBlock.TextProperty, new Binding
-            {
-                Path = new PropertyPath(nameof(OrderGridViewModel.SearchModeText)),
-                Mode = BindingMode.OneWay,
-            });
-
-            return textBlock;
         }
 
         private DataGrid CreateOrderDataGrid()

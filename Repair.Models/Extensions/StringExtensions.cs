@@ -4,7 +4,9 @@ public static class StringExtensions
 {
     public static string ScreamingSnakeCaseToTitleCase(this string input)
     {
-        return Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(string.Join(' ', input.Split('_')).ToLower());
+        return string.Join(' ',
+            input.Split('_', StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => char.ToUpperInvariant(x[0]) + x[1..].ToLowerInvariant()));
     }
 
     public static string ToColumnHeader<TColumn>(this TColumn column) where TColumn : Enum

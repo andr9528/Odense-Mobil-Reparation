@@ -1,3 +1,8 @@
+using Microsoft.UI.Dispatching;
+using Repair.Abstractions.Persistence;
+using Repair.Models.Entity.Model;
+using Repair.Models.Entity.Searchable;
+
 namespace Repair.Frontend.Presentation.Pages;
 
 /// <summary>
@@ -5,16 +10,23 @@ namespace Repair.Frontend.Presentation.Pages;
 /// </summary>
 internal sealed partial class CustomersPage : Border
 {
-    public CustomersPage()
+    internal CustomersPageViewModel ViewModel => (CustomersPageViewModel) DataContext;
+
+    public CustomersPage(
+        IEntityQueryService<Customer, SearchableCustomer> customerQueryService, DispatcherQueue dispatcherQueue,
+        ILoggerFactory loggerFactory)
     {
         DataContext = new CustomersPageViewModel();
 
         Margin = new Thickness(0);
 
         var viewModel = (CustomersPageViewModel) DataContext;
-        var logic = new CustomersPageLogic(viewModel);
+        var logic = new CustomersPageLogic(customerQueryService, viewModel, dispatcherQueue,
+            loggerFactory.CreateLogger<CustomersPageLogic>());
         var ui = new CustomersPageUi(logic, viewModel);
 
         Child = ui.CreateContentGrid();
+
+        _ = logic.RefreshCustomers();
     }
 }
