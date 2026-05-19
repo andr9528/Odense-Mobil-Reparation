@@ -76,5 +76,7 @@ internal class UnoStartup : ModularStartup<IApplicationBuilder>
 
         services.AddSingleton<IPageRegion, CustomersPageRegionDefinition>();
         services.AddSingleton<IPageRegion, OrdersPageRegionDefinition>();
+        services.AddSingleton<IPageRegion, CreateCustomerPageRegionDefinition>();
+        services.AddSingleton<IPageRegion, CreateOrderPageRegionDefinition>();
     }
 }

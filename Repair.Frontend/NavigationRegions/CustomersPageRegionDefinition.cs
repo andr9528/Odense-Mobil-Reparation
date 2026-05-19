@@ -16,7 +16,7 @@ public class CustomersPageRegionDefinition : IPageRegion
     public string DisplayName => "Customers";
 
     /// <inheritdoc />
-    public IconElement Icon => new SymbolIcon(Symbol.Character);
+    public UIElement Icon => new SymbolIcon(Symbol.People);
 
     /// <inheritdoc />
     public UIElement CreateControl(IServiceProvider services)

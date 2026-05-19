@@ -16,7 +16,7 @@ public class OrdersPageRegionDefinition : IPageRegion
     public string DisplayName => "Orders";
 
     /// <inheritdoc />
-    public IconElement Icon => new SymbolIcon(Symbol.Page);
+    public UIElement Icon => new SymbolIcon(Symbol.Repair);
 
     /// <inheritdoc />
     public UIElement CreateControl(IServiceProvider services)

@@ -9,7 +9,7 @@ namespace Repair.Frontend.Presentation
     {
         private sealed class PageSelectorUi : BaseUi<PageSelectorLogic, PageSelectorViewModel>
         {
-            private const double PANE_COLUMN_WEIGHT = 10d;
+            private const double PANE_COLUMN_WEIGHT = 12d;
 
             private readonly IEnumerable<IPageRegion> regionDefinitions;
             private readonly INavigationService navigationService;
@@ -125,7 +125,10 @@ namespace Repair.Frontend.Presentation
                     templateGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
                     templateGrid.Margin = new Thickness(0);
 
-                    templateGrid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(30),});
+                    templateGrid.ColumnDefinitions.Add(new ColumnDefinition
+                    {
+                        Width = GridLength.Auto,
+                    });
                     templateGrid.ColumnDefinitions.Add(new ColumnDefinition
                         {Width = new GridLength(1, GridUnitType.Star),});
 

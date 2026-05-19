@@ -10,7 +10,7 @@ namespace Repair.Frontend.Abstraction
         /// <summary>
         /// Icon for the NavigationView item (can be SymbolIcon, FontIcon, etc.).
         /// </summary>
-        IconElement Icon { get; }
+        UIElement Icon { get; }
 
         /// <summary>
         /// Creates the region control (usually a Border wrapping the UI grid).
