@@ -35,7 +35,34 @@ public class OrderQueryService : BaseEntityQueryService<RepairDatabaseContext, O
             query = query.Where(x => EF.Functions.Like(x.RepairWhat, keyword));
         }
 
+        if (!string.IsNullOrWhiteSpace(orderComplex.CustomerName))
+        {
+            query = ApplyCustomerNameQuery(query, orderComplex);
+        }
+
+        if (orderComplex.IsOrderComplete.HasValue)
+        {
+            query = query.Where(x => x.IsOrderComplete == orderComplex.IsOrderComplete);
+        }
+
+        if (orderComplex.HasBorrowedPhone.HasValue)
+        {
+            query = query.Where(x => x.HasBorrowedPhone == orderComplex.HasBorrowedPhone);
+        }
+
         return query;
+    }
+
+    private static IQueryable<Order> ApplyCustomerNameQuery(
+        IQueryable<Order> query, ComplexSearchableOrder orderComplex)
+    {
+        if (!orderComplex.UseFuzzy)
+        {
+            return query.Where(x => x.Customer.Name.ToLower() == orderComplex.CustomerName!.ToLower());
+        }
+
+        var keyword = $"%{orderComplex.CustomerName}%";
+        return query.Where(x => EF.Functions.Like(x.Customer.Name, keyword));
     }
 
     protected override IEnumerable<Order> ApplyComplexNonDatabaseQueryArguments(
@@ -47,7 +74,7 @@ public class OrderQueryService : BaseEntityQueryService<RepairDatabaseContext, O
 
     protected override IQueryable<Order> GetBaseQuery()
     {
-        return context.Orders.AsQueryable();
+        return context.Orders.AsQueryable().Include(x => x.Customer);
     }
 
     protected override IQueryable<Order> AddQueryArguments(

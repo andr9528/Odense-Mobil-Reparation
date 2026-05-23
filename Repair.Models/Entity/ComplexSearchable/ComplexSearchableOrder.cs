@@ -10,5 +10,11 @@ public class ComplexSearchableOrder : IComplexSearchable<SearchableOrder>
     public string? HandInWhat { get; set; }
 
     public string? RepairWhat { get; set; }
+    public string? CustomerName { get; set; }
+
+    public bool UseFuzzy { get; set; }
+
+    public bool? IsOrderComplete { get; set; }
+    public bool? HasBorrowedPhone { get; set; }
 }
 

@@ -17,6 +17,7 @@ internal static class TextBoxFactory
             Margin = new Thickness(4),
             MinHeight = 56,
             Template = CreateLightTextBoxTemplate(),
+            VerticalAlignment = VerticalAlignment.Center,
         };
 
         textBox.SetBinding(TextBox.TextProperty, new Binding

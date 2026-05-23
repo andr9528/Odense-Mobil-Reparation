@@ -32,7 +32,6 @@ internal sealed partial class OrdersPage
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.Margin = new Thickness(0);
-            grid.Padding = new Thickness(10);
             grid.DefineRows(GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star));
         }
 

@@ -17,8 +17,13 @@ internal sealed partial class OrderGrid
         /// <inheritdoc />
         protected override void ConfigureGrid(Grid grid)
         {
+            const int totalHeight = 200;
+            const int searchRowsHeight = 16;
+            const int dataRowHeight = totalHeight - 3 * searchRowsHeight;
+
             grid.RowSpacing = 8;
-            grid.DefineRows(new GridLength(1, GridUnitType.Star), GridLength.Auto, GridLength.Auto, GridLength.Auto);
+            grid.DefineRows(new GridLength(dataRowHeight, GridUnitType.Star));
+            grid.DefineRows(GridUnitType.Star, [searchRowsHeight, searchRowsHeight, searchRowsHeight,]);
             grid.DefineColumns(GridUnitType.Star, [1, 1, 1, 1,]);
         }
 
@@ -26,14 +31,49 @@ internal sealed partial class OrderGrid
         protected override void AddControlsToGrid(Grid grid)
         {
             DataGrid dataGrid = CreateOrderDataGrid().SetRow(0).SetColumn(0, 4);
+
             TextBox handInWhatSearchBox = CreateHandInWhatSearchBox().SetRow(1).SetColumn(0);
             TextBox repairWhatSearchBox = CreateRepairWhatSearchBox().SetRow(2).SetColumn(0);
-            Grid fuzzyToggle = CreateFuzzySearchGrid().SetRow(3).SetColumn(0);
+            TextBox customerNameSearchBox = CreateCustomerNameSearchBox().SetRow(3).SetColumn(0);
+
+            NullableBooleanOptionBar isOrderCompleteBar = CreateIsOrderCompleteOptionBar().SetRow(1).SetColumn(1);
+            NullableBooleanOptionBar hasBorrowedPhoneBar = CreateHasBorrowedPhoneOptionBar().SetRow(2).SetColumn(1);
+
+            Grid fuzzyToggle = CreateFuzzySearchGrid().SetRow(3).SetColumn(1);
 
             grid.Children.Add(dataGrid);
             grid.Children.Add(handInWhatSearchBox);
             grid.Children.Add(repairWhatSearchBox);
+            grid.Children.Add(customerNameSearchBox);
+            grid.Children.Add(isOrderCompleteBar);
+            grid.Children.Add(hasBorrowedPhoneBar);
             grid.Children.Add(fuzzyToggle);
+        }
+
+        private TextBox CreateCustomerNameSearchBox()
+        {
+            ViewModel.CustomerNameSearchBox = TextBoxFactory.CreateSearchBox("Customer name", "Search customer...",
+                nameof(OrderGridViewModel.CustomerNameSearchText));
+
+            return ViewModel.CustomerNameSearchBox;
+        }
+
+        private NullableBooleanOptionBar CreateIsOrderCompleteOptionBar()
+        {
+            ViewModel.IsOrderCompleteOptionBar = new NullableBooleanOptionBar("Order complete");
+
+            ViewModel.IsOrderCompleteOptionBar.ViewModel.SelectionChanged += Logic.IsOrderCompleteSelectionChanged;
+
+            return ViewModel.IsOrderCompleteOptionBar;
+        }
+
+        private NullableBooleanOptionBar CreateHasBorrowedPhoneOptionBar()
+        {
+            ViewModel.HasBorrowedPhoneOptionBar = new NullableBooleanOptionBar("Borrowed phone");
+
+            ViewModel.HasBorrowedPhoneOptionBar.ViewModel.SelectionChanged += Logic.HasBorrowedPhoneSelectionChanged;
+
+            return ViewModel.HasBorrowedPhoneOptionBar;
         }
 
         private TextBox CreateHandInWhatSearchBox()
@@ -80,6 +120,7 @@ internal sealed partial class OrderGrid
                 OrderGridColumns.RETURNED_WHEN => nameof(Order.ReturnedWhen),
                 OrderGridColumns.IS_ORDER_COMPLETE => nameof(Order.IsOrderComplete),
                 OrderGridColumns.HAS_BORROWED_PHONE => nameof(Order.HasBorrowedPhone),
+                OrderGridColumns.CUSTOMER_NAME => $"{nameof(Order.Customer)}.{nameof(Customer.Name)}",
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
@@ -92,6 +133,7 @@ internal sealed partial class OrderGrid
             RETURNED_WHEN = 3,
             IS_ORDER_COMPLETE = 4,
             HAS_BORROWED_PHONE = 5,
+            CUSTOMER_NAME = 6,
         }
     }
 }

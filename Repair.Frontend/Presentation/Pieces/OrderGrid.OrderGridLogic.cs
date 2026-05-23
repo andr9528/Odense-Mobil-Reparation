@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Presentation.Core;
@@ -24,22 +23,18 @@ internal sealed partial class OrderGrid
             this.dispatcherQueue = dispatcherQueue;
             this.logger = logger;
 
-            ViewModel.PropertyChanged += HandleViewModelPropertyChanged;
+            ViewModel.SearchChanged += SearchChanged;
         }
 
-        private async void HandleViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private async void SearchChanged(object? sender, EventArgs e)
         {
             try
             {
-                if (e.PropertyName is nameof(OrderGridViewModel.HandInWhatSearchText)
-                    or nameof(OrderGridViewModel.RepairWhatSearchText) or nameof(OrderGridViewModel.UseFuzzySearch))
-                {
-                    await RefreshOrders();
-                }
+                await RefreshOrders();
             }
             catch (Exception exe)
             {
-                logger.LogError(exe, $"Exception caught during refresh of Orders");
+                logger.LogError(exe, "Exception caught during refresh of Orders");
             }
         }
 
@@ -66,6 +61,10 @@ internal sealed partial class OrderGrid
                 {
                     CustomerId = ViewModel.CustomerId,
                 },
+                UseFuzzy = ViewModel.UseFuzzySearch,
+                CustomerName = ViewModel.CustomerNameSearchText,
+                IsOrderComplete = ViewModel.IsOrderComplete,
+                HasBorrowedPhone = ViewModel.HasBorrowedPhone,
             };
 
             if (ViewModel.UseFuzzySearch)
@@ -80,6 +79,16 @@ internal sealed partial class OrderGrid
             }
 
             return complex;
+        }
+
+        public void IsOrderCompleteSelectionChanged(object? sender, EventArgs e)
+        {
+            ViewModel.IsOrderComplete = ViewModel.IsOrderCompleteOptionBar.ViewModel.SelectedValue;
+        }
+
+        public void HasBorrowedPhoneSelectionChanged(object? sender, EventArgs e)
+        {
+            ViewModel.HasBorrowedPhone = ViewModel.HasBorrowedPhoneOptionBar.ViewModel.SelectedValue;
         }
     }
 }
