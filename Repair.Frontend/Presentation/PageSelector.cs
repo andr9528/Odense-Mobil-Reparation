@@ -20,7 +20,7 @@ namespace Repair.Frontend.Presentation
             Margin = new Thickness(0);
 
             var viewModel = (PageSelectorViewModel) DataContext;
-            var logic = new PageSelectorLogic(viewModel, serviceProvider, navigationService, DispatcherQueue);
+            var logic = new PageSelectorLogic(viewModel, serviceProvider, navigationService);
             var ui = new PageSelectorUi(logic, viewModel, regionDefinitions, navigationService);
 
             Content = ui.CreateContentGrid();

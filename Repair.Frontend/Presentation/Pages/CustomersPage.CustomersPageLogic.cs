@@ -3,6 +3,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Entity.Model;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Core;
 using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
@@ -17,14 +18,17 @@ internal sealed partial class CustomersPage
         private readonly IEntityQueryService<Customer, SearchableCustomer> customerQueryService;
         private readonly DispatcherQueue dispatcherQueue;
         private readonly ILogger<CustomersPageLogic> logger;
+        private readonly INavigationService navigationService;
 
         public CustomersPageLogic(
             IEntityQueryService<Customer, SearchableCustomer> customerQueryService, CustomersPageViewModel viewModel,
-            DispatcherQueue dispatcherQueue, ILogger<CustomersPageLogic> logger) : base(viewModel)
+            DispatcherQueue dispatcherQueue, ILogger<CustomersPageLogic> logger,
+            INavigationService navigationService) : base(viewModel)
         {
             this.customerQueryService = customerQueryService;
             this.dispatcherQueue = dispatcherQueue;
             this.logger = logger;
+            this.navigationService = navigationService;
 
             ViewModel.SearchChanged += SearchChanged;
         }
@@ -92,8 +96,8 @@ internal sealed partial class CustomersPage
                 return;
             }
 
-            // TODO: Navigate to CustomerDetailsPage for the selected Customer.
-            // customer.Id can be used here.
+            var detailPage = new CustomerDetailsPage(customer.Id, customerQueryService);
+            navigationService.NavigateTo(detailPage);
         }
     }
 }

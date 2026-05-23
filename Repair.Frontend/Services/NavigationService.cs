@@ -1,14 +1,17 @@
+using Microsoft.UI.Dispatching;
 using Repair.Frontend.Abstraction;
 
 namespace Repair.Frontend.Services
 {
     public class NavigationService : INavigationService
     {
+        private readonly DispatcherQueue dispatcherQueue;
         private Frame contentFrame;
         private Stack<UIElement> navigationStack;
 
-        public NavigationService()
+        public NavigationService(DispatcherQueue dispatcherQueue)
         {
+            this.dispatcherQueue = dispatcherQueue;
             navigationStack = new Stack<UIElement>();
         }
 
@@ -21,8 +24,8 @@ namespace Repair.Frontend.Services
         /// <inheritdoc />
         public void NavigateTo(UIElement element)
         {
-            contentFrame.Content = element;
             navigationStack.Push(element);
+            UpdateFrameToTopElement();
         }
 
         /// <inheritdoc />
@@ -32,10 +35,13 @@ namespace Repair.Frontend.Services
                 return;
 
             navigationStack.Pop();
+            UpdateFrameToTopElement();
+        }
 
-            UIElement previousElement = navigationStack.Peek();
-
-            contentFrame.Content = previousElement;
+        private void UpdateFrameToTopElement()
+        {
+            UIElement peekedElement = navigationStack.Peek();
+            dispatcherQueue.TryEnqueue(() => { contentFrame.Content = peekedElement; });
         }
     }
 }    

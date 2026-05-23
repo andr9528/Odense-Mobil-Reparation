@@ -1,4 +1,3 @@
-using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Core;
@@ -13,15 +12,13 @@ internal sealed partial class CustomerCreationPage
     private sealed class CustomerCreationPageLogic : BaseLogic<CustomerCreationPageViewModel>
     {
         private readonly IEntityQueryService<Customer, SearchableCustomer> queryService;
-        private readonly DispatcherQueue dispatcherQueue;
         private readonly INavigationService navigationService;
 
         public CustomerCreationPageLogic(
             CustomerCreationPageViewModel viewModel, IEntityQueryService<Customer, SearchableCustomer> queryService,
-            DispatcherQueue dispatcherQueue, INavigationService navigationService) : base(viewModel)
+            INavigationService navigationService) : base(viewModel)
         {
             this.queryService = queryService;
-            this.dispatcherQueue = dispatcherQueue;
             this.navigationService = navigationService;
         }
 
@@ -35,11 +32,8 @@ internal sealed partial class CustomerCreationPage
             Customer newCustomer = BuildNewCustomer();
             await queryService.AddEntity(newCustomer);
 
-            dispatcherQueue.TryEnqueue(() =>
-            {
-                var details = new CustomerDetailsPage(newCustomer.Id, queryService);
-                navigationService.NavigateTo(details);
-            });
+            var details = new CustomerDetailsPage(newCustomer.Id, queryService);
+            navigationService.NavigateTo(details);
         }
 
         private bool IsUserInputValid()
@@ -62,7 +56,7 @@ internal sealed partial class CustomerCreationPage
 
         internal void CancelClicked(object sender, RoutedEventArgs e)
         {
-            dispatcherQueue.TryEnqueue(() => { navigationService.NavigateBack(); });
+            navigationService.NavigateBack();
         }
     }
 }
