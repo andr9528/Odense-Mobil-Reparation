@@ -13,7 +13,7 @@ public class CreateOrderPageRegionDefinition : IPageRegion
         this.logger = logger;
     }
 
-    public string DisplayName => "Create order";
+    public string DisplayName => "Create Order";
 
     public UIElement Icon => CreateIcon();
 
@@ -34,14 +34,14 @@ public class CreateOrderPageRegionDefinition : IPageRegion
 
         grid.Children.Add(new SymbolIcon(Symbol.Add)
         {
-            HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment = VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
         }.SetColumn(0));
 
         grid.Children.Add(new SymbolIcon(Symbol.Repair)
         {
-            HorizontalAlignment = HorizontalAlignment.Right,
-            VerticalAlignment = VerticalAlignment.Bottom,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
         }.SetColumn(1));
 
         return grid;
