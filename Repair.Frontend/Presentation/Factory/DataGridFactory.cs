@@ -13,6 +13,7 @@ internal static class DataGridFactory
             AutoGenerateColumns = false,
             IsReadOnly = true,
             ItemsSource = itemsSource,
+            Foreground = new SolidColorBrush(Colors.Black),
         };
 
         foreach (TColumn column in Enum.GetValues<TColumn>())
