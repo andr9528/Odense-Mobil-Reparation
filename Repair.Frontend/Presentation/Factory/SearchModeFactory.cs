@@ -16,7 +16,7 @@ internal static class SearchModeFactory
         grid.DefineRows(GridLength.Auto, GridLength.Auto);
         grid.DefineColumns(GridLength.Auto, GridLength.Auto);
 
-        fuzzySearchCheckBox = CreateFuzzyToggle(useFuzzySearchPath);
+        fuzzySearchCheckBox = CheckBoxFactory.CreateLightCheckBox(useFuzzySearchPath);
 
         grid.Children.Add(CreateHeader().SetRow(0).SetColumn(0, 2));
         grid.Children.Add(fuzzySearchCheckBox.SetRow(1).SetColumn(0));
@@ -31,24 +31,6 @@ internal static class SearchModeFactory
         header.Margin = new Thickness(4);
 
         return header;
-    }
-
-    private static CheckBox CreateFuzzyToggle(string bindingPath)
-    {
-        var checkBox = new CheckBox
-        {
-            Foreground = new SolidColorBrush(Colors.Black),
-            Margin = new Thickness(4),
-            BorderBrush = new SolidColorBrush(Colors.Black),
-        };
-
-        checkBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding
-        {
-            Path = new PropertyPath(bindingPath),
-            Mode = BindingMode.TwoWay,
-        });
-
-        return checkBox;
     }
 
     private static TextBlock CreateSearchModeTextBlock(string bindingPath)

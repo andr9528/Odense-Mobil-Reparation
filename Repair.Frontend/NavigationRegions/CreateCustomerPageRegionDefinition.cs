@@ -13,7 +13,7 @@ public class CreateCustomerPageRegionDefinition : IPageRegion
         this.logger = logger;
     }
 
-    public string DisplayName => "Create customer";
+    public string DisplayName => "Create Customer";
 
     public UIElement Icon => CreateIcon();
 
