@@ -3,18 +3,16 @@ using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Frontend.Presentation.Pieces;
+using Repair.Frontend.Services;
 using Repair.Models.Entity.Model;
 
 namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class CustomersPage
 {
-    private sealed class CustomersPageUi : BaseUi<CustomersPageLogic, CustomersPageViewModel>
+    private sealed class CustomersPageUi(CustomersPageLogic logic, CustomersPageViewModel viewModel)
+        : BaseUi<CustomersPageLogic, CustomersPageViewModel>(logic, viewModel)
     {
-        public CustomersPageUi(CustomersPageLogic logic, CustomersPageViewModel viewModel) : base(logic, viewModel)
-        {
-        }
-
         protected override void ConfigureGrid(Grid grid)
         {
             grid.RowSpacing = 8;
@@ -53,7 +51,10 @@ internal sealed partial class CustomersPage
 
         private CustomerEditor CreateCustomerEditor()
         {
-            var customerEditor = new CustomerEditor(true);
+            CustomerEditor.CustomerEditorArguments arguments = App.Startup.ServiceProvider
+                .GetRequiredService<ArgumentsFactory>().CreateCustomerEditorArguments(true);
+
+            var customerEditor = new CustomerEditor(arguments);
 
             ViewModel.ConnectCustomerEditor(customerEditor);
             ViewModel.CustomerEditor.ViewModel.IsReadOnly = false;

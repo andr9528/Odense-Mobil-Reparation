@@ -1,18 +1,12 @@
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Pages;
+using Repair.Frontend.Services;
 
 namespace Repair.Frontend.NavigationRegions;
 
-public class CreateOrderPageRegionDefinition : IPageRegion
+public class CreateOrderPageRegionDefinition(ILogger<CreateOrderPageRegionDefinition> logger) : IPageRegion
 {
-    private readonly ILogger<CreateOrderPageRegionDefinition> logger;
-
-    public CreateOrderPageRegionDefinition(ILogger<CreateOrderPageRegionDefinition> logger)
-    {
-        this.logger = logger;
-    }
-
     public string DisplayName => "Create Order";
 
     public UIElement Icon => CreateIcon();
@@ -20,8 +14,10 @@ public class CreateOrderPageRegionDefinition : IPageRegion
     public UIElement CreateControl(IServiceProvider services)
     {
         logger.LogInformation($"Changing page to: {nameof(OrderCreationPage)}");
+        OrderCreationPage.OrderCreationPageArguments arguments =
+            services.GetRequiredService<ArgumentsFactory>().CreateOrderCreationPageArguments();
 
-        return ActivatorUtilities.CreateInstance<OrderCreationPage>(services);
+        return new OrderCreationPage(arguments);
     }
 
     private Grid CreateIcon()

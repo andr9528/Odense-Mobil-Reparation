@@ -8,11 +8,9 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class CustomersPage
 {
-    internal sealed partial class CustomersPageViewModel : ObservableObject
+    internal sealed partial class CustomersPageViewModel(CustomersPageArguments arguments) : ObservableObject
     {
-        public CustomersPageViewModel()
-        {
-        }
+        public CustomersPageArguments Arguments { get; } = arguments;
 
         public event EventHandler? SearchChanged;
 

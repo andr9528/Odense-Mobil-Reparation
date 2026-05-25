@@ -4,12 +4,9 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrderDetailsPage
 {
-    private sealed class OrderDetailsPageLogic : BaseLogic<OrderDetailsPageViewModel>
+    private sealed class OrderDetailsPageLogic(OrderDetailsPageViewModel viewModel)
+        : BaseLogic<OrderDetailsPageViewModel>(viewModel)
     {
-        public OrderDetailsPageLogic(OrderDetailsPageViewModel viewModel) : base(viewModel)
-        {
-        }
-
         internal void EditToggleChanged(object sender, RoutedEventArgs e)
         {
             // TODO: Enable / disable editing order details.

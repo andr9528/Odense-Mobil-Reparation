@@ -4,6 +4,7 @@ using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Frontend.Presentation.Pieces;
+using Repair.Frontend.Services;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -13,18 +14,15 @@ internal sealed partial class OrdersPage
 {
     private sealed class OrdersPageUi : BaseUi<OrdersPageLogic, OrdersPageViewModel>
     {
-        private readonly IEntityQueryService<Order, SearchableOrder> orderQueryService;
+        private readonly IEntityQueryService<Order, SearchableOrder> queryService;
         private readonly DispatcherQueue dispatcherQueue;
         private readonly ILoggerFactory loggerFactory;
 
-        public OrdersPageUi(
-            OrdersPageLogic logic, OrdersPageViewModel viewModel,
-            IEntityQueryService<Order, SearchableOrder> orderQueryService, DispatcherQueue dispatcherQueue,
-            ILoggerFactory loggerFactory) : base(logic, viewModel)
+        public OrdersPageUi(OrdersPageLogic logic, OrdersPageViewModel viewModel) : base(logic, viewModel)
         {
-            this.orderQueryService = orderQueryService;
-            this.dispatcherQueue = dispatcherQueue;
-            this.loggerFactory = loggerFactory;
+            queryService = ViewModel.Arguments.OrderQueryService;
+            dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
+            loggerFactory = ViewModel.Arguments.LoggerFactory;
         }
 
         protected override void ConfigureGrid(Grid grid)
@@ -62,7 +60,10 @@ internal sealed partial class OrdersPage
 
         private OrderGrid CreateOrderGrid()
         {
-            ViewModel.OrderGrid = new OrderGrid(orderQueryService, dispatcherQueue, loggerFactory);
+            OrderGrid.OrderGridArguments arguments = App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>()
+                .CreateOrderGridArguments();
+
+            ViewModel.OrderGrid = new OrderGrid(arguments);
 
             ViewModel.OrderGrid.ViewModel.DataGrid.SelectionChanged += Logic.OrderClicked;
 

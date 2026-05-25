@@ -2,6 +2,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
+using Repair.Frontend.Services;
 using Repair.Models.Entity.Model;
 
 namespace Repair.Frontend.Presentation.Pieces;
@@ -10,8 +11,11 @@ internal sealed partial class OrderGrid
 {
     internal sealed partial class OrderGridUi : BaseUi<OrderGridLogic, OrderGridViewModel>
     {
+        private readonly ArgumentsFactory argumentsFactory;
+
         public OrderGridUi(OrderGridLogic logic, OrderGridViewModel viewModel) : base(logic, viewModel)
         {
+            this.argumentsFactory = App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>();
         }
 
         /// <inheritdoc />
@@ -60,7 +64,9 @@ internal sealed partial class OrderGrid
 
         private NullableBooleanOptionBar CreateIsOrderCompleteOptionBar()
         {
-            ViewModel.IsOrderCompleteOptionBar = new NullableBooleanOptionBar("Order complete");
+            NullableBooleanOptionBar.NullableBooleanOptionBarArguments arguments =
+                argumentsFactory.CreateNullableBooleanOptionBarArguments("Order complete");
+            ViewModel.IsOrderCompleteOptionBar = new NullableBooleanOptionBar(arguments);
 
             ViewModel.IsOrderCompleteOptionBar.ViewModel.SelectionChanged += Logic.IsOrderCompleteSelectionChanged;
 
@@ -69,7 +75,9 @@ internal sealed partial class OrderGrid
 
         private NullableBooleanOptionBar CreateHasBorrowedPhoneOptionBar()
         {
-            ViewModel.HasBorrowedPhoneOptionBar = new NullableBooleanOptionBar("Borrowed phone");
+            NullableBooleanOptionBar.NullableBooleanOptionBarArguments arguments =
+                argumentsFactory.CreateNullableBooleanOptionBarArguments("Borrowed phone");
+            ViewModel.HasBorrowedPhoneOptionBar = new NullableBooleanOptionBar(arguments);
 
             ViewModel.HasBorrowedPhoneOptionBar.ViewModel.SelectionChanged += Logic.HasBorrowedPhoneSelectionChanged;
 

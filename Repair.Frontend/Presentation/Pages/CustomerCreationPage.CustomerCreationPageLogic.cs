@@ -2,6 +2,7 @@ using Repair.Abstractions.Persistence;
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Pieces;
+using Repair.Frontend.Services;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -14,12 +15,10 @@ internal sealed partial class CustomerCreationPage
         private readonly IEntityQueryService<Customer, SearchableCustomer> queryService;
         private readonly INavigationService navigationService;
 
-        public CustomerCreationPageLogic(
-            CustomerCreationPageViewModel viewModel, IEntityQueryService<Customer, SearchableCustomer> queryService,
-            INavigationService navigationService) : base(viewModel)
+        public CustomerCreationPageLogic(CustomerCreationPageViewModel viewModel) : base(viewModel)
         {
-            this.queryService = queryService;
-            this.navigationService = navigationService;
+            queryService = ViewModel.Arguments.CustomerQueryService;
+            navigationService = ViewModel.Arguments.NavigationService;
         }
 
         internal async Task SaveClicked(object sender, RoutedEventArgs e)
@@ -31,8 +30,10 @@ internal sealed partial class CustomerCreationPage
 
             Customer newCustomer = BuildNewCustomer();
             await queryService.AddEntity(newCustomer);
+            CustomerDetailsPage.CustomerDetailsPageArguments arguments = App.Startup.ServiceProvider
+                .GetRequiredService<ArgumentsFactory>().CreateCustomerDetailsPageArguments(newCustomer.Id);
 
-            var details = new CustomerDetailsPage(newCustomer.Id, queryService);
+            var details = new CustomerDetailsPage(arguments);
             navigationService.NavigateTo(details);
         }
 

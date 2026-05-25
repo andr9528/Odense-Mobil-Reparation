@@ -4,6 +4,14 @@ internal sealed partial class CustomerDetailsPage
 {
     private sealed class CustomerDetailsPageViewModel
     {
+        public CustomerDetailsPageArguments Arguments { get; }
+
+        public CustomerDetailsPageViewModel(CustomerDetailsPageArguments arguments)
+        {
+            Arguments = arguments;
+            throw new NotImplementedException();
+        }
+
         public bool IsEditing { get; set; }
         public string OrderSearchText { get; set; } = string.Empty;
         public ToggleSwitch EditToggle { get; set; } = null!;

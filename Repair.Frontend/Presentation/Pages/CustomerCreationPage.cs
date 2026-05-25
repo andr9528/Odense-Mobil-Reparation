@@ -10,16 +10,21 @@ namespace Repair.Frontend.Presentation.Pages;
 /// </summary>
 internal sealed partial class CustomerCreationPage : Border
 {
-    public CustomerCreationPage(
-        IEntityQueryService<Customer, SearchableCustomer> queryService, INavigationService navigationService)
+    public CustomerCreationPage(CustomerCreationPageArguments arguments)
     {
-        DataContext = new CustomerCreationPageViewModel();
+        ArgumentNullException.ThrowIfNull(arguments);
+
+        DataContext = new CustomerCreationPageViewModel(arguments);
         Margin = new Thickness(0);
 
         var viewModel = (CustomerCreationPageViewModel) DataContext;
-        var logic = new CustomerCreationPageLogic(viewModel, queryService, navigationService);
+        var logic = new CustomerCreationPageLogic(viewModel);
         var ui = new CustomerCreationPageUi(logic, viewModel);
 
         Child = ui.CreateContentGrid();
     }
+
+    internal sealed record CustomerCreationPageArguments(
+        IEntityQueryService<Customer, SearchableCustomer> CustomerQueryService,
+        INavigationService NavigationService);
 }

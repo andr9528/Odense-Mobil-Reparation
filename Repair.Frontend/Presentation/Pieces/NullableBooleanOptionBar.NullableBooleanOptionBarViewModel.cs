@@ -4,6 +4,7 @@ internal sealed partial class NullableBooleanOptionBar
 {
     internal sealed partial class NullableBooleanOptionBarViewModel : ObservableObject
     {
+        public NullableBooleanOptionBarArguments Arguments { get; }
         internal event EventHandler? SelectionChanged;
 
         [ObservableProperty] private bool? selectedValue = null;
@@ -16,9 +17,10 @@ internal sealed partial class NullableBooleanOptionBar
 
         public RadioButton AnyButton { get; set; } = null!;
 
-        public NullableBooleanOptionBarViewModel(string header)
+        public NullableBooleanOptionBarViewModel(NullableBooleanOptionBarArguments arguments)
         {
-            Header = header;
+            Arguments = arguments;
+            Header = arguments.Header;
         }
 
         partial void OnSelectedValueChanged(bool? value)

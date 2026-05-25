@@ -5,9 +5,9 @@ namespace Repair.Frontend.Presentation.Pages;
 /// </summary>
 internal sealed partial class OrderCreationPage : Border
 {
-    public OrderCreationPage()
+    public OrderCreationPage(OrderCreationPageArguments arguments)
     {
-        DataContext = new OrderCreationPageViewModel {IsEditing = true,};
+        DataContext = new OrderCreationPageViewModel(arguments) {IsEditing = true,};
         Margin = new Thickness(0);
 
         var viewModel = (OrderCreationPageViewModel) DataContext;
@@ -16,4 +16,6 @@ internal sealed partial class OrderCreationPage : Border
 
         Child = ui.CreateContentGrid();
     }
+
+    internal record OrderCreationPageArguments();
 }

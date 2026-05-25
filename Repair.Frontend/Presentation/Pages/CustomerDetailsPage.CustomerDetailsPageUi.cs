@@ -6,12 +6,9 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class CustomerDetailsPage
 {
-    private sealed class CustomerDetailsPageUi : BaseUi<CustomerDetailsPageLogic, CustomerDetailsPageViewModel>
+    private sealed class CustomerDetailsPageUi(CustomerDetailsPageLogic logic, CustomerDetailsPageViewModel viewModel)
+        : BaseUi<CustomerDetailsPageLogic, CustomerDetailsPageViewModel>(logic, viewModel)
     {
-        public CustomerDetailsPageUi(CustomerDetailsPageLogic logic, CustomerDetailsPageViewModel viewModel) : base(logic, viewModel)
-        {
-        }
-
         protected override void ConfigureGrid(Grid grid)
         {
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;

@@ -73,6 +73,7 @@ internal class UnoStartup : ModularStartup<IApplicationBuilder>
 
         DispatcherQueue? uiDispatcherQueue = DispatcherQueue.GetForCurrentThread();
         services.AddSingleton(uiDispatcherQueue);
+        services.AddSingleton<ArgumentsFactory>();
 
         services.AddSingleton<IPageRegion, CustomersPageRegionDefinition>();
         services.AddSingleton<IPageRegion, OrdersPageRegionDefinition>();

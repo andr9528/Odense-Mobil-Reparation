@@ -10,13 +10,17 @@ internal sealed partial class NullableBooleanOptionBar : Border
     private NullableBooleanOptionBarUi Ui { get; }
     private NullableBooleanOptionBarLogic Logic { get; }
 
-    public NullableBooleanOptionBar(string header)
+    public NullableBooleanOptionBar(NullableBooleanOptionBarArguments arguments)
     {
-        DataContext = new NullableBooleanOptionBarViewModel(header);
+        ArgumentNullException.ThrowIfNull(arguments);
+
+        DataContext = new NullableBooleanOptionBarViewModel(arguments);
 
         Logic = new NullableBooleanOptionBarLogic(ViewModel);
         Ui = new NullableBooleanOptionBarUi(Logic, ViewModel);
 
         Child = Ui.CreateContentGrid();
     }
+
+    internal sealed record NullableBooleanOptionBarArguments(string Header);
 }

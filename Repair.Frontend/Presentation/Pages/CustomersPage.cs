@@ -13,21 +13,25 @@ internal sealed partial class CustomersPage : Border
 {
     internal CustomersPageViewModel ViewModel => (CustomersPageViewModel) DataContext;
 
-    public CustomersPage(
-        IEntityQueryService<Customer, SearchableCustomer> customerQueryService, DispatcherQueue dispatcherQueue,
-        ILoggerFactory loggerFactory, INavigationService navigationService)
+    public CustomersPage(CustomersPageArguments arguments)
     {
-        DataContext = new CustomersPageViewModel();
+        ArgumentNullException.ThrowIfNull(arguments);
 
+        DataContext = new CustomersPageViewModel(arguments);
         Margin = new Thickness(0);
 
         var viewModel = (CustomersPageViewModel) DataContext;
-        var logic = new CustomersPageLogic(customerQueryService, viewModel, dispatcherQueue,
-            loggerFactory.CreateLogger<CustomersPageLogic>(), navigationService);
+        var logic = new CustomersPageLogic(viewModel);
         var ui = new CustomersPageUi(logic, viewModel);
 
         Child = ui.CreateContentGrid();
 
         _ = logic.RefreshCustomers();
     }
+
+    internal sealed record CustomersPageArguments(
+        IEntityQueryService<Customer, SearchableCustomer> CustomerQueryService,
+        DispatcherQueue DispatcherQueue,
+        ILoggerFactory LoggerFactory,
+        INavigationService NavigationService);
 }

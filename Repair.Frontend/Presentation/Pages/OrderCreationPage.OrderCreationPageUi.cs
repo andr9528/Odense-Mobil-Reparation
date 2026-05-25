@@ -6,12 +6,9 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrderCreationPage
 {
-    private sealed class OrderCreationPageUi : BaseUi<OrderCreationPageLogic, OrderCreationPageViewModel>
+    private sealed class OrderCreationPageUi(OrderCreationPageLogic logic, OrderCreationPageViewModel viewModel)
+        : BaseUi<OrderCreationPageLogic, OrderCreationPageViewModel>(logic, viewModel)
     {
-        public OrderCreationPageUi(OrderCreationPageLogic logic, OrderCreationPageViewModel viewModel) : base(logic, viewModel)
-        {
-        }
-
         protected override void ConfigureGrid(Grid grid)
         {
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;

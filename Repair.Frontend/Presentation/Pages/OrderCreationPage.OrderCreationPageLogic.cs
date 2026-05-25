@@ -4,12 +4,9 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrderCreationPage
 {
-    private sealed class OrderCreationPageLogic : BaseLogic<OrderCreationPageViewModel>
+    private sealed class OrderCreationPageLogic(OrderCreationPageViewModel viewModel)
+        : BaseLogic<OrderCreationPageViewModel>(viewModel)
     {
-        public OrderCreationPageLogic(OrderCreationPageViewModel viewModel) : base(viewModel)
-        {
-        }
-
         internal void CustomerSearchTextChanged(object sender, TextChangedEventArgs e)
         {
             // TODO: Update search text and refresh selectable customers.

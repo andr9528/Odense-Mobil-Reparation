@@ -1,4 +1,6 @@
+using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -9,9 +11,11 @@ namespace Repair.Frontend.Presentation.Pages;
 /// </summary>
 internal sealed partial class CustomerDetailsPage : Border
 {
-    public CustomerDetailsPage(int customerId, IEntityQueryService<Customer, SearchableCustomer> queryService)
+    public CustomerDetailsPage(CustomerDetailsPageArguments arguments)
     {
-        DataContext = new CustomerDetailsPageViewModel();
+        ArgumentNullException.ThrowIfNull(arguments);
+
+        DataContext = new CustomerDetailsPageViewModel(arguments);
         Margin = new Thickness(0);
 
         var viewModel = (CustomerDetailsPageViewModel) DataContext;
@@ -20,4 +24,12 @@ internal sealed partial class CustomerDetailsPage : Border
 
         Child = ui.CreateContentGrid();
     }
+
+    internal sealed record CustomerDetailsPageArguments(
+        int CustomerId,
+        IEntityQueryService<Customer, SearchableCustomer> CustomerQueryService,
+        IEntityQueryService<Order, SearchableOrder> OrderQueryService,
+        DispatcherQueue DispatcherQueue,
+        ILoggerFactory LoggerFactory,
+        INavigationService NavigationService);
 }

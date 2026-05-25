@@ -2,17 +2,17 @@ using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Frontend.Presentation.Pieces;
+using Repair.Frontend.Services;
 
 namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class CustomerCreationPage
 {
-    private sealed class CustomerCreationPageUi : BaseUi<CustomerCreationPageLogic, CustomerCreationPageViewModel>
+    private sealed class CustomerCreationPageUi(
+        CustomerCreationPageLogic logic,
+        CustomerCreationPageViewModel viewModel)
+        : BaseUi<CustomerCreationPageLogic, CustomerCreationPageViewModel>(logic, viewModel)
     {
-        public CustomerCreationPageUi(CustomerCreationPageLogic logic, CustomerCreationPageViewModel viewModel) : base(logic, viewModel)
-        {
-        }
-
         protected override void ConfigureGrid(Grid grid)
         {
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -39,7 +39,10 @@ internal sealed partial class CustomerCreationPage
 
         private CustomerEditor CreateCustomerEditor()
         {
-            ViewModel.CustomerEditor = new CustomerEditor
+            CustomerEditor.CustomerEditorArguments arguments = App.Startup.ServiceProvider
+                .GetRequiredService<ArgumentsFactory>().CreateCustomerEditorArguments();
+
+            ViewModel.CustomerEditor = new CustomerEditor(arguments)
             {
                 ViewModel =
                 {

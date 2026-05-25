@@ -2,8 +2,9 @@ namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class CustomerEditor
 {
-    internal sealed partial class CustomerEditorViewModel : ObservableObject
+    internal sealed partial class CustomerEditorViewModel(CustomerEditorArguments arguments) : ObservableObject
     {
+        public CustomerEditorArguments Arguments { get; } = arguments;
         public event EventHandler? NameChanged;
         public event EventHandler? PhoneChanged;
         public event EventHandler? EmailChanged;

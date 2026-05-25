@@ -6,12 +6,8 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrdersPage
 {
-    private sealed class OrdersPageLogic : BaseLogic<OrdersPageViewModel>
+    private sealed class OrdersPageLogic(OrdersPageViewModel viewModel) : BaseLogic<OrdersPageViewModel>(viewModel)
     {
-        public OrdersPageLogic(OrdersPageViewModel viewModel) : base(viewModel)
-        {
-        }
-
         internal void OrderClicked(object sender, SelectionChangedEventArgs e)
         {
             if (sender is not DataGrid dataGrid)

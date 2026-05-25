@@ -6,8 +6,10 @@ namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class OrderGrid
 {
-    internal sealed partial class OrderGridViewModel : ObservableObject
+    internal sealed partial class OrderGridViewModel(OrderGridArguments arguments) : ObservableObject
     {
+        public OrderGridArguments Arguments { get; } = arguments;
+
         public event EventHandler? SearchChanged;
 
         internal DataGrid DataGrid { get; set; } = null!;
@@ -19,12 +21,10 @@ internal sealed partial class OrderGrid
         internal NullableBooleanOptionBar HasBorrowedPhoneOptionBar { get; set; } = null!;
 
 
-        public OrderGridViewModel(int customerId = 0)
+        public int CustomerId
         {
-            CustomerId = customerId;
+            get => Arguments.CustomerId;
         }
-
-        public int CustomerId { get; }
 
         public ObservableCollection<Order> Orders { get; } = [];
 

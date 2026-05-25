@@ -1,18 +1,12 @@
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Pages;
+using Repair.Frontend.Services;
 
 namespace Repair.Frontend.NavigationRegions;
 
-public class CustomersPageRegionDefinition : IPageRegion
+public class CustomersPageRegionDefinition(ILogger<CustomersPageRegionDefinition> logger) : IPageRegion
 {
-    private readonly ILogger<CustomersPageRegionDefinition> logger;
-
-    public CustomersPageRegionDefinition(ILogger<CustomersPageRegionDefinition> logger)
-    {
-        this.logger = logger;
-    }
-
     /// <inheritdoc />
     public string DisplayName => "Customers";
 
@@ -23,8 +17,10 @@ public class CustomersPageRegionDefinition : IPageRegion
     public UIElement CreateControl(IServiceProvider services)
     {
         logger.LogInformation($"Changing page to: {nameof(CustomersPage)}");
+        CustomersPage.CustomersPageArguments arguments =
+            services.GetRequiredService<ArgumentsFactory>().CreateCustomersPageArguments();
 
-        return ActivatorUtilities.CreateInstance<CustomersPage>(services);
+        return new CustomersPage(arguments);
     }
 
     private Grid CreateIcon()

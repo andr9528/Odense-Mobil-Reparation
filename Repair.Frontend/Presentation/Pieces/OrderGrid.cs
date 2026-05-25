@@ -10,20 +10,25 @@ internal sealed partial class OrderGrid : Border
 {
     internal OrderGridViewModel ViewModel => (OrderGridViewModel) DataContext;
 
-    public OrderGrid(
-        IEntityQueryService<Order, SearchableOrder> orderQueryService, DispatcherQueue dispatcherQueue,
-        ILoggerFactory loggerFactory, int customerId = 0)
+    public OrderGrid(OrderGridArguments arguments)
     {
-        ArgumentNullException.ThrowIfNull(orderQueryService);
+        ArgumentNullException.ThrowIfNull(arguments);
 
-        DataContext = new OrderGridViewModel(customerId);
+        DataContext = new OrderGridViewModel(arguments);
 
-        var logic = new OrderGridLogic(orderQueryService, ViewModel, dispatcherQueue,
-            loggerFactory.CreateLogger<OrderGridLogic>());
+        var logic = new OrderGridLogic(ViewModel);
         var ui = new OrderGridUi(logic, ViewModel);
 
         Child = ui.CreateContentGrid();
 
         _ = logic.RefreshOrders();
+    }
+
+    internal record OrderGridArguments(
+        IEntityQueryService<Order, SearchableOrder> OrderQueryService,
+        DispatcherQueue DispatcherQueue,
+        ILoggerFactory LoggerFactory,
+        int CustomerId = 0)
+    {
     }
 }

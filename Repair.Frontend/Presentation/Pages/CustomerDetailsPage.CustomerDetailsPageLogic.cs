@@ -4,12 +4,9 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class CustomerDetailsPage
 {
-    private sealed class CustomerDetailsPageLogic : BaseLogic<CustomerDetailsPageViewModel>
+    private sealed class CustomerDetailsPageLogic(CustomerDetailsPageViewModel viewModel)
+        : BaseLogic<CustomerDetailsPageViewModel>(viewModel)
     {
-        public CustomerDetailsPageLogic(CustomerDetailsPageViewModel viewModel) : base(viewModel)
-        {
-        }
-
         internal void EditToggleChanged(object sender, RoutedEventArgs e)
         {
             // TODO: Enable / disable editing customer details.

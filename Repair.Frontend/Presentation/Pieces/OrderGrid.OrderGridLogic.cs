@@ -15,13 +15,11 @@ internal sealed partial class OrderGrid
         private readonly DispatcherQueue dispatcherQueue;
         private readonly ILogger<OrderGridLogic> logger;
 
-        public OrderGridLogic(
-            IEntityQueryService<Order, SearchableOrder> orderQueryService, OrderGridViewModel viewModel,
-            DispatcherQueue dispatcherQueue, ILogger<OrderGridLogic> logger) : base(viewModel)
+        public OrderGridLogic(OrderGridViewModel viewModel) : base(viewModel)
         {
-            this.orderQueryService = orderQueryService;
-            this.dispatcherQueue = dispatcherQueue;
-            this.logger = logger;
+            orderQueryService = ViewModel.Arguments.OrderQueryService;
+            dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
+            logger = ViewModel.Arguments.LoggerFactory.CreateLogger<OrderGridLogic>();
 
             ViewModel.SearchChanged += SearchChanged;
         }

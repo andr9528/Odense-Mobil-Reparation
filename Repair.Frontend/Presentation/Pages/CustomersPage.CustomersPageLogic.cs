@@ -5,6 +5,7 @@ using Repair.Abstractions.Entity.Model;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Services;
 using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
@@ -15,20 +16,17 @@ internal sealed partial class CustomersPage
 {
     private sealed class CustomersPageLogic : BaseLogic<CustomersPageViewModel>
     {
-        private readonly IEntityQueryService<Customer, SearchableCustomer> customerQueryService;
+        private readonly IEntityQueryService<Customer, SearchableCustomer> queryService;
         private readonly DispatcherQueue dispatcherQueue;
         private readonly ILogger<CustomersPageLogic> logger;
         private readonly INavigationService navigationService;
 
-        public CustomersPageLogic(
-            IEntityQueryService<Customer, SearchableCustomer> customerQueryService, CustomersPageViewModel viewModel,
-            DispatcherQueue dispatcherQueue, ILogger<CustomersPageLogic> logger,
-            INavigationService navigationService) : base(viewModel)
+        public CustomersPageLogic(CustomersPageViewModel viewModel) : base(viewModel)
         {
-            this.customerQueryService = customerQueryService;
-            this.dispatcherQueue = dispatcherQueue;
-            this.logger = logger;
-            this.navigationService = navigationService;
+            queryService = ViewModel.Arguments.CustomerQueryService;
+            dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
+            logger = ViewModel.Arguments.LoggerFactory.CreateLogger<CustomersPageLogic>();
+            navigationService = ViewModel.Arguments.NavigationService;
 
             ViewModel.SearchChanged += SearchChanged;
         }
@@ -47,7 +45,7 @@ internal sealed partial class CustomersPage
 
         internal async Task RefreshCustomers()
         {
-            var customers = await customerQueryService.GetEntitiesComplex(CreateSearchableCustomer());
+            var customers = await queryService.GetEntitiesComplex(CreateSearchableCustomer());
 
             dispatcherQueue.TryEnqueue(() =>
             {
@@ -96,7 +94,10 @@ internal sealed partial class CustomersPage
                 return;
             }
 
-            var detailPage = new CustomerDetailsPage(customer.Id, customerQueryService);
+            CustomerDetailsPage.CustomerDetailsPageArguments arguments = App.Startup.ServiceProvider
+                .GetRequiredService<ArgumentsFactory>().CreateCustomerDetailsPageArguments(customer.Id);
+
+            var detailPage = new CustomerDetailsPage(arguments);
             navigationService.NavigateTo(detailPage);
         }
     }
