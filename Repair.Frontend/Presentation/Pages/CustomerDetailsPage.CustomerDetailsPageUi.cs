@@ -1,6 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
+using Repair.Frontend.Presentation.Pieces;
+using Repair.Frontend.Services;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -15,50 +18,132 @@ internal sealed partial class CustomerDetailsPage
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.Margin = new Thickness(0);
             grid.Padding = new Thickness(10);
-            grid.DefineRows(GridLength.Auto, GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star));
+            grid.DefineRows(GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star));
+            grid.RowSpacing = 10;
         }
 
         protected override void AddControlsToGrid(Grid grid)
         {
             grid.Children.Add(CreateHeader().SetRow(0));
-            grid.Children.Add(CreateCustomerDetailsGrid().SetRow(1));
-            grid.Children.Add(CreateOrderSearchBox().SetRow(2));
-            grid.Children.Add(CreateOrdersList().SetRow(3));
+            grid.Children.Add(CreateCustomerEditor().SetRow(1));
+            grid.Children.Add(CreateOrderGrid().SetRow(2));
         }
 
         private UIElement CreateHeader()
         {
-            Grid header = GridFactory.CreateDefaultGrid().DefineColumns(new GridLength(1, GridUnitType.Star), GridLength.Auto);
-            header.Children.Add(new TextBlock {Text = "Customer details", FontSize = 24,}.SetColumn(0));
-            header.Children.Add(CreateEditToggle().SetColumn(1));
+            Grid header = GridFactory.CreateDefaultGrid().DefineColumns(new GridLength(1, GridUnitType.Star),
+                GridLength.Auto, GridLength.Auto, GridLength.Auto);
+
+            header.ColumnSpacing = 8;
+
+            header.Children.Add(CreateHeaderTextBlock().SetColumn(0, 4));
+            header.Children.Add(CreateEditCheckBoxGrid().SetColumn(1));
+            header.Children.Add(CreateSaveButton().SetColumn(2));
+            header.Children.Add(CreateCancelButton().SetColumn(3));
+
             return header;
         }
 
-        private ToggleSwitch CreateEditToggle()
+        private TextBlock CreateHeaderTextBlock()
         {
-            ViewModel.EditToggle = new ToggleSwitch {Header = "Edit", IsOn = false,};
-            ViewModel.EditToggle.Toggled += Logic.EditToggleChanged;
-            return ViewModel.EditToggle;
+            return TextBlockFactory.CreateHeader("Customer details");
         }
 
-        private Grid CreateCustomerDetailsGrid()
+        private Grid CreateEditCheckBoxGrid()
         {
-            // TODO: Add customer fields.
-            return GridFactory.CreateDefaultGrid();
+            Grid grid = GridFactory.CreateDefaultGrid().DefineColumns(GridLength.Auto, GridLength.Auto);
+
+            TextBlock label = TextBlockFactory.CreateBlackText("Edit");
+            label.VerticalAlignment = VerticalAlignment.Center;
+            label.Margin = new Thickness(0, 0, 8, 0);
+
+            CheckBox checkBox = CreateEditCheckBox();
+
+            grid.Children.Add(label.SetColumn(0));
+            grid.Children.Add(checkBox.SetColumn(1));
+
+            return grid;
         }
 
-        private TextBox CreateOrderSearchBox()
+        private CheckBox CreateEditCheckBox()
         {
-            ViewModel.OrderSearchBox = new TextBox {PlaceholderText = "Search customer orders",};
-            ViewModel.OrderSearchBox.TextChanged += Logic.OrderSearchTextChanged;
-            return ViewModel.OrderSearchBox;
+            CheckBox checkBox = CheckBoxFactory.CreateLightCheckBox(nameof(CustomerDetailsPageViewModel.IsEditing));
+
+            checkBox.VerticalAlignment = VerticalAlignment.Center;
+            checkBox.HorizontalAlignment = HorizontalAlignment.Left;
+
+            checkBox.Checked += Logic.EditCheckBoxChanged;
+            checkBox.Unchecked += Logic.EditCheckBoxChanged;
+
+            ViewModel.EditCheckBox = checkBox;
+
+            return checkBox;
         }
 
-        private ListView CreateOrdersList()
+        private Button CreateSaveButton()
         {
-            ViewModel.OrdersList = new ListView {IsItemClickEnabled = true,};
-            ViewModel.OrdersList.ItemClick += Logic.OrderClicked;
-            return ViewModel.OrdersList;
+            ViewModel.SaveButton = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Padding = new Thickness(20, 8, 20, 8),
+            };
+
+            ViewModel.SaveButton.SetBinding(ContentControl.ContentProperty, new Binding
+            {
+                Path = new PropertyPath(nameof(CustomerDetailsPageViewModel.SaveButtonText)),
+                Mode = BindingMode.OneWay,
+            });
+
+            ViewModel.SaveButton.Click += async (sender, args) => await Logic.SaveClicked(sender, args);
+
+            return ViewModel.SaveButton;
+        }
+
+        private Button CreateCancelButton()
+        {
+            ViewModel.CancelButton = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Padding = new Thickness(20, 8, 20, 8),
+            };
+
+            ViewModel.CancelButton.SetBinding(ContentControl.ContentProperty, new Binding
+            {
+                Path = new PropertyPath(nameof(CustomerDetailsPageViewModel.CancelButtonText)),
+                Mode = BindingMode.OneWay,
+            });
+
+            ViewModel.CancelButton.Click += Logic.CancelClicked;
+
+            return ViewModel.CancelButton;
+        }
+
+        private CustomerEditor CreateCustomerEditor()
+        {
+            ArgumentsFactory argumentsFactory = GetArgumentsFactory();
+
+            ViewModel.CustomerEditor = new CustomerEditor(argumentsFactory.CreateCustomerEditorArguments());
+
+            Logic.RegisterCustomerEditorEvents();
+
+            return ViewModel.CustomerEditor;
+        }
+
+        private OrderGrid CreateOrderGrid()
+        {
+            ArgumentsFactory argumentsFactory = GetArgumentsFactory();
+
+            ViewModel.OrderGrid = new OrderGrid(
+                argumentsFactory.CreateOrderGridArguments(ViewModel.Arguments.CustomerId));
+
+            return ViewModel.OrderGrid;
+        }
+
+        private ArgumentsFactory GetArgumentsFactory()
+        {
+            return App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>();
         }
     }
 }

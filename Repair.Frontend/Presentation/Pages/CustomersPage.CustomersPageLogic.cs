@@ -80,6 +80,11 @@ internal sealed partial class CustomersPage
 
         public void CreateCustomerClicked(object sender, RoutedEventArgs e)
         {
+            CustomerCreationPage.CustomerCreationPageArguments arguments =
+                GetArgumentsFactory().CreateCustomerCreationPageArguments();
+
+            var creationPage = new CustomerCreationPage(arguments);
+            navigationService.NavigateTo(creationPage);
         }
 
         public void CustomerClicked(object sender, SelectionChangedEventArgs e)
@@ -94,11 +99,18 @@ internal sealed partial class CustomersPage
                 return;
             }
 
-            CustomerDetailsPage.CustomerDetailsPageArguments arguments = App.Startup.ServiceProvider
-                .GetRequiredService<ArgumentsFactory>().CreateCustomerDetailsPageArguments(customer.Id);
+            CustomerDetailsPage.CustomerDetailsPageArguments arguments =
+                GetArgumentsFactory().CreateCustomerDetailsPageArguments(customer.Id);
 
             var detailPage = new CustomerDetailsPage(arguments);
             navigationService.NavigateTo(detailPage);
+
+            dataGrid.SelectedItem = null;
+        }
+
+        private ArgumentsFactory GetArgumentsFactory()
+        {
+            return App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>();
         }
     }
 }

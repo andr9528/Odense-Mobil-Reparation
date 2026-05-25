@@ -23,6 +23,8 @@ internal sealed partial class CustomerDetailsPage : Border
         var ui = new CustomerDetailsPageUi(logic, viewModel);
 
         Child = ui.CreateContentGrid();
+
+        _ = logic.RefreshCustomer();
     }
 
     internal sealed record CustomerDetailsPageArguments(

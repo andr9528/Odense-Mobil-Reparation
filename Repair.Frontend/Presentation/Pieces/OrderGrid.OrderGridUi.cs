@@ -11,18 +11,15 @@ internal sealed partial class OrderGrid
 {
     internal sealed partial class OrderGridUi : BaseUi<OrderGridLogic, OrderGridViewModel>
     {
-        private readonly ArgumentsFactory argumentsFactory;
-
         public OrderGridUi(OrderGridLogic logic, OrderGridViewModel viewModel) : base(logic, viewModel)
         {
-            this.argumentsFactory = App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>();
         }
 
         /// <inheritdoc />
         protected override void ConfigureGrid(Grid grid)
         {
             const int totalHeight = 200;
-            const int searchRowsHeight = 16;
+            const int searchRowsHeight = 18;
             const int dataRowHeight = totalHeight - 3 * searchRowsHeight;
 
             grid.RowSpacing = 8;
@@ -65,7 +62,7 @@ internal sealed partial class OrderGrid
         private NullableBooleanOptionBar CreateIsOrderCompleteOptionBar()
         {
             NullableBooleanOptionBar.NullableBooleanOptionBarArguments arguments =
-                argumentsFactory.CreateNullableBooleanOptionBarArguments("Order complete");
+                GetArgumentsFactory().CreateNullableBooleanOptionBarArguments("Order complete");
             ViewModel.IsOrderCompleteOptionBar = new NullableBooleanOptionBar(arguments);
 
             ViewModel.IsOrderCompleteOptionBar.ViewModel.SelectionChanged += Logic.IsOrderCompleteSelectionChanged;
@@ -76,7 +73,7 @@ internal sealed partial class OrderGrid
         private NullableBooleanOptionBar CreateHasBorrowedPhoneOptionBar()
         {
             NullableBooleanOptionBar.NullableBooleanOptionBarArguments arguments =
-                argumentsFactory.CreateNullableBooleanOptionBarArguments("Borrowed phone");
+                GetArgumentsFactory().CreateNullableBooleanOptionBarArguments("Borrowed phone");
             ViewModel.HasBorrowedPhoneOptionBar = new NullableBooleanOptionBar(arguments);
 
             ViewModel.HasBorrowedPhoneOptionBar.ViewModel.SelectionChanged += Logic.HasBorrowedPhoneSelectionChanged;
@@ -131,6 +128,11 @@ internal sealed partial class OrderGrid
                 OrderGridColumns.CUSTOMER_NAME => $"{nameof(Order.Customer)}.{nameof(Customer.Name)}",
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
+        }
+
+        private ArgumentsFactory GetArgumentsFactory()
+        {
+            return App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>();
         }
 
         internal enum OrderGridColumns
