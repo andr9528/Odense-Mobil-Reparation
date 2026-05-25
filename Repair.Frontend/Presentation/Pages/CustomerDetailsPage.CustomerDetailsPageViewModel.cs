@@ -1,21 +1,29 @@
+using Repair.Frontend.Presentation.Pieces;
+using Repair.Models.Entity.Model;
+
 namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class CustomerDetailsPage
 {
-    private sealed class CustomerDetailsPageViewModel
+    private sealed partial class CustomerDetailsPageViewModel(CustomerDetailsPageArguments arguments) : ObservableObject
     {
-        public CustomerDetailsPageArguments Arguments { get; }
+        internal event EventHandler? CustomerChanged;
 
-        public CustomerDetailsPageViewModel(CustomerDetailsPageArguments arguments)
+        public CustomerDetailsPageArguments Arguments { get; } = arguments;
+
+        [ObservableProperty] private Customer customer;
+        [ObservableProperty] private bool isEditing;
+        [ObservableProperty] private bool hasChanges;
+
+        partial void OnCustomerChanged(Customer value)
         {
-            Arguments = arguments;
-            throw new NotImplementedException();
+            CustomerChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public bool IsEditing { get; set; }
-        public string OrderSearchText { get; set; } = string.Empty;
-        public ToggleSwitch EditToggle { get; set; } = null!;
-        public TextBox OrderSearchBox { get; set; } = null!;
-        public ListView OrdersList { get; set; } = null!;
+        public CustomerEditor CustomerEditor { get; set; } = null!;
+        public OrderGrid OrderGrid { get; set; } = null!;
+        public CheckBox EditCheckBox { get; set; } = null!;
+        public Button SaveButton { get; set; } = null!;
+        public Button CancelButton { get; set; } = null!;
     }
 }
