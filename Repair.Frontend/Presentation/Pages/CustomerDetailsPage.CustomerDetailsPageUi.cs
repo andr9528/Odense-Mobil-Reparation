@@ -138,6 +138,8 @@ internal sealed partial class CustomerDetailsPage
             ViewModel.OrderGrid = new OrderGrid(
                 argumentsFactory.CreateOrderGridArguments(ViewModel.Arguments.CustomerId));
 
+            ViewModel.OrderGrid.ViewModel.DataGrid.SelectionChanged += Logic.OrderClicked;
+
             return ViewModel.OrderGrid;
         }
 
