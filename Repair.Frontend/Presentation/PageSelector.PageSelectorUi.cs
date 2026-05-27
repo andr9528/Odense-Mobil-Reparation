@@ -102,16 +102,17 @@ namespace Repair.Frontend.Presentation
                 var menuList = new ListView
                 {
                     Background = new SolidColorBrush(Colors.Transparent),
-                    SelectionMode = ListViewSelectionMode.Single,
+                    SelectionMode = ListViewSelectionMode.None,
                     ItemsSource = regions,
                     ItemTemplate = CreateMenuItemTemplate(),
                     ItemContainerStyle = CreateMenuItemStyle(),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Top,
                     Margin = new Thickness(5),
+                    IsItemClickEnabled = true,
                 };
 
-                menuList.SelectionChanged += Logic.MenuListSelectionChanged;
+                menuList.ItemClick += Logic.MenuListItemClicked;
 
                 return menuList;
             }

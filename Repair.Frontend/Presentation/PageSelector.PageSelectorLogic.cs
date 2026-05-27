@@ -19,22 +19,20 @@ namespace Repair.Frontend.Presentation
                 this.navigationService = navigationService;
             }
 
-            internal void MenuListSelectionChanged(object sender, SelectionChangedEventArgs e)
+            internal void BackButtonClicked(object sender, RoutedEventArgs e)
             {
-                if (sender is not ListView {SelectedItem: IPageRegion region,} listView)
+                navigationService.NavigateBack();
+            }
+
+            public void MenuListItemClicked(object sender, ItemClickEventArgs e)
+            {
+                if (e.ClickedItem is not IPageRegion region)
                 {
                     return;
                 }
 
                 UIElement control = region.CreateControl(serviceProvider);
                 navigationService.NavigateTo(control, region.DisplayName);
-
-                listView.SelectedItem = null;
-            }
-
-            internal void BackButtonClicked(object sender, RoutedEventArgs e)
-            {
-                navigationService.NavigateBack();
             }
         }
     }
