@@ -9,12 +9,9 @@ namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class OrderGrid
 {
-    internal sealed partial class OrderGridUi : BaseUi<OrderGridLogic, OrderGridViewModel>
+    internal sealed partial class OrderGridUi(OrderGridLogic logic, OrderGridViewModel viewModel)
+        : BaseUi<OrderGridLogic, OrderGridViewModel>(logic, viewModel)
     {
-        public OrderGridUi(OrderGridLogic logic, OrderGridViewModel viewModel) : base(logic, viewModel)
-        {
-        }
-
         /// <inheritdoc />
         protected override void ConfigureGrid(Grid grid)
         {
@@ -33,22 +30,90 @@ internal sealed partial class OrderGrid
         {
             DataGrid dataGrid = CreateOrderDataGrid().SetRow(0).SetColumn(0, 4);
 
-            TextBox handInWhatSearchBox = CreateHandInWhatSearchBox().SetRow(1).SetColumn(0);
-            TextBox repairWhatSearchBox = CreateRepairWhatSearchBox().SetRow(2).SetColumn(0);
-            TextBox customerNameSearchBox = CreateCustomerNameSearchBox().SetRow(3).SetColumn(0);
+            AddTextSearchFilterControls(grid);
+            AddDateTimeFilterControls(grid);
 
             NullableBooleanOptionBar isOrderCompleteBar = CreateIsOrderCompleteOptionBar().SetRow(1).SetColumn(1);
             NullableBooleanOptionBar hasBorrowedPhoneBar = CreateHasBorrowedPhoneOptionBar().SetRow(2).SetColumn(1);
 
+            grid.Children.Add(dataGrid);
+            grid.Children.Add(isOrderCompleteBar);
+            grid.Children.Add(hasBorrowedPhoneBar);
+        }
+
+        private void AddTextSearchFilterControls(Grid grid)
+        {
+            TextBox handInWhatSearchBox = CreateHandInWhatSearchBox().SetRow(1).SetColumn(0);
+            TextBox repairWhatSearchBox = CreateRepairWhatSearchBox().SetRow(2).SetColumn(0);
+            TextBox customerNameSearchBox = CreateCustomerNameSearchBox().SetRow(3).SetColumn(0);
+
             Grid fuzzyToggle = CreateFuzzySearchGrid().SetRow(3).SetColumn(1);
 
-            grid.Children.Add(dataGrid);
             grid.Children.Add(handInWhatSearchBox);
             grid.Children.Add(repairWhatSearchBox);
             grid.Children.Add(customerNameSearchBox);
-            grid.Children.Add(isOrderCompleteBar);
-            grid.Children.Add(hasBorrowedPhoneBar);
+
             grid.Children.Add(fuzzyToggle);
+        }
+
+        private void AddDateTimeFilterControls(Grid grid)
+        {
+            Grid handInFromGrid = CreateDateTimeFilterGrid(nameof(OrderGridViewModel.UseHandInFromFilter), DateTime.Now,
+                    "From - Hand In", out CheckBox handInFromCheckBox, out DateTimePicker handInFromPicker).SetRow(2)
+                .SetColumn(2);
+
+            ViewModel.UseHandInFromFilterCheckBox = handInFromCheckBox;
+            ViewModel.HandInFromDateTimePicker = handInFromPicker;
+
+            Grid handInToGrid = CreateDateTimeFilterGrid(nameof(OrderGridViewModel.UseHandInToFilter), DateTime.Now,
+                "To - Hand In", out CheckBox handInToCheckBox,
+                out DateTimePicker handInToPicker).SetRow(3).SetColumn(2);
+
+            ViewModel.UseHandInToFilterCheckBox = handInToCheckBox;
+            ViewModel.HandInToDateTimePicker = handInToPicker;
+
+            Grid returnedFromGrid = CreateDateTimeFilterGrid(nameof(OrderGridViewModel.UseReturnedFromFilter),
+                DateTime.Now, "From - Returned", out CheckBox returnedFromCheckBox,
+                out DateTimePicker returnedFromPicker).SetRow(2).SetColumn(3);
+
+            ViewModel.UseReturnedFromFilterCheckBox = returnedFromCheckBox;
+            ViewModel.ReturnedFromDateTimePicker = returnedFromPicker;
+
+            Grid returnedToGrid = CreateDateTimeFilterGrid(nameof(OrderGridViewModel.UseReturnedToFilter), DateTime.Now,
+                    "To - Returned", out CheckBox returnedToCheckBox, out DateTimePicker returnedToPicker).SetRow(3)
+                .SetColumn(3);
+
+            ViewModel.UseReturnedToFilterCheckBox = returnedToCheckBox;
+            ViewModel.ReturnedToDateTimePicker = returnedToPicker;
+
+            grid.Children.Add(handInFromGrid);
+            grid.Children.Add(handInToGrid);
+            grid.Children.Add(returnedFromGrid);
+            grid.Children.Add(returnedToGrid);
+        }
+
+        private Grid CreateDateTimeFilterGrid(
+            string useFilterBindingPath, DateTime initialValue, string header, out CheckBox checkBox,
+            out DateTimePicker dateTimePicker)
+        {
+            Grid grid = GridFactory.CreateDefaultGrid();
+
+            grid.ColumnSpacing = 4;
+            grid.DefineColumns(GridUnitType.Auto, [1,]);
+            grid.DefineColumns(GridUnitType.Star, [1,]);
+
+            checkBox = CheckBoxFactory.CreateLightCheckBox(useFilterBindingPath).SetColumn(0);
+
+            DateTimePicker.DateTimePickerArguments arguments =
+                GetArgumentsFactory().CreateDateTimePickerArguments(initialValue, header);
+
+            dateTimePicker = new DateTimePicker(arguments).SetColumn(1);
+            dateTimePicker.ViewModel.SelectedDateTimeChanged += Logic.SearchChanged;
+
+            grid.Children.Add(checkBox);
+            grid.Children.Add(dateTimePicker);
+
+            return grid;
         }
 
         private TextBox CreateCustomerNameSearchBox()
@@ -83,7 +148,7 @@ internal sealed partial class OrderGrid
 
         private TextBox CreateHandInWhatSearchBox()
         {
-            ViewModel.HandInWhatSearchBox = TextBoxFactory.CreateSearchBox("Handed in", "Search handed in...",
+            ViewModel.HandInWhatSearchBox = TextBoxFactory.CreateSearchBox("Hand in What", "Search handed in...",
                 nameof(OrderGridViewModel.HandInWhatSearchText));
 
             return ViewModel.HandInWhatSearchBox;

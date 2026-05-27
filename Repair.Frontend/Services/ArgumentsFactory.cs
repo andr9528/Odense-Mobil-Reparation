@@ -70,4 +70,10 @@ internal class ArgumentsFactory
     {
         return new OrderCreationPage.OrderCreationPageArguments();
     }
+
+    public DateTimePicker.DateTimePickerArguments CreateDateTimePickerArguments(
+        DateTime initialValue, string header, int minuteIncrement = 5)
+    {
+        return new DateTimePicker.DateTimePickerArguments(initialValue, header, loggerFactory, minuteIncrement);
+    }
 }

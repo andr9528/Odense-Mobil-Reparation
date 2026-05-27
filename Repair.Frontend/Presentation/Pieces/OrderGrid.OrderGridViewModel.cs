@@ -19,7 +19,14 @@ internal sealed partial class OrderGrid
         internal TextBox CustomerNameSearchBox { get; set; } = null!;
         internal NullableBooleanOptionBar IsOrderCompleteOptionBar { get; set; } = null!;
         internal NullableBooleanOptionBar HasBorrowedPhoneOptionBar { get; set; } = null!;
-
+        internal CheckBox UseHandInFromFilterCheckBox { get; set; } = null!;
+        internal CheckBox UseHandInToFilterCheckBox { get; set; } = null!;
+        internal CheckBox UseReturnedFromFilterCheckBox { get; set; } = null!;
+        internal CheckBox UseReturnedToFilterCheckBox { get; set; } = null!;
+        internal DateTimePicker HandInFromDateTimePicker { get; set; } = null!;
+        internal DateTimePicker HandInToDateTimePicker { get; set; } = null!;
+        internal DateTimePicker ReturnedFromDateTimePicker { get; set; } = null!;
+        internal DateTimePicker ReturnedToDateTimePicker { get; set; } = null!;
 
         public int CustomerId
         {
@@ -40,6 +47,23 @@ internal sealed partial class OrderGrid
         [ObservableProperty] private bool? isOrderComplete = null;
 
         [ObservableProperty] private bool? hasBorrowedPhone = null;
+
+        [ObservableProperty] private bool useHandInFromFilter;
+        [ObservableProperty] private bool useHandInToFilter;
+        [ObservableProperty] private bool useReturnedFromFilter;
+        [ObservableProperty] private bool useReturnedToFilter;
+
+        [ObservableProperty] private DateTimeOffset handInFromDate = DateTimeOffset.Now;
+        [ObservableProperty] private TimeSpan handInFromTime = DateTimeOffset.Now.TimeOfDay;
+
+        [ObservableProperty] private DateTimeOffset handInToDate = DateTimeOffset.Now;
+        [ObservableProperty] private TimeSpan handInToTime = DateTimeOffset.Now.TimeOfDay;
+
+        [ObservableProperty] private DateTimeOffset returnedFromDate = DateTimeOffset.Now;
+        [ObservableProperty] private TimeSpan returnedFromTime = DateTimeOffset.Now.TimeOfDay;
+
+        [ObservableProperty] private DateTimeOffset returnedToDate = DateTimeOffset.Now;
+        [ObservableProperty] private TimeSpan returnedToTime = DateTimeOffset.Now.TimeOfDay;
 
         public string SearchModeText =>
             UseFuzzySearch ? "Fuzzy search" : "Exact search";
@@ -73,6 +97,11 @@ internal sealed partial class OrderGrid
         {
             FireSearchChanged();
         }
+
+        partial void OnUseHandInFromFilterChanged(bool value) => FireSearchChanged();
+        partial void OnUseHandInToFilterChanged(bool value) => FireSearchChanged();
+        partial void OnUseReturnedFromFilterChanged(bool value) => FireSearchChanged();
+        partial void OnUseReturnedToFilterChanged(bool value) => FireSearchChanged();
 
         private void FireSearchChanged()
         {

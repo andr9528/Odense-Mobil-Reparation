@@ -21,11 +21,15 @@ namespace Repair.Frontend.Presentation
 
             internal void MenuListSelectionChanged(object sender, SelectionChangedEventArgs e)
             {
-                if (sender is not ListView {SelectedItem: IPageRegion region,})
+                if (sender is not ListView {SelectedItem: IPageRegion region,} listView)
+                {
                     return;
+                }
 
                 UIElement control = region.CreateControl(serviceProvider);
-                navigationService.NavigateTo(control);
+                navigationService.NavigateTo(control, region.DisplayName);
+
+                listView.SelectedItem = null;
             }
 
             internal void BackButtonClicked(object sender, RoutedEventArgs e)

@@ -6,14 +6,11 @@ namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class NullableBooleanOptionBar
 {
-    internal sealed partial class
-        NullableBooleanOptionBarUi : BaseUi<NullableBooleanOptionBarLogic, NullableBooleanOptionBarViewModel>
+    internal sealed partial class NullableBooleanOptionBarUi(
+        NullableBooleanOptionBarLogic logic,
+        NullableBooleanOptionBarViewModel viewModel)
+        : BaseUi<NullableBooleanOptionBarLogic, NullableBooleanOptionBarViewModel>(logic, viewModel)
     {
-        public NullableBooleanOptionBarUi(
-            NullableBooleanOptionBarLogic logic, NullableBooleanOptionBarViewModel viewModel) : base(logic, viewModel)
-        {
-        }
-
         protected override void ConfigureGrid(Grid grid)
         {
             grid.DefineRows(GridLength.Auto, new GridLength(1, GridUnitType.Star));

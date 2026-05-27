@@ -24,7 +24,7 @@ internal sealed partial class OrderGrid
             ViewModel.SearchChanged += SearchChanged;
         }
 
-        private async void SearchChanged(object? sender, EventArgs e)
+        internal async void SearchChanged(object? sender, EventArgs e)
         {
             try
             {
@@ -76,7 +76,32 @@ internal sealed partial class OrderGrid
                 complex.Searchable.RepairWhat = ViewModel.RepairWhatSearchText;
             }
 
+            AddDateTimeFilters(complex);
+
             return complex;
+        }
+
+        private void AddDateTimeFilters(ComplexSearchableOrder complex)
+        {
+            if (ViewModel.UseHandInFromFilter)
+            {
+                complex.HandInFrom = ViewModel.HandInFromDateTimePicker.ViewModel.SelectedDateTime;
+            }
+
+            if (ViewModel.UseHandInToFilter)
+            {
+                complex.HandInTo = ViewModel.HandInToDateTimePicker.ViewModel.SelectedDateTime;
+            }
+
+            if (ViewModel.UseReturnedFromFilter)
+            {
+                complex.ReturnedFrom = ViewModel.ReturnedFromDateTimePicker.ViewModel.SelectedDateTime;
+            }
+
+            if (ViewModel.UseReturnedToFilter)
+            {
+                complex.ReturnedTo = ViewModel.ReturnedToDateTimePicker.ViewModel.SelectedDateTime;
+            }
         }
 
         public void IsOrderCompleteSelectionChanged(object? sender, EventArgs e)
