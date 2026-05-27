@@ -21,6 +21,41 @@ public class OrderQueryService : BaseEntityQueryService<RepairDatabaseContext, O
             return query;
         }
 
+        query = ApplyStringFilters(query, orderComplex);
+        query = ApplyBooleanFilters(query, orderComplex);
+        query = ApplyDateTimeFilters(query, orderComplex);
+
+        return query;
+    }
+
+    private IQueryable<Order> ApplyDateTimeFilters(IQueryable<Order> query, ComplexSearchableOrder orderComplex)
+    {
+        if (orderComplex.HandInFrom.HasValue)
+        {
+            query = query.Where(x => x.HandInWhen >= orderComplex.HandInFrom.Value);
+        }
+
+        if (orderComplex.HandInTo.HasValue)
+        {
+            query = query.Where(x => x.HandInWhen <= orderComplex.HandInTo.Value);
+        }
+
+        if (orderComplex.ReturnedFrom.HasValue)
+        {
+            query = query.Where(x =>
+                x.ReturnedWhen.HasValue && x.ReturnedWhen.Value >= orderComplex.ReturnedFrom.Value);
+        }
+
+        if (orderComplex.ReturnedTo.HasValue)
+        {
+            query = query.Where(x => x.ReturnedWhen.HasValue && x.ReturnedWhen.Value <= orderComplex.ReturnedTo.Value);
+        }
+
+        return query;
+    }
+
+    private IQueryable<Order> ApplyStringFilters(IQueryable<Order> query, ComplexSearchableOrder orderComplex)
+    {
         if (!string.IsNullOrWhiteSpace(orderComplex.HandInWhat))
         {
             var keyword = $"%{orderComplex.HandInWhat}%";
@@ -40,6 +75,11 @@ public class OrderQueryService : BaseEntityQueryService<RepairDatabaseContext, O
             query = ApplyCustomerNameQuery(query, orderComplex);
         }
 
+        return query;
+    }
+
+    private IQueryable<Order> ApplyBooleanFilters(IQueryable<Order> query, ComplexSearchableOrder orderComplex)
+    {
         if (orderComplex.IsOrderComplete.HasValue)
         {
             query = query.Where(x => x.IsOrderComplete == orderComplex.IsOrderComplete);
@@ -53,8 +93,7 @@ public class OrderQueryService : BaseEntityQueryService<RepairDatabaseContext, O
         return query;
     }
 
-    private static IQueryable<Order> ApplyCustomerNameQuery(
-        IQueryable<Order> query, ComplexSearchableOrder orderComplex)
+    private IQueryable<Order> ApplyCustomerNameQuery(IQueryable<Order> query, ComplexSearchableOrder orderComplex)
     {
         if (!orderComplex.UseFuzzy)
         {

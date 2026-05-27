@@ -16,5 +16,10 @@ public class ComplexSearchableOrder : IComplexSearchable<SearchableOrder>
 
     public bool? IsOrderComplete { get; set; }
     public bool? HasBorrowedPhone { get; set; }
+
+    public DateTime? HandInFrom { get; set; }
+    public DateTime? HandInTo { get; set; }
+    public DateTime? ReturnedFrom { get; set; }
+    public DateTime? ReturnedTo { get; set; }
 }
 
