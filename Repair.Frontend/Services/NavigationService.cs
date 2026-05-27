@@ -1,19 +1,15 @@
+using System.Diagnostics;
 using Microsoft.UI.Dispatching;
 using Repair.Frontend.Abstraction;
 
 namespace Repair.Frontend.Services
 {
-    public class NavigationService : INavigationService
+    public class NavigationService(DispatcherQueue dispatcherQueue, ILogger<NavigationService> logger)
+        : INavigationService
     {
-        private readonly DispatcherQueue dispatcherQueue;
-        private Frame contentFrame;
-        private Stack<UIElement> navigationStack;
-
-        public NavigationService(DispatcherQueue dispatcherQueue)
-        {
-            this.dispatcherQueue = dispatcherQueue;
-            navigationStack = new Stack<UIElement>();
-        }
+        private readonly ILogger<NavigationService> logger = logger;
+        private Frame? contentFrame;
+        private readonly Stack<(UIElement Element, string Name)> navigationStack = new();
 
         /// <inheritdoc />
         public void RegisterContentFrame(Frame frame)
@@ -22,26 +18,45 @@ namespace Repair.Frontend.Services
         }
 
         /// <inheritdoc />
-        public void NavigateTo(UIElement element)
+        public void NavigateTo(UIElement element, string name)
         {
-            navigationStack.Push(element);
-            UpdateFrameToTopElement();
+            navigationStack.Push((element, name));
+
+            TimeSpan elapsed = UpdateFrameToTopElement();
+
+            logger.LogDebug("Navigated to {PageName} in {ElapsedMilliseconds} ms", name, elapsed.TotalMilliseconds);
         }
 
         /// <inheritdoc />
         public void NavigateBack()
         {
             if (navigationStack.Count <= 1)
+            {
                 return;
+            }
+
+            string previousPageName = navigationStack.Peek().Name;
 
             navigationStack.Pop();
-            UpdateFrameToTopElement();
+
+            TimeSpan elapsed = UpdateFrameToTopElement();
+            string currentPageName = navigationStack.Peek().Name;
+
+            logger.LogDebug("Navigated back from {PreviousPageName} to {CurrentPageName} in {ElapsedMilliseconds} ms",
+                previousPageName, currentPageName, elapsed.TotalMilliseconds);
         }
 
-        private void UpdateFrameToTopElement()
+        private TimeSpan UpdateFrameToTopElement()
         {
-            UIElement peekedElement = navigationStack.Peek();
-            dispatcherQueue.TryEnqueue(() => { contentFrame.Content = peekedElement; });
+            var stopwatch = Stopwatch.StartNew();
+
+            UIElement peekedElement = navigationStack.Peek().Element;
+
+            dispatcherQueue.TryEnqueue(() => { contentFrame?.Content = peekedElement; });
+
+            stopwatch.Stop();
+
+            return stopwatch.Elapsed;
         }
     }
 }    

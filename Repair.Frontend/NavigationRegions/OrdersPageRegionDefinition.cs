@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Pages;
@@ -16,11 +17,22 @@ public class OrdersPageRegionDefinition(ILogger<OrdersPageRegionDefinition> logg
     /// <inheritdoc />
     public UIElement CreateControl(IServiceProvider services)
     {
-        logger.LogInformation($"Changing page to: {nameof(OrdersPage)}");
-        OrdersPage.OrdersPageArguments arguments =
-            services.GetRequiredService<ArgumentsFactory>().CreateOrdersPageArguments();
+        Stopwatch? sw = null;
 
-        return new OrdersPage(arguments);
+        try
+        {
+            sw = Stopwatch.StartNew();
+            logger.LogInformation($"Changing page to: {nameof(OrdersPage)}");
+            OrdersPage.OrdersPageArguments arguments =
+                services.GetRequiredService<ArgumentsFactory>().CreateOrdersPageArguments();
+
+            return new OrdersPage(arguments);
+        }
+        finally
+        {
+            sw?.Stop();
+            logger.LogDebug("Constructed {PageName} in {Elapsed} ms.", nameof(OrdersPage), sw?.Elapsed.Milliseconds);
+        }
     }
 
     private Grid CreateIcon()

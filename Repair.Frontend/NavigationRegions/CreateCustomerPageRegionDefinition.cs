@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Pages;
@@ -13,11 +14,23 @@ public class CreateCustomerPageRegionDefinition(ILogger<CreateCustomerPageRegion
 
     public UIElement CreateControl(IServiceProvider services)
     {
-        logger.LogInformation($"Changing page to: {nameof(CustomerCreationPage)}");
-        CustomerCreationPage.CustomerCreationPageArguments arguments =
-            services.GetRequiredService<ArgumentsFactory>().CreateCustomerCreationPageArguments();
+        Stopwatch? sw = null;
 
-        return new CustomerCreationPage(arguments);
+        try
+        {
+            sw = Stopwatch.StartNew();
+            logger.LogInformation($"Changing page to: {nameof(CustomerCreationPage)}");
+            CustomerCreationPage.CustomerCreationPageArguments arguments =
+                services.GetRequiredService<ArgumentsFactory>().CreateCustomerCreationPageArguments();
+
+            return new CustomerCreationPage(arguments);
+        }
+        finally
+        {
+            sw?.Stop();
+            logger.LogDebug("Constructed {PageName} in {Elapsed} ms.", nameof(CustomerCreationPage),
+                sw?.Elapsed.Milliseconds);
+        }
     }
 
     private Grid CreateIcon()
