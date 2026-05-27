@@ -84,7 +84,7 @@ internal sealed partial class CustomersPage
                 GetArgumentsFactory().CreateCustomerCreationPageArguments();
 
             var creationPage = new CustomerCreationPage(arguments);
-            navigationService.NavigateTo(creationPage);
+            navigationService.NavigateTo(creationPage, "Customer Creation Page");
         }
 
         public void CustomerClicked(object sender, SelectionChangedEventArgs e)
@@ -103,7 +103,7 @@ internal sealed partial class CustomersPage
                 GetArgumentsFactory().CreateCustomerDetailsPageArguments(customer.Id);
 
             var detailPage = new CustomerDetailsPage(arguments);
-            navigationService.NavigateTo(detailPage);
+            navigationService.NavigateTo(detailPage, "Customer Details Page");
 
             dataGrid.SelectedItem = null;
         }

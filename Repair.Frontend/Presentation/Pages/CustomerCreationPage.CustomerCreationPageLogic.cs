@@ -34,7 +34,7 @@ internal sealed partial class CustomerCreationPage
                 .GetRequiredService<ArgumentsFactory>().CreateCustomerDetailsPageArguments(newCustomer.Id);
 
             var details = new CustomerDetailsPage(arguments);
-            navigationService.NavigateTo(details);
+            navigationService.NavigateTo(details, "Customer Details Page");
         }
 
         private bool IsUserInputValid()
