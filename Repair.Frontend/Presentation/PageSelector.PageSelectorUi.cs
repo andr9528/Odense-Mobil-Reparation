@@ -82,8 +82,7 @@ namespace Repair.Frontend.Presentation
             {
                 var button = new Button
                 {
-                    // TODO: Find / Make better content.
-                    Content = "←",
+                    Content = new SymbolIcon(Symbol.Back),
                     Background = new SolidColorBrush(Colors.Transparent),
                     Foreground = new SolidColorBrush(Colors.White),
                     BorderThickness = new Thickness(0),
