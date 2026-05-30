@@ -1,0 +1,100 @@
+using Repair.Frontend.Extensions;
+using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Factory;
+
+namespace Repair.Frontend.Presentation.Pieces;
+
+internal sealed partial class OrderEditor
+{
+    internal sealed class OrderEditorUi(OrderEditorLogic logic, OrderEditorViewModel viewModel)
+        : BaseUi<OrderEditorLogic, OrderEditorViewModel>(logic, viewModel)
+    {
+        protected override void ConfigureGrid(Grid grid)
+        {
+            grid.RowSpacing = 8;
+            grid.ColumnSpacing = 8;
+
+            grid.DefineRows(GridLength.Auto, GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star));
+            grid.DefineColumns(GridUnitType.Star, [1, 1, 1,]);
+        }
+
+        protected override void AddControlsToGrid(Grid grid)
+        {
+            grid.Children.Add(CreateHandInWhatTextBox().SetRow(0).SetColumn(0));
+            grid.Children.Add(CreateHandInWhenPicker().SetRow(0).SetColumn(1));
+            grid.Children.Add(CreateReturnedWhenPicker().SetRow(0).SetColumn(2));
+
+            grid.Children.Add(CreateIsOrderCompleteCheckBox().SetRow(1).SetColumn(0));
+            grid.Children.Add(CreateHasBorrowedPhoneCheckBox().SetRow(2).SetColumn(0));
+
+            grid.Children.Add(CreateRepairWhatTextBox().SetRow(1, 2).SetColumn(1, 2));
+            grid.Children.Add(CreateCustomersGrid().SetRow(3).SetColumn(0, 3));
+        }
+
+        private DateTimePicker CreateHandInWhenPicker()
+        {
+            DateTimePicker.DateTimePickerArguments arguments = Logic.GetArgumentsFactory()
+                .CreateDateTimePickerArguments(ViewModel.HandInWhen, "Handed in at?");
+
+            ViewModel.HandInWhenPicker = new DateTimePicker(arguments);
+
+            return ViewModel.HandInWhenPicker;
+        }
+
+        private DateTimePicker CreateReturnedWhenPicker()
+        {
+            DateTimePicker.DateTimePickerArguments arguments = Logic.GetArgumentsFactory()
+                .CreateDateTimePickerArguments(ViewModel.ReturnedWhen, "Returned at?");
+
+            ViewModel.ReturnedWhenPicker = new DateTimePicker(arguments);
+
+            return ViewModel.ReturnedWhenPicker;
+        }
+
+        private Grid CreateIsOrderCompleteCheckBox()
+        {
+            Grid grid = CheckBoxFactory.CreateLightCheckBoxWithLabel("Is order complete?",
+                nameof(OrderEditorViewModel.IsOrderComplete), out CheckBox checkBox);
+
+            ViewModel.IsOrderCompleteCheckBox = checkBox;
+
+            return grid;
+        }
+
+        private Grid CreateHasBorrowedPhoneCheckBox()
+        {
+            Grid grid = CheckBoxFactory.CreateLightCheckBoxWithLabel("did customer borrow phone?",
+                nameof(OrderEditorViewModel.HasBorrowedPhone), out CheckBox checkBox);
+
+            ViewModel.HasBorrowedPhoneCheckBox = checkBox;
+
+            return grid;
+        }
+
+        private TextBox CreateHandInWhatTextBox()
+        {
+            ViewModel.HandInWhatTextBox = TextBoxFactory.CreateSearchBox("What was handed in?", "What was handed in...",
+                nameof(OrderEditorViewModel.HandInWhat));
+
+            return ViewModel.HandInWhatTextBox;
+        }
+
+        private TextBox CreateRepairWhatTextBox()
+        {
+            ViewModel.RepairWhatTextBox = TextBoxFactory.CreateMultilineTextBox("What was to be repaired?",
+                "Describe the repair...", nameof(OrderEditorViewModel.RepairWhat));
+
+            return ViewModel.RepairWhatTextBox;
+        }
+
+        private CustomersGrid CreateCustomersGrid()
+        {
+            CustomersGrid.CustomersGridArguments arguments =
+                Logic.GetArgumentsFactory().CreateCustomersGridArguments(ViewModel.CustomerId);
+
+            ViewModel.CustomersGrid = new CustomersGrid(arguments);
+
+            return ViewModel.CustomersGrid;
+        }
+    }
+}

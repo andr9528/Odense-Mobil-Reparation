@@ -1,4 +1,4 @@
-﻿using Repair.Frontend.Extensions;
+using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 
@@ -84,6 +84,8 @@ internal sealed partial class DateTimePicker
                 HorizontalAlignment = HorizontalAlignment.Stretch,
             };
 
+            ViewModel.DateButton = button;
+
             button.SetBinding(ContentControl.ContentProperty, new Binding
             {
                 Path = new PropertyPath(nameof(DateTimePickerViewModel.SelectedDateText)),
@@ -124,6 +126,8 @@ internal sealed partial class DateTimePicker
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
             };
+
+            ViewModel.TimeButton = button;
 
             button.SetBinding(ContentControl.ContentProperty, new Binding
             {

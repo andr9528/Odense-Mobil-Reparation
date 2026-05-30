@@ -30,6 +30,17 @@ internal static class TextBoxFactory
         return textBox;
     }
 
+    public static TextBox CreateMultilineTextBox(string header, string placeholderText, string bindingPath)
+    {
+        TextBox textBox = CreateSearchBox(header, placeholderText, bindingPath);
+
+        textBox.AcceptsReturn = true;
+        textBox.TextWrapping = TextWrapping.Wrap;
+        textBox.MinHeight = 120;
+
+        return textBox;
+    }
+
     private static ControlTemplate CreateLightTextBoxTemplate()
     {
         return new ControlTemplate(() =>

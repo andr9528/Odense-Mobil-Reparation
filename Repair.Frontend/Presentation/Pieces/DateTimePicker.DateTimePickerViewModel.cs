@@ -1,4 +1,4 @@
-﻿namespace Repair.Frontend.Presentation.Pieces;
+namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class DateTimePicker
 {
@@ -34,6 +34,8 @@ internal sealed partial class DateTimePicker
         internal DateTime SelectedDateTime => SelectedDate.Date.Add(SelectedTime);
         internal DatePicker DatePicker { get; set; } = null!;
         internal TimePicker TimePicker { get; set; } = null!;
+        internal Button DateButton { get; set; } = null!;
+        internal Button TimeButton { get; set; } = null!;
 
         partial void OnSelectedDateChanged(DateTimeOffset value)
         {

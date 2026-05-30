@@ -24,6 +24,24 @@ internal static class CheckBoxFactory
         return checkBox;
     }
 
+    public static Grid CreateLightCheckBoxWithLabel(string label, string bindingPath, out CheckBox checkBox)
+    {
+        Grid grid = GridFactory.CreateDefaultGrid();
+
+        grid.ColumnSpacing = 4;
+        grid.DefineColumns(GridUnitType.Auto, [1,]);
+        grid.DefineColumns(GridUnitType.Star, [1,]);
+
+        checkBox = CreateLightCheckBox(bindingPath).SetColumn(0);
+
+        TextBlock textBlock = TextBlockFactory.CreateBlackText(label).SetColumn(1);
+
+        grid.Children.Add(checkBox);
+        grid.Children.Add(textBlock);
+
+        return grid;
+    }
+
     private static ControlTemplate CreateLightCheckBoxTemplate()
     {
         return new ControlTemplate(() =>
