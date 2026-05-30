@@ -1,6 +1,7 @@
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
+using Repair.Frontend.Presentation.Pieces;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -15,46 +16,47 @@ internal sealed partial class OrderCreationPage
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.Margin = new Thickness(0);
             grid.Padding = new Thickness(10);
-            grid.DefineRows(GridLength.Auto, GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star), GridLength.Auto);
+
+            grid.DefineRows(GridLength.Auto, new GridLength(1, GridUnitType.Star));
+
+            grid.DefineColumns(new GridLength(1, GridUnitType.Star), GridLength.Auto);
         }
 
         protected override void AddControlsToGrid(Grid grid)
         {
-            grid.Children.Add(CreateHeader().SetRow(0));
-            grid.Children.Add(CreateOrderDetailsGrid().SetRow(1));
-            grid.Children.Add(CreateCustomerSearchBox().SetRow(2));
-            grid.Children.Add(CreateCustomersList().SetRow(3));
-            grid.Children.Add(CreateButtonsGrid().SetRow(4));
+            grid.Children.Add(CreateHeader().SetRow(0).SetColumn(0, 2));
+            grid.Children.Add(CreateButtonsGrid().SetRow(0).SetColumn(1));
+            grid.Children.Add(CreateOrderEditor().SetRow(1).SetColumn(0, 2));
         }
 
         private UIElement CreateHeader()
         {
-            return new TextBlock {Text = "Create order", FontSize = 24,};
+            return TextBlockFactory.CreateHeader("Create order");
         }
 
-        private Grid CreateOrderDetailsGrid()
+        private OrderEditor CreateOrderEditor()
         {
-            // TODO: Add order input fields.
-            return GridFactory.CreateDefaultGrid();
-        }
+            OrderEditor.OrderEditorArguments arguments = Logic.GetArgumentsFactory().CreateOrderEditorArguments();
 
-        private TextBox CreateCustomerSearchBox()
-        {
-            ViewModel.CustomerSearchBox = new TextBox {PlaceholderText = "Search customers",};
-            ViewModel.CustomerSearchBox.TextChanged += Logic.CustomerSearchTextChanged;
-            return ViewModel.CustomerSearchBox;
-        }
+            ViewModel.OrderEditor = new OrderEditor(arguments)
+            {
+                ViewModel =
+                {
+                    IsReadOnly = false,
+                },
+            };
 
-        private ListView CreateCustomersList()
-        {
-            ViewModel.CustomersList = new ListView {IsItemClickEnabled = true,};
-            ViewModel.CustomersList.ItemClick += Logic.CustomerClicked;
-            return ViewModel.CustomersList;
+            return ViewModel.OrderEditor;
         }
 
         private Grid CreateButtonsGrid()
         {
-            Grid grid = GridFactory.CreateDefaultGrid().DefineColumns(GridLength.Auto, GridLength.Auto);
+            Grid grid = GridFactory.CreateDefaultGrid();
+
+            grid.HorizontalAlignment = HorizontalAlignment.Right;
+            grid.VerticalAlignment = VerticalAlignment.Top;
+            grid.ColumnSpacing = 8;
+            grid.DefineColumns(GridLength.Auto, GridLength.Auto);
 
             var saveButton = new Button {Content = "Save",};
             saveButton.Click += Logic.SaveClicked;

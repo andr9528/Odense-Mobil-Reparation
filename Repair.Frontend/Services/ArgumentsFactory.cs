@@ -53,21 +53,32 @@ internal class ArgumentsFactory(
         return new NullableBooleanOptionBar.NullableBooleanOptionBarArguments(header);
     }
 
-    public OrderCreationPage.OrderCreationPageArguments CreateOrderCreationPageArguments()
+    internal OrderCreationPage.OrderCreationPageArguments CreateOrderCreationPageArguments()
     {
-        return new OrderCreationPage.OrderCreationPageArguments();
+        return new OrderCreationPage.OrderCreationPageArguments(orderQueryService, navigationService);
     }
 
-    public DateTimePicker.DateTimePickerArguments CreateDateTimePickerArguments(
+    internal DateTimePicker.DateTimePickerArguments CreateDateTimePickerArguments(
         DateTime initialValue, string header, int minuteIncrement = 5)
     {
         return new DateTimePicker.DateTimePickerArguments(initialValue, header, loggerFactory, minuteIncrement);
     }
 
-    public CustomersGrid.CustomersGridArguments CreateCustomersGridArguments(int selectedCustomerId = 0)
+    internal CustomersGrid.CustomersGridArguments CreateCustomersGridArguments(int selectedCustomerId = 0)
     {
         return new CustomersGrid.CustomersGridArguments(customerQueryService, dispatcherQueue, loggerFactory,
             selectedCustomerId);
+    }
+
+    internal OrderEditor.OrderEditorArguments CreateOrderEditorArguments(Order? order = null)
+    {
+        return new OrderEditor.OrderEditorArguments(order);
+    }
+
+    internal OrderDetailsPage.OrderDetailsPageArguments CreateOrderDetailsPageArguments(int orderId)
+    {
+        return new OrderDetailsPage.OrderDetailsPageArguments(orderId, orderQueryService, customerQueryService,
+            dispatcherQueue, loggerFactory, navigationService);
     }
 }
     

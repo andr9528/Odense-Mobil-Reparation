@@ -1,30 +1,80 @@
+using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Pieces;
+using Repair.Frontend.Services;
+using Repair.Models.Entity.Model;
+using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrderCreationPage
 {
-    private sealed class OrderCreationPageLogic(OrderCreationPageViewModel viewModel)
-        : BaseLogic<OrderCreationPageViewModel>(viewModel)
+    private sealed class OrderCreationPageLogic : BaseLogic<OrderCreationPageViewModel>
     {
-        internal void CustomerSearchTextChanged(object sender, TextChangedEventArgs e)
+        private readonly IEntityQueryService<Order, SearchableOrder> queryService;
+        private readonly INavigationService navigationService;
+
+        public OrderCreationPageLogic(OrderCreationPageViewModel viewModel) : base(viewModel)
         {
-            // TODO: Update search text and refresh selectable customers.
+            queryService = ViewModel.Arguments.OrderQueryService;
+            navigationService = ViewModel.Arguments.NavigationService;
         }
 
-        internal void CustomerClicked(object sender, ItemClickEventArgs e)
+        internal async void SaveClicked(object sender, RoutedEventArgs e)
         {
-            // TODO: Select the customer for the order.
+            if (!IsUserInputValid())
+            {
+                return;
+            }
+
+            Order newOrder = BuildNewOrder();
+            await queryService.AddEntity(newOrder);
+
+            OrderDetailsPage.OrderDetailsPageArguments arguments = GetArgumentsFactory()
+                .CreateOrderDetailsPageArguments(newOrder.Id);
+
+            var details = new OrderDetailsPage(arguments);
+            navigationService.NavigateTo(details, "Order Details Page");
         }
 
-        internal void SaveClicked(object sender, RoutedEventArgs e)
+        private bool IsUserInputValid()
         {
-            // TODO: Create order and navigate to OrderDetailsPage.
+            OrderEditor.OrderEditorViewModel order = ViewModel.OrderEditor.ViewModel;
+
+            return !string.IsNullOrWhiteSpace(order.HandInWhat) && !string.IsNullOrWhiteSpace(order.RepairWhat) &&
+                   GetSelectedCustomerId() > 0;
+        }
+
+        private Order BuildNewOrder()
+        {
+            OrderEditor.OrderEditorViewModel order = ViewModel.OrderEditor.ViewModel;
+
+            return new Order
+            {
+                HandInWhen = order.HandInWhenPicker.ViewModel.SelectedDateTime,
+                ReturnedWhen = order.ReturnedWhenPicker.ViewModel.SelectedDateTime,
+                IsOrderComplete = order.IsOrderComplete,
+                HasBorrowedPhone = order.HasBorrowedPhone,
+                HandInWhat = order.HandInWhat,
+                RepairWhat = order.RepairWhat,
+                CustomerId = GetSelectedCustomerId(),
+            };
+        }
+
+        private int GetSelectedCustomerId()
+        {
+            if (ViewModel.OrderEditor.ViewModel.CustomersGrid.ViewModel.DataGrid.SelectedItem is not Customer customer)
+            {
+                return 0;
+            }
+
+            return customer.Id;
         }
 
         internal void CancelClicked(object sender, RoutedEventArgs e)
         {
-            // TODO: Navigate back without creating the order.
+            navigationService.NavigateBack();
         }
     }
 }

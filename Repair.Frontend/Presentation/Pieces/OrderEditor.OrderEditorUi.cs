@@ -63,7 +63,7 @@ internal sealed partial class OrderEditor
 
         private Grid CreateHasBorrowedPhoneCheckBox()
         {
-            Grid grid = CheckBoxFactory.CreateLightCheckBoxWithLabel("did customer borrow phone?",
+            Grid grid = CheckBoxFactory.CreateLightCheckBoxWithLabel("Did customer borrow phone?",
                 nameof(OrderEditorViewModel.HasBorrowedPhone), out CheckBox checkBox);
 
             ViewModel.HasBorrowedPhoneCheckBox = checkBox;
@@ -81,7 +81,7 @@ internal sealed partial class OrderEditor
 
         private TextBox CreateRepairWhatTextBox()
         {
-            ViewModel.RepairWhatTextBox = TextBoxFactory.CreateMultilineTextBox("What was to be repaired?",
+            ViewModel.RepairWhatTextBox = TextBoxFactory.CreateMultilineTextBox("What is to be repaired?",
                 "Describe the repair...", nameof(OrderEditorViewModel.RepairWhat));
 
             return ViewModel.RepairWhatTextBox;

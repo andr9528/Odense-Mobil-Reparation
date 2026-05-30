@@ -1,3 +1,9 @@
+using Microsoft.UI.Dispatching;
+using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
+using Repair.Models.Entity.Model;
+using Repair.Models.Entity.Searchable;
+
 namespace Repair.Frontend.Presentation.Pages;
 
 /// <summary>
@@ -5,9 +11,9 @@ namespace Repair.Frontend.Presentation.Pages;
 /// </summary>
 internal sealed partial class OrderDetailsPage : Border
 {
-    public OrderDetailsPage()
+    public OrderDetailsPage(OrderDetailsPageArguments arguments)
     {
-        DataContext = new OrderDetailsPageViewModel();
+        DataContext = new OrderDetailsPageViewModel(arguments);
         Margin = new Thickness(0);
 
         var viewModel = (OrderDetailsPageViewModel) DataContext;
@@ -16,4 +22,12 @@ internal sealed partial class OrderDetailsPage : Border
 
         Child = ui.CreateContentGrid();
     }
+
+    internal sealed record OrderDetailsPageArguments(
+        int OrderId,
+        IEntityQueryService<Order, SearchableOrder> OrderQueryService,
+        IEntityQueryService<Customer, SearchableCustomer> CustomerQueryService,
+        DispatcherQueue DispatcherQueue,
+        ILoggerFactory LoggerFactory,
+        INavigationService NavigationService);
 }
