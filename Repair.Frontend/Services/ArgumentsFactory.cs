@@ -64,9 +64,9 @@ internal class ArgumentsFactory(
         return new DateTimePicker.DateTimePickerArguments(initialValue, header, loggerFactory, minuteIncrement);
     }
 
-    public CustomerGrid.CustomerGridArguments CreateCustomerGridArguments(int selectedCustomerId = 0)
+    public CustomersGrid.CustomersGridArguments CreateCustomersGridArguments(int selectedCustomerId = 0)
     {
-        return new CustomerGrid.CustomerGridArguments(customerQueryService, dispatcherQueue, loggerFactory,
+        return new CustomersGrid.CustomersGridArguments(customerQueryService, dispatcherQueue, loggerFactory,
             selectedCustomerId);
     }
 }

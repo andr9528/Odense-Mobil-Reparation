@@ -7,10 +7,10 @@ using Repair.Models.Entity.Model;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
-internal sealed partial class CustomerGrid
+internal sealed partial class CustomersGrid
 {
-    internal sealed partial class CustomerGridUi(CustomerGridLogic logic, CustomerGridViewModel viewModel)
-        : BaseUi<CustomerGridLogic, CustomerGridViewModel>(logic, viewModel)
+    internal sealed partial class CustomersGridUi(CustomersGridLogic logic, CustomersGridViewModel viewModel)
+        : BaseUi<CustomersGridLogic, CustomersGridViewModel>(logic, viewModel)
     {
         protected override void ConfigureGrid(Grid grid)
         {
@@ -58,8 +58,8 @@ internal sealed partial class CustomerGrid
 
         private Grid CreateFuzzySearchGrid()
         {
-            Grid grid = SearchModeFactory.CreateFuzzySearchGrid(nameof(CustomerGridViewModel.UseFuzzySearch),
-                nameof(CustomerGridViewModel.SearchModeText), out CheckBox fuzzySearchCheckBox);
+            Grid grid = SearchModeFactory.CreateFuzzySearchGrid(nameof(CustomersGridViewModel.UseFuzzySearch),
+                nameof(CustomersGridViewModel.SearchModeText), out CheckBox fuzzySearchCheckBox);
 
             ViewModel.FuzzySearchToggle = fuzzySearchCheckBox;
 

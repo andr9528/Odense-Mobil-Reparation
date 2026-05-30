@@ -24,7 +24,7 @@ internal sealed partial class CustomersPage
         {
             grid.Children.Add(CreateHeader().SetRow(0));
             grid.Children.Add(CreateCreateCustomerButton().SetRow(1));
-            grid.Children.Add(CreateCustomerGrid().SetRow(2));
+            grid.Children.Add(CreateCustomersGrid().SetRow(2));
         }
 
         private UIElement CreateHeader()
@@ -45,17 +45,17 @@ internal sealed partial class CustomersPage
             return button;
         }
 
-        private CustomerGrid CreateCustomerGrid()
+        private CustomersGrid CreateCustomersGrid()
         {
-            CustomerGrid.CustomerGridArguments arguments = Logic.GetArgumentsFactory().CreateCustomerGridArguments();
+            CustomersGrid.CustomersGridArguments arguments = Logic.GetArgumentsFactory().CreateCustomersGridArguments();
 
-            var customerGrid = new CustomerGrid(arguments);
+            var customersGrid = new CustomersGrid(arguments);
 
-            ViewModel.CustomersGrid = customerGrid;
+            ViewModel.CustomersGrid = customersGrid;
 
-            customerGrid.ViewModel.DataGrid.SelectionChanged += Logic.CustomerClicked;
+            customersGrid.ViewModel.DataGrid.SelectionChanged += Logic.CustomerClicked;
 
-            return customerGrid;
+            return customersGrid;
         }
     }
 }

@@ -11,6 +11,6 @@ internal sealed partial class CustomersPage
     {
         public CustomersPageArguments Arguments { get; } = arguments;
 
-        public CustomerGrid CustomersGrid { get; set; } = null!;
+        public CustomersGrid CustomersGrid { get; set; } = null!;
     }
 }

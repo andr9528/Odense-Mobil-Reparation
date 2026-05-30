@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Dispatching;
+using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Presentation.Core;
 using Repair.Models.Entity.ComplexSearchable;
@@ -7,19 +7,19 @@ using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
-internal sealed partial class CustomerGrid
+internal sealed partial class CustomersGrid
 {
-    internal sealed partial class CustomerGridLogic : BaseLogic<CustomerGridViewModel>
+    internal sealed partial class CustomersGridLogic : BaseLogic<CustomersGridViewModel>
     {
         private readonly IEntityQueryService<Customer, SearchableCustomer> queryService;
         private readonly DispatcherQueue dispatcherQueue;
-        private readonly ILogger<CustomerGridLogic> logger;
+        private readonly ILogger<CustomersGridLogic> logger;
 
-        public CustomerGridLogic(CustomerGridViewModel viewModel) : base(viewModel)
+        public CustomersGridLogic(CustomersGridViewModel viewModel) : base(viewModel)
         {
             queryService = ViewModel.Arguments.QueryService;
             dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
-            logger = ViewModel.Arguments.LoggerFactory.CreateLogger<CustomerGridLogic>();
+            logger = ViewModel.Arguments.LoggerFactory.CreateLogger<CustomersGridLogic>();
 
             ViewModel.SearchChanged += SearchChanged;
         }

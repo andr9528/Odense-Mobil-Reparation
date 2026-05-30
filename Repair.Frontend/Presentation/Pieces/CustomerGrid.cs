@@ -5,25 +5,25 @@ using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
-internal sealed partial class CustomerGrid : Border
+internal sealed partial class CustomersGrid : Border
 {
-    internal CustomerGridViewModel ViewModel => (CustomerGridViewModel) DataContext;
+    internal CustomersGridViewModel ViewModel => (CustomersGridViewModel) DataContext;
 
-    public CustomerGrid(CustomerGridArguments arguments)
+    public CustomersGrid(CustomersGridArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
 
-        DataContext = new CustomerGridViewModel(arguments);
+        DataContext = new CustomersGridViewModel(arguments);
 
-        var logic = new CustomerGridLogic(ViewModel);
-        var ui = new CustomerGridUi(logic, ViewModel);
+        var logic = new CustomersGridLogic(ViewModel);
+        var ui = new CustomersGridUi(logic, ViewModel);
 
         Child = ui.CreateContentGrid();
 
         _ = logic.RefreshCustomers();
     }
 
-    internal record CustomerGridArguments(
+    internal record CustomersGridArguments(
         IEntityQueryService<Customer, SearchableCustomer> QueryService,
         DispatcherQueue DispatcherQueue,
         ILoggerFactory LoggerFactory,
