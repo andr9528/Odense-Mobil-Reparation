@@ -20,7 +20,7 @@ internal sealed partial class CustomerDetailsPage
 
         public CustomerEditor CustomerEditor { get; set; } = null!;
 
-        public OrderGrid OrderGrid { get; set; } = null!;
+        public OrdersGrid OrdersGrid { get; set; } = null!;
 
         public CheckBox EditCheckBox { get; set; } = null!;
 

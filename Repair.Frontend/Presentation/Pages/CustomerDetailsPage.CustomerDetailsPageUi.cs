@@ -26,7 +26,7 @@ internal sealed partial class CustomerDetailsPage
         {
             grid.Children.Add(CreateHeader().SetRow(0));
             grid.Children.Add(CreateCustomerEditor().SetRow(1));
-            grid.Children.Add(CreateOrderGrid().SetRow(2));
+            grid.Children.Add(CreateOrdersGrid().SetRow(2));
         }
 
         private UIElement CreateHeader()
@@ -122,7 +122,7 @@ internal sealed partial class CustomerDetailsPage
 
         private CustomerEditor CreateCustomerEditor()
         {
-            ArgumentsFactory argumentsFactory = GetArgumentsFactory();
+            ArgumentsFactory argumentsFactory = Logic.GetArgumentsFactory();
 
             ViewModel.CustomerEditor = new CustomerEditor(argumentsFactory.CreateCustomerEditorArguments());
 
@@ -131,21 +131,16 @@ internal sealed partial class CustomerDetailsPage
             return ViewModel.CustomerEditor;
         }
 
-        private OrderGrid CreateOrderGrid()
+        private OrdersGrid CreateOrdersGrid()
         {
-            ArgumentsFactory argumentsFactory = GetArgumentsFactory();
+            ArgumentsFactory argumentsFactory = Logic.GetArgumentsFactory();
 
-            ViewModel.OrderGrid = new OrderGrid(
+            ViewModel.OrdersGrid = new OrdersGrid(
                 argumentsFactory.CreateOrderGridArguments(ViewModel.Arguments.CustomerId));
 
-            ViewModel.OrderGrid.ViewModel.DataGrid.SelectionChanged += Logic.OrderClicked;
+            ViewModel.OrdersGrid.ViewModel.DataGrid.SelectionChanged += Logic.OrderClicked;
 
-            return ViewModel.OrderGrid;
-        }
-
-        private ArgumentsFactory GetArgumentsFactory()
-        {
-            return App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>();
+            return ViewModel.OrdersGrid;
         }
     }
 }

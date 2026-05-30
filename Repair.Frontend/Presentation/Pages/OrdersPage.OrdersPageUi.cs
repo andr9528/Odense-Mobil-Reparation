@@ -37,7 +37,7 @@ internal sealed partial class OrdersPage
         {
             grid.Children.Add(CreateHeader().SetRow(0));
             grid.Children.Add(CreateCreateOrderButton().SetRow(1));
-            grid.Children.Add(CreateOrderGrid().SetRow(2));
+            grid.Children.Add(CreateOrdersGrid().SetRow(2));
         }
 
         private UIElement CreateHeader()
@@ -58,16 +58,15 @@ internal sealed partial class OrdersPage
             return button;
         }
 
-        private OrderGrid CreateOrderGrid()
+        private OrdersGrid CreateOrdersGrid()
         {
-            OrderGrid.OrderGridArguments arguments = App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>()
-                .CreateOrderGridArguments();
+            OrdersGrid.OrdersGridArguments arguments = Logic.GetArgumentsFactory().CreateOrderGridArguments();
 
-            ViewModel.OrderGrid = new OrderGrid(arguments);
+            ViewModel.OrdersGrid = new OrdersGrid(arguments);
 
-            ViewModel.OrderGrid.ViewModel.DataGrid.SelectionChanged += Logic.OrderClicked;
+            ViewModel.OrdersGrid.ViewModel.DataGrid.SelectionChanged += Logic.OrderClicked;
 
-            return ViewModel.OrderGrid;
+            return ViewModel.OrdersGrid;
         }
     }
 }

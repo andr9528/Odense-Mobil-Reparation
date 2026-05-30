@@ -7,19 +7,19 @@ using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
-internal sealed partial class OrderGrid
+internal sealed partial class OrdersGrid
 {
-    internal sealed partial class OrderGridLogic : BaseLogic<OrderGridViewModel>
+    internal sealed partial class OrdersGridLogic : BaseLogic<OrdersGridViewModel>
     {
         private readonly IEntityQueryService<Order, SearchableOrder> orderQueryService;
         private readonly DispatcherQueue dispatcherQueue;
-        private readonly ILogger<OrderGridLogic> logger;
+        private readonly ILogger<OrdersGridLogic> logger;
 
-        public OrderGridLogic(OrderGridViewModel viewModel) : base(viewModel)
+        public OrdersGridLogic(OrdersGridViewModel viewModel) : base(viewModel)
         {
             orderQueryService = ViewModel.Arguments.OrderQueryService;
             dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
-            logger = ViewModel.Arguments.LoggerFactory.CreateLogger<OrderGridLogic>();
+            logger = ViewModel.Arguments.LoggerFactory.CreateLogger<OrdersGridLogic>();
 
             ViewModel.SearchChanged += SearchChanged;
         }

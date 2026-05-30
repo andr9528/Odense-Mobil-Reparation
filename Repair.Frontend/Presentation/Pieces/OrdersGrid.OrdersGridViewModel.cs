@@ -4,11 +4,11 @@ using Repair.Models.Entity.Model;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
-internal sealed partial class OrderGrid
+internal sealed partial class OrdersGrid
 {
-    internal sealed partial class OrderGridViewModel(OrderGridArguments arguments) : ObservableObject
+    internal sealed partial class OrdersGridViewModel(OrdersGridArguments arguments) : ObservableObject
     {
-        public OrderGridArguments Arguments { get; } = arguments;
+        public OrdersGridArguments Arguments { get; } = arguments;
 
         public event EventHandler? SearchChanged;
 

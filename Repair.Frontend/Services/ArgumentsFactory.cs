@@ -21,9 +21,9 @@ internal class ArgumentsFactory(
             dispatcherQueue, loggerFactory, navigationService);
     }
 
-    internal OrderGrid.OrderGridArguments CreateOrderGridArguments(int customerId = 0)
+    internal OrdersGrid.OrdersGridArguments CreateOrderGridArguments(int customerId = 0)
     {
-        return new OrderGrid.OrderGridArguments(orderQueryService, dispatcherQueue, loggerFactory, customerId);
+        return new OrdersGrid.OrdersGridArguments(orderQueryService, dispatcherQueue, loggerFactory, customerId);
     }
 
     internal CustomersPage.CustomersPageArguments CreateCustomersPageArguments()

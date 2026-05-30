@@ -6,25 +6,25 @@ using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
-internal sealed partial class OrderGrid : Border
+internal sealed partial class OrdersGrid : Border
 {
-    internal OrderGridViewModel ViewModel => (OrderGridViewModel) DataContext;
+    internal OrdersGridViewModel ViewModel => (OrdersGridViewModel) DataContext;
 
-    public OrderGrid(OrderGridArguments arguments)
+    public OrdersGrid(OrdersGridArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
 
-        DataContext = new OrderGridViewModel(arguments);
+        DataContext = new OrdersGridViewModel(arguments);
 
-        var logic = new OrderGridLogic(ViewModel);
-        var ui = new OrderGridUi(logic, ViewModel);
+        var logic = new OrdersGridLogic(ViewModel);
+        var ui = new OrdersGridUi(logic, ViewModel);
 
         Child = ui.CreateContentGrid();
 
         _ = logic.RefreshOrders();
     }
 
-    internal record OrderGridArguments(
+    internal record OrdersGridArguments(
         IEntityQueryService<Order, SearchableOrder> OrderQueryService,
         DispatcherQueue DispatcherQueue,
         ILoggerFactory LoggerFactory,
