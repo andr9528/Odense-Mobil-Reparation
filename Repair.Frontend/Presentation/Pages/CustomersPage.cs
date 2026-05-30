@@ -25,8 +25,6 @@ internal sealed partial class CustomersPage : Border
         var ui = new CustomersPageUi(logic, viewModel);
 
         Child = ui.CreateContentGrid();
-
-        _ = logic.RefreshCustomers();
     }
 
     internal sealed record CustomersPageArguments(

@@ -1,3 +1,5 @@
+using Repair.Frontend.Services;
+
 namespace Repair.Frontend.Presentation.Core
 {
     public abstract class BaseLogic<TViewModel> where TViewModel : class
@@ -8,5 +10,10 @@ namespace Repair.Frontend.Presentation.Core
         }
 
         protected TViewModel ViewModel { get; }
+
+        internal ArgumentsFactory GetArgumentsFactory()
+        {
+            return App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>();
+        }
     }
 }

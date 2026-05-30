@@ -8,26 +8,13 @@ using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Services;
 
-internal class ArgumentsFactory
+internal class ArgumentsFactory(
+    IEntityQueryService<Customer, SearchableCustomer> customerQueryService,
+    IEntityQueryService<Order, SearchableOrder> orderQueryService,
+    DispatcherQueue dispatcherQueue,
+    ILoggerFactory loggerFactory,
+    INavigationService navigationService)
 {
-    private readonly IEntityQueryService<Customer, SearchableCustomer> customerQueryService;
-    private readonly IEntityQueryService<Order, SearchableOrder> orderQueryService;
-    private readonly DispatcherQueue dispatcherQueue;
-    private readonly ILoggerFactory loggerFactory;
-    private readonly INavigationService navigationService;
-
-    public ArgumentsFactory(
-        IEntityQueryService<Customer, SearchableCustomer> customerQueryService,
-        IEntityQueryService<Order, SearchableOrder> orderQueryService, DispatcherQueue dispatcherQueue,
-        ILoggerFactory loggerFactory, INavigationService navigationService)
-    {
-        this.customerQueryService = customerQueryService;
-        this.orderQueryService = orderQueryService;
-        this.dispatcherQueue = dispatcherQueue;
-        this.loggerFactory = loggerFactory;
-        this.navigationService = navigationService;
-    }
-
     internal CustomerDetailsPage.CustomerDetailsPageArguments CreateCustomerDetailsPageArguments(int customerId)
     {
         return new CustomerDetailsPage.CustomerDetailsPageArguments(customerId, customerQueryService, orderQueryService,
@@ -76,4 +63,11 @@ internal class ArgumentsFactory
     {
         return new DateTimePicker.DateTimePickerArguments(initialValue, header, loggerFactory, minuteIncrement);
     }
+
+    public CustomerGrid.CustomerGridArguments CreateCustomerGridArguments(int selectedCustomerId = 0)
+    {
+        return new CustomerGrid.CustomerGridArguments(customerQueryService, dispatcherQueue, loggerFactory,
+            selectedCustomerId);
+    }
 }
+    

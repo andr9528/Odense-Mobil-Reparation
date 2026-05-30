@@ -6,7 +6,6 @@ using Repair.Abstractions.Persistence;
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Services;
-using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -27,55 +26,6 @@ internal sealed partial class CustomersPage
             dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
             logger = ViewModel.Arguments.LoggerFactory.CreateLogger<CustomersPageLogic>();
             navigationService = ViewModel.Arguments.NavigationService;
-
-            ViewModel.SearchChanged += SearchChanged;
-        }
-
-        private async void SearchChanged(object? sender, EventArgs e)
-        {
-            try
-            {
-                await RefreshCustomers();
-            }
-            catch (Exception exe)
-            {
-                logger.LogError(exe, $"Exception caught during refresh of Orders");
-            }
-        }
-
-        internal async Task RefreshCustomers()
-        {
-            var customers = await queryService.GetEntitiesComplex(CreateSearchableCustomer());
-
-            dispatcherQueue.TryEnqueue(() =>
-            {
-                ViewModel.Customers.Clear();
-
-                foreach (Customer customer in customers)
-                {
-                    ViewModel.Customers.Add(customer);
-                }
-            });
-        }
-
-        private ComplexSearchableCustomer CreateSearchableCustomer()
-        {
-            var complex = new ComplexSearchableCustomer();
-
-            if (ViewModel.UseFuzzySearch)
-            {
-                complex.Name = ViewModel.CustomerEditor.ViewModel.Name;
-                complex.Phone = ViewModel.CustomerEditor.ViewModel.Phone;
-                complex.Email = ViewModel.CustomerEditor.ViewModel.Email;
-            }
-            else
-            {
-                complex.Searchable.Name = ViewModel.CustomerEditor.ViewModel.Name;
-                complex.Searchable.Phone = ViewModel.CustomerEditor.ViewModel.Phone;
-                complex.Searchable.Email = ViewModel.CustomerEditor.ViewModel.Email;
-            }
-
-            return complex;
         }
 
         public void CreateCustomerClicked(object sender, RoutedEventArgs e)
@@ -106,11 +56,6 @@ internal sealed partial class CustomersPage
             navigationService.NavigateTo(detailPage, "Customer Details Page");
 
             dataGrid.SelectedItem = null;
-        }
-
-        private ArgumentsFactory GetArgumentsFactory()
-        {
-            return App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>();
         }
     }
 }
