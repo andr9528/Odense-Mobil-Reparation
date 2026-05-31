@@ -1,4 +1,4 @@
-﻿namespace Repair.Frontend.Presentation.Pieces;
+namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class OrderEditor
 {
@@ -23,7 +23,7 @@ internal sealed partial class OrderEditor
         [ObservableProperty] private bool isReadOnly = true;
 
         public DateTime HandInWhen => Arguments.Order?.HandInWhen ?? DateTime.Now;
-        public DateTime ReturnedWhen => Arguments.Order?.ReturnedWhen ?? DateTime.Now;
+        public DateTime? ReturnedWhen => Arguments.Order?.ReturnedWhen;
         public int CustomerId => Arguments.Order?.CustomerId ?? 0;
 
         partial void OnIsReadOnlyChanged(bool value)

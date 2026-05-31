@@ -34,7 +34,7 @@ internal sealed partial class OrderEditor
         private DateTimePicker CreateHandInWhenPicker()
         {
             DateTimePicker.DateTimePickerArguments arguments = Logic.GetArgumentsFactory()
-                .CreateDateTimePickerArguments(ViewModel.HandInWhen, "Handed in at?");
+                .CreateDateTimePickerArguments("Handed in at?", ViewModel.HandInWhen);
 
             ViewModel.HandInWhenPicker = new DateTimePicker(arguments);
 
@@ -44,7 +44,7 @@ internal sealed partial class OrderEditor
         private DateTimePicker CreateReturnedWhenPicker()
         {
             DateTimePicker.DateTimePickerArguments arguments = Logic.GetArgumentsFactory()
-                .CreateDateTimePickerArguments(ViewModel.ReturnedWhen, "Returned at?");
+                .CreateDateTimePickerArguments("Returned at?", ViewModel.ReturnedWhen);
 
             ViewModel.ReturnedWhenPicker = new DateTimePicker(arguments);
 

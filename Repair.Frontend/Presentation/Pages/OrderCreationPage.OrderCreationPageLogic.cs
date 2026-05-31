@@ -40,24 +40,26 @@ internal sealed partial class OrderCreationPage
 
         private bool IsUserInputValid()
         {
-            OrderEditor.OrderEditorViewModel order = ViewModel.OrderEditor.ViewModel;
+            OrderEditor.OrderEditorViewModel orderEditorViewModel = ViewModel.OrderEditor.ViewModel;
 
-            return !string.IsNullOrWhiteSpace(order.HandInWhat) && !string.IsNullOrWhiteSpace(order.RepairWhat) &&
+            return !string.IsNullOrWhiteSpace(orderEditorViewModel.HandInWhat) &&
+                   !string.IsNullOrWhiteSpace(orderEditorViewModel.RepairWhat) &&
+                   orderEditorViewModel.HandInWhenPicker.ViewModel.SelectedDateTime.HasValue &&
                    GetSelectedCustomerId() > 0;
         }
 
         private Order BuildNewOrder()
         {
-            OrderEditor.OrderEditorViewModel order = ViewModel.OrderEditor.ViewModel;
+            OrderEditor.OrderEditorViewModel orderEditorViewModel = ViewModel.OrderEditor.ViewModel;
 
             return new Order
             {
-                HandInWhen = order.HandInWhenPicker.ViewModel.SelectedDateTime,
-                ReturnedWhen = order.ReturnedWhenPicker.ViewModel.SelectedDateTime,
-                IsOrderComplete = order.IsOrderComplete,
-                HasBorrowedPhone = order.HasBorrowedPhone,
-                HandInWhat = order.HandInWhat,
-                RepairWhat = order.RepairWhat,
+                HandInWhen = orderEditorViewModel.HandInWhenPicker.ViewModel.SelectedDateTime!.Value,
+                ReturnedWhen = orderEditorViewModel.ReturnedWhenPicker.ViewModel.SelectedDateTime,
+                IsOrderComplete = orderEditorViewModel.IsOrderComplete,
+                HasBorrowedPhone = orderEditorViewModel.HasBorrowedPhone,
+                HandInWhat = orderEditorViewModel.HandInWhat,
+                RepairWhat = orderEditorViewModel.RepairWhat,
                 CustomerId = GetSelectedCustomerId(),
             };
         }

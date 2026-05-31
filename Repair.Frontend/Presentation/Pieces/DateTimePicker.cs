@@ -15,8 +15,8 @@ internal sealed partial class DateTimePicker : Border
     }
 
     internal record DateTimePickerArguments(
-        DateTime InitialValue,
         string Header,
         ILoggerFactory LoggerFactory,
+        DateTime? InitialValue = null,
         int MinuteIncrement = 5);
 }

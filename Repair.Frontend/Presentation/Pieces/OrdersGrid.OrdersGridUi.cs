@@ -106,7 +106,7 @@ internal sealed partial class OrdersGrid
             checkBox = CheckBoxFactory.CreateLightCheckBox(useFilterBindingPath).SetColumn(0);
 
             DateTimePicker.DateTimePickerArguments arguments =
-                GetArgumentsFactory().CreateDateTimePickerArguments(initialValue, header);
+                GetArgumentsFactory().CreateDateTimePickerArguments(header, initialValue);
 
             dateTimePicker = new DateTimePicker(arguments).SetColumn(1);
             dateTimePicker.ViewModel.SelectedDateTimeChanged += Logic.SearchChanged;

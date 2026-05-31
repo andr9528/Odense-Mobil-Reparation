@@ -11,33 +11,40 @@ internal sealed partial class DateTimePicker
         public event EventHandler? SelectedDateTimeChanged;
 
         [ObservableProperty] [NotifyPropertyChangedFor(nameof(SelectedDateText))]
-        private DateTimeOffset selectedDate;
+        private DateTimeOffset? selectedDate;
 
         [ObservableProperty] [NotifyPropertyChangedFor(nameof(SelectedTimeText))]
-        private TimeSpan selectedTime;
+        private TimeSpan? selectedTime;
 
         private readonly ILogger<DateTimePickerViewModel> logger;
 
-        public string SelectedDateText => SelectedDate.ToString("dd.MM.yyyy");
-        public string SelectedTimeText => SelectedTime.ToString(@"hh\:mm");
+        public string SelectedDateText => SelectedDate.HasValue
+            ? SelectedDate.Value.ToString("dd.MM.yyyy")
+            : "No Date is Set";
+
+        public string SelectedTimeText => SelectedTime.HasValue
+            ? SelectedTime.Value.ToString(@"hh\:mm")
+            : "No Time is Set";
 
         /// <inheritdoc/>
         public DateTimePickerViewModel(DateTimePickerArguments arguments)
         {
             Arguments = arguments;
             selectedDate = arguments.InitialValue;
-            selectedTime = arguments.InitialValue.TimeOfDay;
+            selectedTime = arguments.InitialValue?.TimeOfDay;
 
             logger = Arguments.LoggerFactory.CreateLogger<DateTimePickerViewModel>();
         }
 
-        internal DateTime SelectedDateTime => SelectedDate.Date.Add(SelectedTime);
+        internal DateTime? SelectedDateTime =>
+            SelectedDate.HasValue && SelectedTime.HasValue ? SelectedDate.Value.Date.Add(SelectedTime.Value) : null;
+
         internal DatePicker DatePicker { get; set; } = null!;
         internal TimePicker TimePicker { get; set; } = null!;
         internal Button DateButton { get; set; } = null!;
         internal Button TimeButton { get; set; } = null!;
 
-        partial void OnSelectedDateChanged(DateTimeOffset value)
+        partial void OnSelectedDateChanged(DateTimeOffset? value)
         {
             if (shouldSkipNextDateChange)
             {
@@ -45,11 +52,10 @@ internal sealed partial class DateTimePicker
                 return;
             }
 
-            logger.LogDebug("Date changed for '{ArgumentsHeader}'", Arguments.Header);
-            SelectedDateTimeChanged?.Invoke(this, EventArgs.Empty);
+            RaiseSelectedDateTimeChangedIfComplete();
         }
 
-        partial void OnSelectedTimeChanged(TimeSpan value)
+        partial void OnSelectedTimeChanged(TimeSpan? value)
         {
             if (shouldSkipNextTimeChange)
             {
@@ -57,7 +63,17 @@ internal sealed partial class DateTimePicker
                 return;
             }
 
-            logger.LogDebug("Time changed for '{ArgumentsHeader}'", Arguments.Header);
+            RaiseSelectedDateTimeChangedIfComplete();
+        }
+
+        private void RaiseSelectedDateTimeChangedIfComplete()
+        {
+            if (!SelectedDate.HasValue || !SelectedTime.HasValue)
+            {
+                return;
+            }
+
+            logger.LogDebug("Date/time changed for '{ArgumentsHeader}'", Arguments.Header);
             SelectedDateTimeChanged?.Invoke(this, EventArgs.Empty);
         }
     }

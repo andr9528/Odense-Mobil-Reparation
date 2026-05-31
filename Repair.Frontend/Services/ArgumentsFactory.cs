@@ -59,9 +59,9 @@ internal class ArgumentsFactory(
     }
 
     internal DateTimePicker.DateTimePickerArguments CreateDateTimePickerArguments(
-        DateTime initialValue, string header, int minuteIncrement = 5)
+        string header, DateTime? initialValue = null, int minuteIncrement = 5)
     {
-        return new DateTimePicker.DateTimePickerArguments(initialValue, header, loggerFactory, minuteIncrement);
+        return new DateTimePicker.DateTimePickerArguments(header, loggerFactory, initialValue, minuteIncrement);
     }
 
     internal CustomersGrid.CustomersGridArguments CreateCustomersGridArguments(int selectedCustomerId = 0)
