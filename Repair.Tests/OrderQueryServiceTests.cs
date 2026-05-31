@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 using Repair.Persistence;
@@ -10,6 +11,243 @@ namespace Repair.Tests;
 
 public class OrderQueryServiceTests
 {
+    public class GetEntitiesComplex : BaseDatabaseTest
+    {
+        [Test]
+        public async Task WithHandInWhat_ReturnsMatchesAndIgnoresCasing()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer customer = EntityFactory.CreateCustomer("André", "12345678", "andre@example.com");
+            Order expected = EntityFactory.CreateOrder("iPhone 13", "Screen", customer);
+            Order other = EntityFactory.CreateOrder("Samsung", "Screen", customer);
+
+            context.Orders.AddRange(expected, other);
+            await context.SaveChangesAsync();
+
+            var service = new OrderQueryService(context);
+            ComplexSearchableOrder complex = new() {HandInWhat = "iphone",};
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithRepairWhat_ReturnsMatchesAndIgnoresCasing()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer customer = EntityFactory.CreateCustomer("André", "12345678", "andre@example.com");
+            Order expected = EntityFactory.CreateOrder("Phone", "Battery replacement", customer);
+            Order other = EntityFactory.CreateOrder("Phone", "Screen repair", customer);
+
+            context.Orders.AddRange(expected, other);
+            await context.SaveChangesAsync();
+
+            var service = new OrderQueryService(context);
+            ComplexSearchableOrder complex = new() {RepairWhat = "BATTERY",};
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithFuzzyCustomerName_ReturnsMatchesAndIgnoresCasing()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer expectedCustomer = EntityFactory.CreateCustomer("Andre Madsen", "12345678", "andre@example.com");
+            Customer otherCustomer = EntityFactory.CreateCustomer("Sofie Jensen", "87654321", "sofie@example.com");
+            Order expected = EntityFactory.CreateOrder("Phone", "Screen", expectedCustomer);
+            Order other = EntityFactory.CreateOrder("Tablet", "Battery", otherCustomer);
+
+            context.Orders.AddRange(expected, other);
+            await context.SaveChangesAsync();
+
+            var service = new OrderQueryService(context);
+            ComplexSearchableOrder complex = new()
+            {
+                CustomerName = "madsen",
+                UseFuzzy = true,
+            };
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithExactCustomerName_ReturnsMatchesAndIgnoresCasing()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer expectedCustomer = EntityFactory.CreateCustomer("Andre Madsen", "12345678", "andre@example.com");
+            Customer otherCustomer = EntityFactory.CreateCustomer("Andre", "87654321", "other@example.com");
+            Order expected = EntityFactory.CreateOrder("Phone", "Screen", expectedCustomer);
+            Order other = EntityFactory.CreateOrder("Tablet", "Battery", otherCustomer);
+
+            context.Orders.AddRange(expected, other);
+            await context.SaveChangesAsync();
+
+            var service = new OrderQueryService(context);
+            ComplexSearchableOrder complex = new()
+            {
+                CustomerName = "andre madsen",
+                UseFuzzy = false,
+            };
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithIsOrderComplete_ReturnsMatches()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer customer = EntityFactory.CreateCustomer("André", "12345678", "andre@example.com");
+            Order expected = EntityFactory.CreateOrder("Phone", "Screen", customer);
+            Order other = EntityFactory.CreateOrder("Tablet", "Battery", customer);
+
+            expected.IsOrderComplete = true;
+            other.IsOrderComplete = false;
+
+            context.Orders.AddRange(expected, other);
+            await context.SaveChangesAsync();
+
+            var service = new OrderQueryService(context);
+            ComplexSearchableOrder complex = new() {IsOrderComplete = true,};
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithHasBorrowedPhone_ReturnsMatches()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer customer = EntityFactory.CreateCustomer("André", "12345678", "andre@example.com");
+            Order expected = EntityFactory.CreateOrder("Phone", "Screen", customer);
+            Order other = EntityFactory.CreateOrder("Tablet", "Battery", customer);
+
+            expected.HasBorrowedPhone = true;
+            other.HasBorrowedPhone = false;
+
+            context.Orders.AddRange(expected, other);
+            await context.SaveChangesAsync();
+
+            var service = new OrderQueryService(context);
+            ComplexSearchableOrder complex = new() {HasBorrowedPhone = true,};
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithHandInFromAndHandInTo_ReturnsMatchesInsideRange()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer customer = EntityFactory.CreateCustomer("André", "12345678", "andre@example.com");
+
+            Order expected = EntityFactory.CreateOrder("Phone", "Screen", customer);
+            Order tooEarly = EntityFactory.CreateOrder("Tablet", "Battery", customer);
+            Order tooLate = EntityFactory.CreateOrder("Laptop", "Keyboard", customer);
+
+            expected.HandInWhen = new DateTime(2026, 05, 10);
+            tooEarly.HandInWhen = new DateTime(2026, 05, 01);
+            tooLate.HandInWhen = new DateTime(2026, 05, 20);
+
+            context.Orders.AddRange(expected, tooEarly, tooLate);
+            await context.SaveChangesAsync();
+
+            var service = new OrderQueryService(context);
+            ComplexSearchableOrder complex = new()
+            {
+                HandInFrom = new DateTime(2026, 05, 05),
+                HandInTo = new DateTime(2026, 05, 15),
+            };
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithReturnedFromAndReturnedTo_ReturnsMatchesInsideRange()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer customer = EntityFactory.CreateCustomer("André", "12345678", "andre@example.com");
+
+            Order expected = EntityFactory.CreateOrder("Phone", "Screen", customer);
+            Order tooEarly = EntityFactory.CreateOrder("Tablet", "Battery", customer);
+            Order noReturnedWhen = EntityFactory.CreateOrder("Laptop", "Keyboard", customer);
+
+            expected.ReturnedWhen = new DateTime(2026, 05, 10);
+            tooEarly.ReturnedWhen = new DateTime(2026, 05, 01);
+            noReturnedWhen.ReturnedWhen = null;
+
+            context.Orders.AddRange(expected, tooEarly, noReturnedWhen);
+            await context.SaveChangesAsync();
+
+            var service = new OrderQueryService(context);
+            ComplexSearchableOrder complex = new()
+            {
+                ReturnedFrom = new DateTime(2026, 05, 05),
+                ReturnedTo = new DateTime(2026, 05, 15),
+            };
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithStringBooleanAndDateFilters_ReturnsOnlyFullMatch()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer customer = EntityFactory.CreateCustomer("Andre Madsen", "12345678", "andre@example.com");
+
+            Order expected = EntityFactory.CreateOrder("iPhone 13", "Screen replacement", customer);
+            Order wrongRepair = EntityFactory.CreateOrder("iPhone 13", "Battery replacement", customer);
+            Order wrongComplete = EntityFactory.CreateOrder("iPhone 13", "Screen replacement", customer);
+
+            expected.IsOrderComplete = true;
+            expected.HandInWhen = new DateTime(2026, 05, 10);
+
+            wrongRepair.IsOrderComplete = true;
+            wrongRepair.HandInWhen = new DateTime(2026, 05, 10);
+
+            wrongComplete.IsOrderComplete = false;
+            wrongComplete.HandInWhen = new DateTime(2026, 05, 10);
+
+            context.Orders.AddRange(expected, wrongRepair, wrongComplete);
+            await context.SaveChangesAsync();
+
+            var service = new OrderQueryService(context);
+            ComplexSearchableOrder complex = new()
+            {
+                HandInWhat = "iphone",
+                RepairWhat = "SCREEN",
+                IsOrderComplete = true,
+                HandInFrom = new DateTime(2026, 05, 05),
+                HandInTo = new DateTime(2026, 05, 15),
+            };
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+    }
+
     public class GetEntity : BaseDatabaseTest
     {
         [Test]

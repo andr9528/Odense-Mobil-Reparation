@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 using Repair.Persistence;
@@ -10,6 +11,92 @@ namespace Repair.Tests;
 
 public class CustomerQueryServiceTests
 {
+    public class GetEntitiesComplex : BaseDatabaseTest
+    {
+        [Test]
+        public async Task WithName_ReturnsMatchesAndIgnoresCasing()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer expected = EntityFactory.CreateCustomer("André Madsen", "11111111", "one@example.com");
+            Customer other = EntityFactory.CreateCustomer("Sofie Jensen", "22222222", "two@example.com");
+
+            context.Customers.AddRange(expected, other);
+            await context.SaveChangesAsync();
+
+            var service = new CustomerQueryService(context);
+            ComplexSearchableCustomer complex = new() {Name = "madsen",};
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithPhone_ReturnsMatches()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer expected = EntityFactory.CreateCustomer("André", "12345678", "one@example.com");
+            Customer other = EntityFactory.CreateCustomer("Sofie", "87654321", "two@example.com");
+
+            context.Customers.AddRange(expected, other);
+            await context.SaveChangesAsync();
+
+            var service = new CustomerQueryService(context);
+            ComplexSearchableCustomer complex = new() {Phone = "3456",};
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithEmail_ReturnsMatchesAndIgnoresCasing()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer expected = EntityFactory.CreateCustomer("André", "11111111", "andre.private@example.com");
+            Customer other = EntityFactory.CreateCustomer("Sofie", "22222222", "sofie@example.com");
+
+            context.Customers.AddRange(expected, other);
+            await context.SaveChangesAsync();
+
+            var service = new CustomerQueryService(context);
+            ComplexSearchableCustomer complex = new() {Email = "PRIVATE",};
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+
+        [Test]
+        public async Task WithNamePhoneAndEmail_ReturnsOnlyFullMatch()
+        {
+            await using RepairDatabaseContext context = CreateContext();
+            Customer expected = EntityFactory.CreateCustomer("André Madsen", "12345678", "andre.private@example.com");
+            Customer wrongPhone = EntityFactory.CreateCustomer("André Madsen", "87654321", "andre.work@example.com");
+            Customer wrongEmail = EntityFactory.CreateCustomer("André Hansen", "12345678", "andre.work@example.com");
+            Customer wrongName = EntityFactory.CreateCustomer("Sofie Jensen", "12345678", "andre.private@example.com");
+
+            context.Customers.AddRange(expected, wrongPhone, wrongEmail, wrongName);
+            await context.SaveChangesAsync();
+
+            var service = new CustomerQueryService(context);
+            ComplexSearchableCustomer complex = new()
+            {
+                Name = "madsen",
+                Phone = "3456",
+                Email = "PRIVATE",
+            };
+
+            var result = (await service.GetEntitiesComplex(complex)).ToList();
+
+            result.Should().ContainSingle();
+            result.Single().Id.Should().Be(expected.Id);
+        }
+    }
+
     public class GetEntity : BaseDatabaseTest
     {
         [Test]
