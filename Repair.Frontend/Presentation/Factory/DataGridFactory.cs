@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Repair.Models.Extensions;
 
@@ -5,7 +6,8 @@ namespace Repair.Frontend.Presentation.Factory;
 
 internal static class DataGridFactory
 {
-    public static DataGrid Create<TColumn>(IEnumerable<object> itemsSource, Func<TColumn, string> getBindingPath)
+    public static DataGrid Create<TColumn>(
+        IEnumerable<object> itemsSource, Func<TColumn, string> getBindingPath, Func<TColumn, Type> getColumnType)
         where TColumn : struct, Enum
     {
         var dataGrid = new DataGrid
@@ -18,13 +20,33 @@ internal static class DataGridFactory
 
         foreach (TColumn column in Enum.GetValues<TColumn>())
         {
-            dataGrid.Columns.Add(CreateTextColumn(column.ToColumnHeader(), getBindingPath(column)));
+            string header = column.ToColumnHeader();
+            string bindingPath = getBindingPath(column);
+            Type columnType = getColumnType(column);
+
+            dataGrid.Columns.Add(CreateColumn(header, bindingPath, columnType));
         }
 
         return dataGrid;
     }
 
-    private static DataGridTextColumn CreateTextColumn(string header, string bindingPath)
+    private static DataGridColumn CreateColumn(string header, string bindingPath, Type columnType)
+    {
+        if (columnType == typeof(DateTime?))
+        {
+            return CreateNullableDateTimeColumn(header, bindingPath);
+        }
+
+        if (columnType == typeof(bool))
+        {
+            return CreateBooleanColumn(header, bindingPath);
+        }
+
+        return CreateTextColumn(header, bindingPath);
+    }
+
+    private static DataGridTextColumn CreateTextColumn(
+        string header, string bindingPath, IValueConverter? converter = null)
     {
         return new DataGridTextColumn
         {
@@ -32,7 +54,18 @@ internal static class DataGridFactory
             Binding = new Binding
             {
                 Path = new PropertyPath(bindingPath),
+                Converter = converter,
             },
         };
+    }
+
+    private static DataGridTextColumn CreateNullableDateTimeColumn(string header, string bindingPath)
+    {
+        return CreateTextColumn(header, bindingPath, new NullableDateTimeConverter());
+    }
+
+    private static DataGridTextColumn CreateBooleanColumn(string header, string bindingPath)
+    {
+        return CreateTextColumn(header, bindingPath, new BooleanConverter());
     }
 }

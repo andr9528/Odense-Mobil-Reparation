@@ -1,0 +1,20 @@
+namespace Repair.Frontend.Presentation.Factory;
+
+internal sealed class NullableDateTimeConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, string language)
+    {
+        return value switch
+        {
+            null => "No Date/Time Set",
+            DateTime dateTime => dateTime.ToString("dd.MM.yyyy HH:mm"),
+            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("dd.MM.yyyy HH:mm"),
+            var _ => value,
+        };
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, string language)
+    {
+        throw new NotSupportedException();
+    }
+}

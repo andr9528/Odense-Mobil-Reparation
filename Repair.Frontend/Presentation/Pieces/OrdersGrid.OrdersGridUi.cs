@@ -106,7 +106,7 @@ internal sealed partial class OrdersGrid
             checkBox = CheckBoxFactory.CreateLightCheckBox(useFilterBindingPath).SetColumn(0);
 
             DateTimePicker.DateTimePickerArguments arguments =
-                GetArgumentsFactory().CreateDateTimePickerArguments(header, initialValue);
+                Logic.GetArgumentsFactory().CreateDateTimePickerArguments(header, initialValue);
 
             dateTimePicker = new DateTimePicker(arguments).SetColumn(1);
             dateTimePicker.ViewModel.SelectedDateTimeChanged += Logic.SearchChanged;
@@ -128,7 +128,7 @@ internal sealed partial class OrdersGrid
         private NullableBooleanOptionBar CreateIsOrderCompleteOptionBar()
         {
             NullableBooleanOptionBar.NullableBooleanOptionBarArguments arguments =
-                GetArgumentsFactory().CreateNullableBooleanOptionBarArguments("Order complete");
+                Logic.GetArgumentsFactory().CreateNullableBooleanOptionBarArguments("Order complete");
             ViewModel.IsOrderCompleteOptionBar = new NullableBooleanOptionBar(arguments);
 
             ViewModel.IsOrderCompleteOptionBar.ViewModel.SelectionChanged += Logic.IsOrderCompleteSelectionChanged;
@@ -139,7 +139,7 @@ internal sealed partial class OrdersGrid
         private NullableBooleanOptionBar CreateHasBorrowedPhoneOptionBar()
         {
             NullableBooleanOptionBar.NullableBooleanOptionBarArguments arguments =
-                GetArgumentsFactory().CreateNullableBooleanOptionBarArguments("Borrowed phone");
+                Logic.GetArgumentsFactory().CreateNullableBooleanOptionBarArguments("Borrowed phone");
             ViewModel.HasBorrowedPhoneOptionBar = new NullableBooleanOptionBar(arguments);
 
             ViewModel.HasBorrowedPhoneOptionBar.ViewModel.SelectionChanged += Logic.HasBorrowedPhoneSelectionChanged;
@@ -175,7 +175,8 @@ internal sealed partial class OrdersGrid
 
         private DataGrid CreateOrderDataGrid()
         {
-            ViewModel.DataGrid = DataGridFactory.Create<OrderGridColumns>(ViewModel.Orders, GetColumnBindingPath);
+            ViewModel.DataGrid =
+                DataGridFactory.Create<OrderGridColumns>(ViewModel.Orders, GetColumnBindingPath, GetColumnType);
             ViewModel.DataGrid.Margin = new Thickness(4);
 
             return ViewModel.DataGrid;
@@ -187,7 +188,7 @@ internal sealed partial class OrdersGrid
             {
                 OrderGridColumns.HAND_IN_WHAT => nameof(Order.HandInWhat),
                 OrderGridColumns.REPAIR_WHAT => nameof(Order.RepairWhat),
-                OrderGridColumns.HAND_IN_WHEN => nameof(Order.HandInWhen),
+                OrderGridColumns.HANDED_IN_WHEN => nameof(Order.HandInWhen),
                 OrderGridColumns.RETURNED_WHEN => nameof(Order.ReturnedWhen),
                 OrderGridColumns.IS_ORDER_COMPLETE => nameof(Order.IsOrderComplete),
                 OrderGridColumns.HAS_BORROWED_PHONE => nameof(Order.HasBorrowedPhone),
@@ -196,16 +197,22 @@ internal sealed partial class OrdersGrid
             };
         }
 
-        private ArgumentsFactory GetArgumentsFactory()
+        private Type GetColumnType(OrderGridColumns column)
         {
-            return App.Startup.ServiceProvider.GetRequiredService<ArgumentsFactory>();
+            return column switch
+            {
+                OrderGridColumns.RETURNED_WHEN => typeof(DateTime?),
+                OrderGridColumns.IS_ORDER_COMPLETE => typeof(bool),
+                OrderGridColumns.HAS_BORROWED_PHONE => typeof(bool),
+                var _ => typeof(string),
+            };
         }
 
-        internal enum OrderGridColumns
+        private enum OrderGridColumns
         {
             HAND_IN_WHAT = 0,
             REPAIR_WHAT = 1,
-            HAND_IN_WHEN = 2,
+            HANDED_IN_WHEN = 2,
             RETURNED_WHEN = 3,
             IS_ORDER_COMPLETE = 4,
             HAS_BORROWED_PHONE = 5,

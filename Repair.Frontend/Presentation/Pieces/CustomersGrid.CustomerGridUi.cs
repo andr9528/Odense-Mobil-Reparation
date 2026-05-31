@@ -4,6 +4,7 @@ using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Frontend.Services;
 using Repair.Models.Entity.Model;
+using static Repair.Frontend.Presentation.Pieces.OrdersGrid.OrdersGridUi;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
@@ -31,7 +32,8 @@ internal sealed partial class CustomersGrid
 
         private DataGrid CreateCustomerDataGrid()
         {
-            ViewModel.DataGrid = DataGridFactory.Create<CustomerGridColumns>(ViewModel.Customers, GetColumnBindingPath);
+            ViewModel.DataGrid =
+                DataGridFactory.Create<CustomerGridColumns>(ViewModel.Customers, GetColumnBindingPath, GetColumnType);
 
             ViewModel.DataGrid.Margin = new Thickness(4);
 
@@ -66,6 +68,14 @@ internal sealed partial class CustomersGrid
             return grid;
         }
 
+        private Type GetColumnType(CustomerGridColumns column)
+        {
+            return column switch
+            {
+                var _ => typeof(string),
+            };
+        }
+
         private string GetColumnBindingPath(CustomerGridColumns column)
         {
             return column switch
@@ -77,7 +87,7 @@ internal sealed partial class CustomersGrid
             };
         }
 
-        internal enum CustomerGridColumns
+        private enum CustomerGridColumns
         {
             NAME = 0,
             PHONE = 1,
