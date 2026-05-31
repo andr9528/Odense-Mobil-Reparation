@@ -19,5 +19,5 @@ internal sealed partial class CustomerEditor : Border
         Child = Ui.CreateContentGrid();
     }
 
-    internal sealed record CustomerEditorArguments(bool IsSearchMode = false);
+    internal sealed record CustomerEditorArguments(bool IsSearchMode);
 }

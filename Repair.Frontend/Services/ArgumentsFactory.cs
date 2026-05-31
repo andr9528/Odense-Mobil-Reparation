@@ -28,13 +28,12 @@ internal class ArgumentsFactory(
 
     internal CustomersPage.CustomersPageArguments CreateCustomersPageArguments()
     {
-        return new CustomersPage.CustomersPageArguments(customerQueryService, dispatcherQueue, loggerFactory,
-            navigationService);
+        return new CustomersPage.CustomersPageArguments(navigationService);
     }
 
     internal OrdersPage.OrdersPageArguments CreateOrdersPageArguments()
     {
-        return new OrdersPage.OrdersPageArguments(orderQueryService, dispatcherQueue, loggerFactory);
+        return new OrdersPage.OrdersPageArguments(navigationService);
     }
 
     internal CustomerCreationPage.CustomerCreationPageArguments CreateCustomerCreationPageArguments()

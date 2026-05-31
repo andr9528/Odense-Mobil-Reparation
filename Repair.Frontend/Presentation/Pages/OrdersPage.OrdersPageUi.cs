@@ -1,30 +1,16 @@
-using Microsoft.UI.Dispatching;
-using Repair.Abstractions.Persistence;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Frontend.Presentation.Pieces;
 using Repair.Frontend.Services;
-using Repair.Models.Entity.Model;
-using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrdersPage
 {
-    private sealed class OrdersPageUi : BaseUi<OrdersPageLogic, OrdersPageViewModel>
+    private sealed class OrdersPageUi(OrdersPageLogic logic, OrdersPageViewModel viewModel)
+        : BaseUi<OrdersPageLogic, OrdersPageViewModel>(logic, viewModel)
     {
-        private readonly IEntityQueryService<Order, SearchableOrder> queryService;
-        private readonly DispatcherQueue dispatcherQueue;
-        private readonly ILoggerFactory loggerFactory;
-
-        public OrdersPageUi(OrdersPageLogic logic, OrdersPageViewModel viewModel) : base(logic, viewModel)
-        {
-            queryService = ViewModel.Arguments.OrderQueryService;
-            dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
-            loggerFactory = ViewModel.Arguments.LoggerFactory;
-        }
-
         protected override void ConfigureGrid(Grid grid)
         {
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;

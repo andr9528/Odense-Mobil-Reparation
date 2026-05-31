@@ -1,8 +1,4 @@
-using Microsoft.UI.Dispatching;
-using Repair.Abstractions.Persistence;
 using Repair.Frontend.Abstraction;
-using Repair.Models.Entity.Model;
-using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -27,9 +23,5 @@ internal sealed partial class CustomersPage : Border
         Child = ui.CreateContentGrid();
     }
 
-    internal sealed record CustomersPageArguments(
-        IEntityQueryService<Customer, SearchableCustomer> CustomerQueryService,
-        DispatcherQueue DispatcherQueue,
-        ILoggerFactory LoggerFactory,
-        INavigationService NavigationService);
+    internal sealed record CustomersPageArguments(INavigationService NavigationService);
 }

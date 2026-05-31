@@ -1,8 +1,5 @@
 using CommunityToolkit.WinUI.UI.Controls;
-using Microsoft.UI.Dispatching;
-using Repair.Abstractions.Persistence;
-using Repair.Models.Entity.Model;
-using Repair.Models.Entity.Searchable;
+using Repair.Frontend.Abstraction;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -25,8 +22,5 @@ internal sealed partial class OrdersPage : Border
         Child = ui.CreateContentGrid();
     }
 
-    internal sealed record OrdersPageArguments(
-        IEntityQueryService<Order, SearchableOrder> OrderQueryService,
-        DispatcherQueue DispatcherQueue,
-        ILoggerFactory LoggerFactory);
+    internal sealed record OrdersPageArguments(INavigationService NavigationService);
 }

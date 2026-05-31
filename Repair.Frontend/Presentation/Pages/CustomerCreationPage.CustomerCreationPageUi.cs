@@ -39,8 +39,8 @@ internal sealed partial class CustomerCreationPage
 
         private CustomerEditor CreateCustomerEditor()
         {
-            CustomerEditor.CustomerEditorArguments arguments = App.Startup.ServiceProvider
-                .GetRequiredService<ArgumentsFactory>().CreateCustomerEditorArguments();
+            CustomerEditor.CustomerEditorArguments arguments =
+                Logic.GetArgumentsFactory().CreateCustomerEditorArguments();
 
             ViewModel.CustomerEditor = new CustomerEditor(arguments)
             {

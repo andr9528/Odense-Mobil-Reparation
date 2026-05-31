@@ -24,7 +24,7 @@ internal sealed partial class CustomersGrid
             ViewModel.SearchChanged += SearchChanged;
         }
 
-        internal async void SearchChanged(object? sender, EventArgs e)
+        private async void SearchChanged(object? sender, EventArgs e)
         {
             try
             {

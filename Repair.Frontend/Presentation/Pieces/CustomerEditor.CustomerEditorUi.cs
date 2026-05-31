@@ -7,17 +7,9 @@ namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class CustomerEditor
 {
-    internal sealed class CustomerEditorUi : BaseUi<CustomerEditorLogic, CustomerEditorViewModel>
+    internal sealed class CustomerEditorUi(CustomerEditorLogic logic, CustomerEditorViewModel viewModel)
+        : BaseUi<CustomerEditorLogic, CustomerEditorViewModel>(logic, viewModel)
     {
-        private readonly bool isSearchMode;
-
-        public CustomerEditorUi(
-            CustomerEditorLogic logic, CustomerEditorViewModel viewModel, bool isSearchMode = false) : base(logic,
-            viewModel)
-        {
-            this.isSearchMode = isSearchMode;
-        }
-
         protected override void ConfigureGrid(Grid grid)
         {
             grid.RowSpacing = 8;
@@ -34,7 +26,7 @@ internal sealed partial class CustomerEditor
 
         private TextBox CreateNameTextBox()
         {
-            string placeholder = isSearchMode ? "Search name..." : "Customer name...";
+            string placeholder = ViewModel.Arguments.IsSearchMode ? "Search name..." : "Customer name...";
 
             ViewModel.NameTextBox = TextBoxFactory.CreateSearchBox(
                 "Name", placeholder, nameof(CustomerEditorViewModel.Name));
@@ -45,7 +37,7 @@ internal sealed partial class CustomerEditor
 
         private TextBox CreatePhoneTextBox()
         {
-            string placeholder = isSearchMode ? "Search phone..." : "Customer phone...";
+            string placeholder = ViewModel.Arguments.IsSearchMode ? "Search phone..." : "Customer phone...";
 
             ViewModel.PhoneTextBox = TextBoxFactory.CreateSearchBox(
                 "Phone", placeholder, nameof(CustomerEditorViewModel.Phone));
@@ -58,7 +50,7 @@ internal sealed partial class CustomerEditor
 
         private TextBox CreateEmailTextBox()
         {
-            string placeholder = isSearchMode ? "Search email..." : "Customer email...";
+            string placeholder = ViewModel.Arguments.IsSearchMode ? "Search email..." : "Customer email...";
 
             ViewModel.EmailTextBox = TextBoxFactory.CreateSearchBox(
                 "Email", placeholder, nameof(CustomerEditorViewModel.Email));
