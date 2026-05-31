@@ -25,8 +25,7 @@ namespace Repair.Frontend.Presentation
 
             Content = ui.CreateContentGrid();
 
-            if (viewModel.Regions.Any())
-                viewModel.MenuList.SelectedIndex = 0;
+            logic.NavigateToFirstRegion();
         }
     }
 }

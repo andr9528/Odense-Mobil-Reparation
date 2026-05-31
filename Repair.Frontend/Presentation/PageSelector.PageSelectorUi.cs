@@ -7,20 +7,13 @@ namespace Repair.Frontend.Presentation
 {
     internal sealed partial class PageSelector
     {
-        private sealed class PageSelectorUi : BaseUi<PageSelectorLogic, PageSelectorViewModel>
+        private sealed class PageSelectorUi(
+            PageSelectorLogic logic,
+            PageSelectorViewModel viewModel,
+            IEnumerable<IPageRegion> regionDefinitions,
+            INavigationService navigationService) : BaseUi<PageSelectorLogic, PageSelectorViewModel>(logic, viewModel)
         {
             private const double PANE_COLUMN_WEIGHT = 12d;
-
-            private readonly IEnumerable<IPageRegion> regionDefinitions;
-            private readonly INavigationService navigationService;
-
-            public PageSelectorUi(
-                PageSelectorLogic logic, PageSelectorViewModel viewModel, IEnumerable<IPageRegion> regionDefinitions,
-                INavigationService navigationService) : base(logic, viewModel)
-            {
-                this.regionDefinitions = regionDefinitions;
-                this.navigationService = navigationService;
-            }
 
             protected override void ConfigureGrid(Grid grid)
             {
