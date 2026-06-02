@@ -40,30 +40,17 @@ internal sealed partial class OrdersGrid
         [ObservableProperty] private string repairWhatSearchText = string.Empty;
 
         [ObservableProperty] [NotifyPropertyChangedFor(nameof(SearchModeText))]
-        private bool useFuzzySearch;
+        private bool useFuzzySearch = true;
 
         [ObservableProperty] private string customerNameSearchText = string.Empty;
 
         [ObservableProperty] private bool? isOrderComplete = null;
-
         [ObservableProperty] private bool? hasBorrowedPhone = null;
 
         [ObservableProperty] private bool useHandInFromFilter;
         [ObservableProperty] private bool useHandInToFilter;
         [ObservableProperty] private bool useReturnedFromFilter;
         [ObservableProperty] private bool useReturnedToFilter;
-
-        [ObservableProperty] private DateTimeOffset handInFromDate = DateTimeOffset.Now;
-        [ObservableProperty] private TimeSpan handInFromTime = DateTimeOffset.Now.TimeOfDay;
-
-        [ObservableProperty] private DateTimeOffset handInToDate = DateTimeOffset.Now;
-        [ObservableProperty] private TimeSpan handInToTime = DateTimeOffset.Now.TimeOfDay;
-
-        [ObservableProperty] private DateTimeOffset returnedFromDate = DateTimeOffset.Now;
-        [ObservableProperty] private TimeSpan returnedFromTime = DateTimeOffset.Now.TimeOfDay;
-
-        [ObservableProperty] private DateTimeOffset returnedToDate = DateTimeOffset.Now;
-        [ObservableProperty] private TimeSpan returnedToTime = DateTimeOffset.Now.TimeOfDay;
 
         public string SearchModeText =>
             UseFuzzySearch ? "Fuzzy search" : "Exact search";

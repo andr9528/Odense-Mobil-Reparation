@@ -1,3 +1,4 @@
+using System.Collections;
 using System.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Repair.Models.Extensions;
@@ -67,5 +68,13 @@ internal static class DataGridFactory
     private static DataGridTextColumn CreateBooleanColumn(string header, string bindingPath)
     {
         return CreateTextColumn(header, bindingPath, new BooleanConverter());
+    }
+
+    public static void Refresh(this DataGrid dataGrid)
+    {
+        IEnumerable? source = dataGrid.ItemsSource;
+
+        dataGrid.ItemsSource = null;
+        dataGrid.ItemsSource = source;
     }
 }

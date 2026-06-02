@@ -5,9 +5,9 @@ namespace Repair.Frontend.Presentation.Pages;
 /// <summary>
 /// Shows all customers and allows narrowing the list through search.
 /// </summary>
-internal sealed partial class CustomersPage : Border
+internal sealed partial class CustomersPage : Border, INavigationRefreshable
 {
-    internal CustomersPageViewModel ViewModel => (CustomersPageViewModel) DataContext;
+    private CustomersPageViewModel ViewModel => (CustomersPageViewModel) DataContext;
 
     public CustomersPage(CustomersPageArguments arguments)
     {
@@ -16,12 +16,17 @@ internal sealed partial class CustomersPage : Border
         DataContext = new CustomersPageViewModel(arguments);
         Margin = new Thickness(0);
 
-        var viewModel = (CustomersPageViewModel) DataContext;
-        var logic = new CustomersPageLogic(viewModel);
-        var ui = new CustomersPageUi(logic, viewModel);
+        var logic = new CustomersPageLogic(ViewModel);
+        var ui = new CustomersPageUi(logic, ViewModel);
 
         Child = ui.CreateContentGrid();
     }
 
     internal sealed record CustomersPageArguments(INavigationService NavigationService);
+
+    /// <inheritdoc />
+    public void RefreshAfterNavigation()
+    {
+        ViewModel.CustomersGrid.RefreshAfterNavigation();
+    }
 }

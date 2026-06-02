@@ -8,6 +8,8 @@ namespace Repair.Frontend.NavigationRegions;
 
 public class CustomersPageRegionDefinition(ILogger<CustomersPageRegionDefinition> logger) : IPageRegion
 {
+    private UIElement? control;
+
     /// <inheritdoc />
     public string DisplayName => "Customers";
 
@@ -26,7 +28,9 @@ public class CustomersPageRegionDefinition(ILogger<CustomersPageRegionDefinition
             CustomersPage.CustomersPageArguments arguments =
                 services.GetRequiredService<ArgumentsFactory>().CreateCustomersPageArguments();
 
-            return new CustomersPage(arguments);
+            control = new CustomersPage(arguments);
+
+            return control;
         }
         finally
         {

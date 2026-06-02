@@ -6,8 +6,10 @@ namespace Repair.Frontend.Presentation.Pages;
 /// <summary>
 /// Shows all orders and allows narrowing the list through search.
 /// </summary>
-internal sealed partial class OrdersPage : Border
+internal sealed partial class OrdersPage : Border, INavigationRefreshable
 {
+    private OrdersPageViewModel ViewModel => (OrdersPageViewModel) DataContext;
+
     public OrdersPage(OrdersPageArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
@@ -15,12 +17,17 @@ internal sealed partial class OrdersPage : Border
         DataContext = new OrdersPageViewModel(arguments);
         Margin = new Thickness(0);
 
-        var viewModel = (OrdersPageViewModel) DataContext;
-        var logic = new OrdersPageLogic(viewModel);
-        var ui = new OrdersPageUi(logic, viewModel);
+        var logic = new OrdersPageLogic(ViewModel);
+        var ui = new OrdersPageUi(logic, ViewModel);
 
         Child = ui.CreateContentGrid();
     }
 
     internal sealed record OrdersPageArguments(INavigationService NavigationService);
+
+    /// <inheritdoc />
+    public void RefreshAfterNavigation()
+    {
+        ViewModel.OrdersGrid.RefreshAfterNavigation();
+    }
 }

@@ -1,6 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
@@ -39,10 +40,18 @@ internal sealed partial class CustomersGrid
         public async Task RefreshCustomers()
         {
             RememberSelectedCustomer();
-            var customers = await queryService.GetEntitiesComplex(CreateSearchableCustomer());
+
+            ComplexSearchableCustomer searchable = CreateSearchableCustomer();
+
+            List<Customer> customers = (await queryService.GetEntitiesComplex(searchable)).ToList();
+
+            logger.LogDebug("Customers query returned {CustomerCount} customers.", customers.Count);
 
             dispatcherQueue.TryEnqueue(() =>
             {
+                logger.LogDebug("Updating Customers collection. Existing count: {ExistingCount}",
+                    ViewModel.Customers.Count);
+
                 ViewModel.Customers.Clear();
 
                 foreach (Customer customer in customers)
@@ -50,7 +59,13 @@ internal sealed partial class CustomersGrid
                     ViewModel.Customers.Add(customer);
                 }
 
+                ViewModel.DataGrid.Refresh();
+
                 RestoreSelectedCustomer();
+
+                logger.LogDebug(
+                    "Customers collection updated. New count: {NewCount}, SelectedCustomerId: {SelectedCustomerId}, SelectedCustomer: '{SelectedCustomerName}'",
+                    ViewModel.Customers.Count, ViewModel.SelectedCustomerId, ViewModel.SelectedCustomer?.Name);
             });
         }
 

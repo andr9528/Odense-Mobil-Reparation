@@ -1,12 +1,13 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
-internal sealed partial class OrdersGrid : Border
+internal sealed partial class OrdersGrid : Border, INavigationRefreshable
 {
     internal OrdersGridViewModel ViewModel => (OrdersGridViewModel) DataContext;
 
@@ -16,13 +17,15 @@ internal sealed partial class OrdersGrid : Border
 
         DataContext = new OrdersGridViewModel(arguments);
 
-        var logic = new OrdersGridLogic(ViewModel);
-        var ui = new OrdersGridUi(logic, ViewModel);
+        Logic = new OrdersGridLogic(ViewModel);
+        var ui = new OrdersGridUi(Logic, ViewModel);
 
         Child = ui.CreateContentGrid();
 
-        _ = logic.RefreshOrders();
+        _ = Logic.RefreshOrders();
     }
+
+    private OrdersGridLogic Logic { get; set; }
 
     internal record OrdersGridArguments(
         IEntityQueryService<Order, SearchableOrder> OrderQueryService,
@@ -30,5 +33,14 @@ internal sealed partial class OrdersGrid : Border
         ILoggerFactory LoggerFactory,
         int CustomerId = 0)
     {
+    }
+
+    /// <inheritdoc />
+    public void RefreshAfterNavigation()
+    {
+        var logger = ViewModel.Arguments.LoggerFactory.CreateLogger<OrdersGrid>();
+        logger.LogInformation($"Refreshing Orders after Navigation");
+
+        _ = Logic.RefreshOrders();
     }
 }

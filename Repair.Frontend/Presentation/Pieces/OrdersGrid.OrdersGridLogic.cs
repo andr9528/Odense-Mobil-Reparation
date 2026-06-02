@@ -1,6 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
@@ -38,16 +39,29 @@ internal sealed partial class OrdersGrid
 
         public async Task RefreshOrders()
         {
-            var orders = await orderQueryService.GetEntitiesComplex(CreateSearchableOrder());
+            ComplexSearchableOrder searchable = CreateSearchableOrder();
+
+            List<Order> orders = (await orderQueryService.GetEntitiesComplex(searchable)).ToList();
+
+            logger.LogDebug("Orders query returned {OrderCount} orders.", orders.Count);
 
             dispatcherQueue.TryEnqueue(() =>
             {
+                logger.LogDebug("Updating Orders collection. Existing count: {ExistingCount}", ViewModel.Orders.Count);
+
                 ViewModel.Orders.Clear();
 
                 foreach (Order order in orders)
                 {
+                    logger.LogDebug(
+                        "Showing {OrderName} '{OrderId}' in DataGrid, with {CustomerName} {NameName} '{Name}'", nameof(
+                            Order), order.Id, nameof(Customer), nameof(Customer.Name), order.Customer.Name);
                     ViewModel.Orders.Add(order);
                 }
+
+                ViewModel.DataGrid.Refresh();
+
+                logger.LogDebug("Orders collection updated. New count: {NewCount}", ViewModel.Orders.Count);
             });
         }
 

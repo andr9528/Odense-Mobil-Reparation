@@ -8,6 +8,8 @@ namespace Repair.Frontend.NavigationRegions;
 
 public class OrdersPageRegionDefinition(ILogger<OrdersPageRegionDefinition> logger) : IPageRegion
 {
+    private UIElement? control;
+
     /// <inheritdoc />
     public string DisplayName => "Orders";
 
@@ -26,7 +28,9 @@ public class OrdersPageRegionDefinition(ILogger<OrdersPageRegionDefinition> logg
             OrdersPage.OrdersPageArguments arguments =
                 services.GetRequiredService<ArgumentsFactory>().CreateOrdersPageArguments();
 
-            return new OrdersPage(arguments);
+            control = new OrdersPage(arguments);
+
+            return control;
         }
         finally
         {

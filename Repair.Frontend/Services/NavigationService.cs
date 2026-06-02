@@ -7,7 +7,6 @@ namespace Repair.Frontend.Services
     public class NavigationService(DispatcherQueue dispatcherQueue, ILogger<NavigationService> logger)
         : INavigationService
     {
-        private readonly ILogger<NavigationService> logger = logger;
         private Frame? contentFrame;
         private readonly Stack<(UIElement Element, string Name)> navigationStack = new();
 
@@ -52,7 +51,17 @@ namespace Repair.Frontend.Services
 
             UIElement peekedElement = navigationStack.Peek().Element;
 
-            dispatcherQueue.TryEnqueue(() => { contentFrame?.Content = peekedElement; });
+            dispatcherQueue.TryEnqueue(() =>
+            {
+                contentFrame?.Content = peekedElement;
+
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                if (peekedElement is INavigationRefreshable refreshable)
+                {
+                    refreshable.RefreshAfterNavigation();
+                }
+            });
+
 
             stopwatch.Stop();
 

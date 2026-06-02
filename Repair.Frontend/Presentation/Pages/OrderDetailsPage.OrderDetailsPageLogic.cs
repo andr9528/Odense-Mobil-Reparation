@@ -86,6 +86,10 @@ internal sealed partial class OrderDetailsPage
 
                 await queryService.UpdateEntity(ViewModel.Order!);
 
+                logger.LogDebug(
+                    "Order changes saved to Db. Customer navigation after save: Id={CustomerId}, Name='{CustomerName}'",
+                    ViewModel.Order.Customer?.Id, ViewModel.Order.Customer?.Name);
+
                 UpdateHasChanges();
                 DisableEditing();
             }
@@ -109,6 +113,29 @@ internal sealed partial class OrderDetailsPage
 
         private void ApplyEditorValuesToOrder()
         {
+            logger.LogDebug("Applying order changes. OrderId={OrderId}", ViewModel.Order.Id);
+
+            logger.LogDebug("HandInWhen: '{OldValue}' -> '{NewValue}'", ViewModel.Order.HandInWhen,
+                ViewModel.OrderEditor.ViewModel.HandInWhen);
+
+            logger.LogDebug("ReturnedWhen: '{OldValue}' -> '{NewValue}'", ViewModel.Order.ReturnedWhen,
+                ViewModel.OrderEditor.ViewModel.ReturnedWhen);
+
+            logger.LogDebug("HandInWhat: '{OldValue}' -> '{NewValue}'", ViewModel.Order.HandInWhat,
+                ViewModel.OrderEditor.ViewModel.HandInWhat);
+
+            logger.LogDebug("RepairWhat: '{OldValue}' -> '{NewValue}'", ViewModel.Order.RepairWhat,
+                ViewModel.OrderEditor.ViewModel.RepairWhat);
+
+            logger.LogDebug("IsOrderComplete: '{OldValue}' -> '{NewValue}'", ViewModel.Order.IsOrderComplete,
+                ViewModel.OrderEditor.ViewModel.IsOrderComplete);
+
+            logger.LogDebug("HasBorrowedPhone: '{OldValue}' -> '{NewValue}'", ViewModel.Order.HasBorrowedPhone,
+                ViewModel.OrderEditor.ViewModel.HasBorrowedPhone);
+
+            logger.LogDebug("CustomerId: '{OldValue}' -> '{NewValue}'", ViewModel.Order.CustomerId,
+                ViewModel.OrderEditor.ViewModel.CustomerId);
+
             ViewModel.Order.HandInWhen = ViewModel.OrderEditor.ViewModel.HandInWhen;
             ViewModel.Order.ReturnedWhen = ViewModel.OrderEditor.ViewModel.ReturnedWhen;
             ViewModel.Order.HandInWhat = ViewModel.OrderEditor.ViewModel.HandInWhat;

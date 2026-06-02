@@ -23,7 +23,7 @@ internal sealed partial class CustomersGrid
         [ObservableProperty] private Customer? selectedCustomer;
 
         [ObservableProperty] [NotifyPropertyChangedFor(nameof(SearchModeText))]
-        private bool useFuzzySearch;
+        private bool useFuzzySearch = true;
 
         public void ConnectCustomerEditor(CustomerEditor editor)
         {

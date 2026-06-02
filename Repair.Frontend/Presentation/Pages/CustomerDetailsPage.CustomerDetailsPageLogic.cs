@@ -100,6 +100,17 @@ internal sealed partial class CustomerDetailsPage
 
         private void ApplyEditorValuesToCustomer()
         {
+            logger.LogDebug("Applying customer changes. Id={CustomerId}", ViewModel.Customer.Id);
+
+            logger.LogDebug("Name: '{OldValue}' -> '{NewValue}'", ViewModel.Customer.Name,
+                ViewModel.CustomerEditor.ViewModel.Name);
+
+            logger.LogDebug("Email: '{OldValue}' -> '{NewValue}'", ViewModel.Customer.Email,
+                ViewModel.CustomerEditor.ViewModel.Email);
+
+            logger.LogDebug("Phone: '{OldValue}' -> '{NewValue}'", ViewModel.Customer.Phone,
+                ViewModel.CustomerEditor.ViewModel.Phone);
+
             ViewModel.Customer.Name = ViewModel.CustomerEditor.ViewModel.Name;
             ViewModel.Customer.Email = ViewModel.CustomerEditor.ViewModel.Email;
             ViewModel.Customer.Phone = ViewModel.CustomerEditor.ViewModel.Phone;
