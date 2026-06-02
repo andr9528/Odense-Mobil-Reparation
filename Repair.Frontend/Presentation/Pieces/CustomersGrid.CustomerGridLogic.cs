@@ -56,30 +56,12 @@ internal sealed partial class CustomersGrid
 
         private void RememberSelectedCustomer()
         {
-            if (ViewModel.DataGrid.SelectedItem is not Customer customer)
-            {
-                return;
-            }
-
-            ViewModel.SelectedCustomerId = customer.Id;
+            ViewModel.SelectedCustomerId = ViewModel.SelectedCustomer?.Id ?? 0;
         }
 
         private void RestoreSelectedCustomer()
         {
-            if (ViewModel.SelectedCustomerId <= 0)
-            {
-                return;
-            }
-
-            Customer? selectedCustomer = ViewModel.Customers.FirstOrDefault(x => x.Id == ViewModel.SelectedCustomerId);
-
-            if (selectedCustomer is null)
-            {
-                ViewModel.DataGrid.SelectedItem = null;
-                return;
-            }
-
-            ViewModel.DataGrid.SelectedItem = selectedCustomer;
+            ViewModel.SelectedCustomer = ViewModel.Customers.FirstOrDefault(x => x.Id == ViewModel.SelectedCustomerId);
         }
 
         private ComplexSearchableCustomer CreateSearchableCustomer()

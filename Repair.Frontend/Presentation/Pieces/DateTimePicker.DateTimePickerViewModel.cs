@@ -36,6 +36,12 @@ internal sealed partial class DateTimePicker
             logger = Arguments.LoggerFactory.CreateLogger<DateTimePickerViewModel>();
         }
 
+        internal void SetSelectedDateTime(DateTime? dateTime)
+        {
+            SelectedDate = dateTime;
+            SelectedTime = dateTime?.TimeOfDay;
+        }
+
         internal DateTime? SelectedDateTime =>
             SelectedDate.HasValue && SelectedTime.HasValue ? SelectedDate.Value.Date.Add(SelectedTime.Value) : null;
 

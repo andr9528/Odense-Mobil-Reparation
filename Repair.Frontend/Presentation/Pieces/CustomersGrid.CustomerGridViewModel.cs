@@ -11,6 +11,7 @@ internal sealed partial class CustomersGrid
         public CustomersGridArguments Arguments { get; } = arguments;
 
         public event EventHandler? SearchChanged;
+        public event EventHandler? CustomerSelectionChanged;
 
         internal DataGrid DataGrid { get; set; } = null!;
         internal CustomerEditor CustomerEditor { get; set; } = null!;
@@ -19,6 +20,7 @@ internal sealed partial class CustomersGrid
         public ObservableCollection<Customer> Customers { get; } = [];
 
         [ObservableProperty] private int selectedCustomerId = arguments.SelectedCustomerId;
+        [ObservableProperty] private Customer? selectedCustomer;
 
         [ObservableProperty] [NotifyPropertyChangedFor(nameof(SearchModeText))]
         private bool useFuzzySearch;
@@ -45,6 +47,30 @@ internal sealed partial class CustomersGrid
         private void FireSearchChanged()
         {
             SearchChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        partial void OnSelectedCustomerIdChanged(int value)
+        {
+            Customer? customer = Customers.FirstOrDefault(x => x.Id == value);
+
+            if (SelectedCustomer?.Id != customer?.Id)
+            {
+                SelectedCustomer = customer;
+            }
+
+            CustomerSelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        partial void OnSelectedCustomerChanged(Customer? value)
+        {
+            int customerId = value?.Id ?? 0;
+
+            if (SelectedCustomerId == customerId)
+            {
+                return;
+            }
+
+            SelectedCustomerId = customerId;
         }
     }
 }

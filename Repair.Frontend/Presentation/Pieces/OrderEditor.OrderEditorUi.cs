@@ -34,7 +34,7 @@ internal sealed partial class OrderEditor
         private DateTimePicker CreateHandInWhenPicker()
         {
             DateTimePicker.DateTimePickerArguments arguments = Logic.GetArgumentsFactory()
-                .CreateDateTimePickerArguments("Handed in at?", ViewModel.HandInWhen);
+                .CreateDateTimePickerArguments("Handed in at?", ViewModel.Arguments.Order?.HandInWhen);
 
             ViewModel.HandInWhenPicker = new DateTimePicker(arguments);
 
@@ -44,7 +44,7 @@ internal sealed partial class OrderEditor
         private DateTimePicker CreateReturnedWhenPicker()
         {
             DateTimePicker.DateTimePickerArguments arguments = Logic.GetArgumentsFactory()
-                .CreateDateTimePickerArguments("Returned at?", ViewModel.ReturnedWhen);
+                .CreateDateTimePickerArguments("Returned at?", ViewModel.Arguments.Order?.ReturnedWhen);
 
             ViewModel.ReturnedWhenPicker = new DateTimePicker(arguments);
 
@@ -89,8 +89,8 @@ internal sealed partial class OrderEditor
 
         private CustomersGrid CreateCustomersGrid()
         {
-            CustomersGrid.CustomersGridArguments arguments =
-                Logic.GetArgumentsFactory().CreateCustomersGridArguments(ViewModel.CustomerId);
+            CustomersGrid.CustomersGridArguments arguments = Logic.GetArgumentsFactory()
+                .CreateCustomersGridArguments(ViewModel.Arguments.Order?.CustomerId ?? 0);
 
             ViewModel.CustomersGrid = new CustomersGrid(arguments);
 

@@ -13,6 +13,8 @@ internal sealed partial class OrderDetailsPage : Border
 {
     public OrderDetailsPage(OrderDetailsPageArguments arguments)
     {
+        ArgumentNullException.ThrowIfNull(arguments);
+
         DataContext = new OrderDetailsPageViewModel(arguments);
         Margin = new Thickness(0);
 
@@ -21,6 +23,8 @@ internal sealed partial class OrderDetailsPage : Border
         var ui = new OrderDetailsPageUi(logic, viewModel);
 
         Child = ui.CreateContentGrid();
+
+        _ = logic.RefreshOrder();
     }
 
     internal sealed record OrderDetailsPageArguments(

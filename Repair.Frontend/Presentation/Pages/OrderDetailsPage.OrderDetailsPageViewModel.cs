@@ -1,11 +1,24 @@
+using Repair.Frontend.Presentation.Pieces;
+using Repair.Models.Entity.Model;
+
 namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrderDetailsPage
 {
-    private sealed class OrderDetailsPageViewModel(OrderDetailsPageArguments arguments)
+    private sealed partial class OrderDetailsPageViewModel(OrderDetailsPageArguments arguments) : ObservableObject
     {
         public OrderDetailsPageArguments Arguments { get; } = arguments;
-        public bool IsEditing { get; set; }
-        public ToggleSwitch EditToggle { get; set; } = null!;
+
+        [ObservableProperty] private Order order = null!;
+        [ObservableProperty] private bool isEditing;
+        [ObservableProperty] private bool hasChanges;
+        [ObservableProperty] private string saveButtonText = "Okay";
+        [ObservableProperty] private string cancelButtonText = "Back";
+
+        public OrderEditor OrderEditor { get; set; } = null!;
+        public CheckBox EditCheckBox { get; set; } = null!;
+        public Button PrintButton { get; set; } = null!;
+        public Button SaveButton { get; set; } = null!;
+        public Button CancelButton { get; set; } = null!;
     }
 }
