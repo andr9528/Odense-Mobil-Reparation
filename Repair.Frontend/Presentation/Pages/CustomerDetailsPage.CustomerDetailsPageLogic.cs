@@ -152,8 +152,11 @@ internal sealed partial class CustomerDetailsPage
                 return;
             }
 
-            // TODO: Navigate to OrderDetailsPage for the selected order.
-            // order.Id can be used here.
+            OrderDetailsPage.OrderDetailsPageArguments arguments =
+                GetArgumentsFactory().CreateOrderDetailsPageArguments(order.Id);
+            var page = new OrderDetailsPage(arguments);
+
+            ViewModel.Arguments.NavigationService.NavigateTo(page, "Order Details Page");
         }
     }
 }
