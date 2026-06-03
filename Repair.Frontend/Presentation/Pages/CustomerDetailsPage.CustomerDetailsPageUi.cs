@@ -25,28 +25,28 @@ internal sealed partial class CustomerDetailsPage
         protected override void AddControlsToGrid(Grid grid)
         {
             grid.Children.Add(CreateHeader().SetRow(0));
+            grid.Children.Add(CreateButtonsGrid().SetRow(0));
             grid.Children.Add(CreateCustomerEditor().SetRow(1));
             grid.Children.Add(CreateOrdersGrid().SetRow(2));
         }
 
         private UIElement CreateHeader()
         {
-            Grid header = GridFactory.CreateDefaultGrid().DefineColumns(new GridLength(1, GridUnitType.Star),
-                GridLength.Auto, GridLength.Auto, GridLength.Auto);
-
-            header.ColumnSpacing = 8;
-
-            header.Children.Add(CreateHeaderTextBlock().SetColumn(0, 4));
-            header.Children.Add(CreateEditCheckBoxGrid().SetColumn(1));
-            header.Children.Add(CreateSaveButton().SetColumn(2));
-            header.Children.Add(CreateCancelButton().SetColumn(3));
-
-            return header;
+            return TextBlockFactory.CreateHeader("Customer Details");
         }
 
-        private TextBlock CreateHeaderTextBlock()
+        private Grid CreateButtonsGrid()
         {
-            return TextBlockFactory.CreateHeader("Customer details");
+            Grid grid = GridFactory.CreateDefaultGrid().DefineColumns(new GridLength(1, GridUnitType.Star),
+                GridLength.Auto, GridLength.Auto, GridLength.Auto);
+
+            grid.ColumnSpacing = 8;
+
+            grid.Children.Add(CreateEditCheckBoxGrid().SetColumn(1));
+            grid.Children.Add(CreateSaveButton().SetColumn(2));
+            grid.Children.Add(CreateCancelButton().SetColumn(3));
+
+            return grid;
         }
 
         private Grid CreateEditCheckBoxGrid()

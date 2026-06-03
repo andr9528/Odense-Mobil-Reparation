@@ -16,14 +16,24 @@ internal sealed partial class OrdersPage
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.Margin = new Thickness(0);
-            grid.DefineRows(GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star));
+            grid.DefineRows(GridLength.Auto, new GridLength(1, GridUnitType.Star));
         }
 
         protected override void AddControlsToGrid(Grid grid)
         {
             grid.Children.Add(CreateHeader().SetRow(0));
-            grid.Children.Add(CreateCreateOrderButton().SetRow(1));
-            grid.Children.Add(CreateOrdersGrid().SetRow(2));
+            grid.Children.Add(CreateButtonsGrid().SetRow(0));
+            grid.Children.Add(CreateOrdersGrid().SetRow(1));
+        }
+
+        private Grid CreateButtonsGrid()
+        {
+            Grid grid = GridFactory.CreateDefaultGrid()
+                .DefineColumns(GridLength.Auto, new GridLength(1, GridUnitType.Star));
+
+            grid.Children.Add(CreateCreateOrderButton().SetColumn(0));
+
+            return grid;
         }
 
         private UIElement CreateHeader()
@@ -35,7 +45,7 @@ internal sealed partial class OrdersPage
         {
             var button = new Button
             {
-                Content = "Create order",
+                Content = "Create Order",
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
 

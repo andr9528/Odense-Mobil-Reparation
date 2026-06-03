@@ -24,23 +24,28 @@ internal sealed partial class OrderDetailsPage
         protected override void AddControlsToGrid(Grid grid)
         {
             grid.Children.Add(CreateHeader().SetRow(0));
+            grid.Children.Add(CreateButtonsGrid().SetRow(0));
             grid.Children.Add(CreateOrderEditor().SetRow(1));
         }
 
         private UIElement CreateHeader()
         {
-            Grid header = GridFactory.CreateDefaultGrid().DefineColumns(GridLength.Auto,
+            return TextBlockFactory.CreateHeader("Order Details");
+        }
+
+        private Grid CreateButtonsGrid()
+        {
+            Grid grid = GridFactory.CreateDefaultGrid().DefineColumns(GridLength.Auto,
                 new GridLength(1, GridUnitType.Star), GridLength.Auto, GridLength.Auto, GridLength.Auto);
 
-            header.ColumnSpacing = 8;
+            grid.ColumnSpacing = 8;
 
-            header.Children.Add(CreatePrintButton().SetColumn(0));
-            header.Children.Add(TextBlockFactory.CreateHeader("Order details").SetColumn(1));
-            header.Children.Add(CreateEditCheckBoxGrid().SetColumn(2));
-            header.Children.Add(CreateSaveButton().SetColumn(3));
-            header.Children.Add(CreateCancelButton().SetColumn(4));
+            grid.Children.Add(CreatePrintButton().SetColumn(0));
+            grid.Children.Add(CreateEditCheckBoxGrid().SetColumn(2));
+            grid.Children.Add(CreateSaveButton().SetColumn(3));
+            grid.Children.Add(CreateCancelButton().SetColumn(4));
 
-            return header;
+            return grid;
         }
 
         private Button CreatePrintButton()

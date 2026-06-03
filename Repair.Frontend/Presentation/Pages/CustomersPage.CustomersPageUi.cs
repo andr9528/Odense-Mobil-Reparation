@@ -15,7 +15,7 @@ internal sealed partial class CustomersPage
         {
             grid.RowSpacing = 8;
 
-            grid.DefineRows(GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star));
+            grid.DefineRows(GridLength.Auto, new GridLength(1, GridUnitType.Star));
 
             grid.DefineColumns(GridUnitType.Star, [1,]);
         }
@@ -23,8 +23,18 @@ internal sealed partial class CustomersPage
         protected override void AddControlsToGrid(Grid grid)
         {
             grid.Children.Add(CreateHeader().SetRow(0));
-            grid.Children.Add(CreateCreateCustomerButton().SetRow(1));
-            grid.Children.Add(CreateCustomersGrid().SetRow(2));
+            grid.Children.Add(CreateButtonGrid().SetRow(0));
+            grid.Children.Add(CreateCustomersGrid().SetRow(1));
+        }
+
+        private UIElement CreateButtonGrid()
+        {
+            Grid buttonGrid = GridFactory.CreateDefaultGrid()
+                .DefineColumns(GridLength.Auto, new GridLength(1, GridUnitType.Star));
+
+            buttonGrid.Children.Add(CreateCreateCustomerButton().SetColumn(0));
+
+            return buttonGrid;
         }
 
         private UIElement CreateHeader()
@@ -36,7 +46,7 @@ internal sealed partial class CustomersPage
         {
             var button = new Button
             {
-                Content = "Create customer",
+                Content = "Create Customer",
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
 

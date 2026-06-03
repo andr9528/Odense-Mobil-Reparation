@@ -18,15 +18,14 @@ internal sealed partial class OrderCreationPage
             grid.Padding = new Thickness(10);
 
             grid.DefineRows(GridLength.Auto, new GridLength(1, GridUnitType.Star));
-
-            grid.DefineColumns(new GridLength(1, GridUnitType.Star), GridLength.Auto);
+            grid.DefineColumns(new GridLength(1, GridUnitType.Star));
         }
 
         protected override void AddControlsToGrid(Grid grid)
         {
-            grid.Children.Add(CreateHeader().SetRow(0).SetColumn(0, 2));
-            grid.Children.Add(CreateButtonsGrid().SetRow(0).SetColumn(1));
-            grid.Children.Add(CreateOrderEditor().SetRow(1).SetColumn(0, 2));
+            grid.Children.Add(CreateHeader().SetRow(0));
+            grid.Children.Add(CreateButtonsGrid().SetRow(0));
+            grid.Children.Add(CreateOrderEditor().SetRow(1));
         }
 
         private UIElement CreateHeader()
@@ -54,9 +53,9 @@ internal sealed partial class OrderCreationPage
             Grid grid = GridFactory.CreateDefaultGrid();
 
             grid.HorizontalAlignment = HorizontalAlignment.Right;
-            grid.VerticalAlignment = VerticalAlignment.Top;
+            grid.VerticalAlignment = VerticalAlignment.Center;
             grid.ColumnSpacing = 8;
-            grid.DefineColumns(GridLength.Auto, GridLength.Auto);
+            grid.DefineColumns(new GridLength(1, GridUnitType.Star), GridLength.Auto, GridLength.Auto);
 
             var saveButton = new Button {Content = "Save",};
             saveButton.Click += Logic.SaveClicked;
@@ -64,8 +63,8 @@ internal sealed partial class OrderCreationPage
             var cancelButton = new Button {Content = "Cancel",};
             cancelButton.Click += Logic.CancelClicked;
 
-            grid.Children.Add(saveButton.SetColumn(0));
-            grid.Children.Add(cancelButton.SetColumn(1));
+            grid.Children.Add(saveButton.SetColumn(1));
+            grid.Children.Add(cancelButton.SetColumn(2));
 
             return grid;
         }
