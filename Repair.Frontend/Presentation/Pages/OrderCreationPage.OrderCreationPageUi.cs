@@ -35,7 +35,8 @@ internal sealed partial class OrderCreationPage
 
         private OrderEditor CreateOrderEditor()
         {
-            OrderEditor.OrderEditorArguments arguments = Logic.GetArgumentsFactory().CreateOrderEditorArguments();
+            OrderEditor.OrderEditorArguments arguments = Logic.GetArgumentsFactory()
+                .CreateOrderEditorArguments(selectedCustomerId: ViewModel.Arguments.SelectedCustomerId);
 
             ViewModel.OrderEditor = new OrderEditor(arguments)
             {

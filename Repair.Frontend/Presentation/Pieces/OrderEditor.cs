@@ -24,5 +24,5 @@ internal sealed partial class OrderEditor : Border
         Logic.UpdateReadOnlyState();
     }
 
-    internal sealed record OrderEditorArguments(Order? Order = null);
+    internal sealed record OrderEditorArguments(Order? Order = null, int SelectedCustomerId = 0);
 }

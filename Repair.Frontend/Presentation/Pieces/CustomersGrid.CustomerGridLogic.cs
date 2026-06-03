@@ -71,7 +71,12 @@ internal sealed partial class CustomersGrid
 
         private void RememberSelectedCustomer()
         {
-            ViewModel.SelectedCustomerId = ViewModel.SelectedCustomer?.Id ?? 0;
+            if (ViewModel.SelectedCustomer is null)
+            {
+                return;
+            }
+
+            ViewModel.SelectedCustomerId = ViewModel.SelectedCustomer.Id;
         }
 
         private void RestoreSelectedCustomer()

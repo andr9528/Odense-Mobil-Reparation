@@ -37,16 +37,31 @@ internal sealed partial class CustomerDetailsPage
 
         private Grid CreateButtonsGrid()
         {
-            Grid grid = GridFactory.CreateDefaultGrid().DefineColumns(new GridLength(1, GridUnitType.Star),
-                GridLength.Auto, GridLength.Auto, GridLength.Auto);
+            Grid grid = GridFactory.CreateDefaultGrid().DefineColumns(GridLength.Auto,
+                new GridLength(1, GridUnitType.Star), GridLength.Auto, GridLength.Auto, GridLength.Auto);
 
             grid.ColumnSpacing = 8;
 
-            grid.Children.Add(CreateEditCheckBoxGrid().SetColumn(1));
-            grid.Children.Add(CreateSaveButton().SetColumn(2));
-            grid.Children.Add(CreateCancelButton().SetColumn(3));
+            grid.Children.Add(CreateCreateOrderButton().SetColumn(0));
+            grid.Children.Add(CreateEditCheckBoxGrid().SetColumn(2));
+            grid.Children.Add(CreateSaveButton().SetColumn(3));
+            grid.Children.Add(CreateCancelButton().SetColumn(4));
 
             return grid;
+        }
+
+        private Button CreateCreateOrderButton()
+        {
+            Button button = new()
+            {
+                Content = "Create Order",
+                VerticalAlignment = VerticalAlignment.Center,
+                Padding = new Thickness(20, 8, 20, 8),
+            };
+
+            button.Click += Logic.CreateOrderClicked;
+
+            return button;
         }
 
         private Grid CreateEditCheckBoxGrid()

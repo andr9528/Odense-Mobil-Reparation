@@ -52,9 +52,10 @@ internal class ArgumentsFactory(
         return new NullableBooleanOptionBar.NullableBooleanOptionBarArguments(header);
     }
 
-    internal OrderCreationPage.OrderCreationPageArguments CreateOrderCreationPageArguments()
+    internal OrderCreationPage.OrderCreationPageArguments CreateOrderCreationPageArguments(int selectedCustomerId = 0)
     {
-        return new OrderCreationPage.OrderCreationPageArguments(orderQueryService, navigationService);
+        return new OrderCreationPage.OrderCreationPageArguments(orderQueryService, navigationService,
+            selectedCustomerId);
     }
 
     internal DateTimePicker.DateTimePickerArguments CreateDateTimePickerArguments(
@@ -69,9 +70,10 @@ internal class ArgumentsFactory(
             selectedCustomerId);
     }
 
-    internal OrderEditor.OrderEditorArguments CreateOrderEditorArguments(Order? order = null)
+    internal OrderEditor.OrderEditorArguments CreateOrderEditorArguments(
+        Order? order = null, int selectedCustomerId = 0)
     {
-        return new OrderEditor.OrderEditorArguments(order);
+        return new OrderEditor.OrderEditorArguments(order, selectedCustomerId);
     }
 
     internal OrderDetailsPage.OrderDetailsPageArguments CreateOrderDetailsPageArguments(int orderId)

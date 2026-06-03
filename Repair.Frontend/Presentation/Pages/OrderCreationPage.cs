@@ -24,5 +24,6 @@ internal sealed partial class OrderCreationPage : Border
 
     internal sealed record OrderCreationPageArguments(
         IEntityQueryService<Order, SearchableOrder> OrderQueryService,
-        INavigationService NavigationService);
+        INavigationService NavigationService,
+        int SelectedCustomerId = 0);
 }

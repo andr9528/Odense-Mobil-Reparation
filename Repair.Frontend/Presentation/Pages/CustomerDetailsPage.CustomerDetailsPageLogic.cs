@@ -158,5 +158,15 @@ internal sealed partial class CustomerDetailsPage
 
             ViewModel.Arguments.NavigationService.NavigateTo(page, "Order Details Page");
         }
+
+        internal void CreateOrderClicked(object sender, RoutedEventArgs e)
+        {
+            OrderCreationPage.OrderCreationPageArguments arguments = GetArgumentsFactory()
+                .CreateOrderCreationPageArguments(ViewModel.Customer.Id);
+
+            var page = new OrderCreationPage(arguments);
+
+            ViewModel.Arguments.NavigationService.NavigateTo(page, "Create Order");
+        }
     }
 }
