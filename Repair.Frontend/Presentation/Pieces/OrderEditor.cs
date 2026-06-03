@@ -20,6 +20,8 @@ internal sealed partial class OrderEditor : Border
         Ui = new OrderEditorUi(Logic, ViewModel);
 
         Child = Ui.CreateContentGrid();
+
+        Logic.UpdateReadOnlyState();
     }
 
     internal sealed record OrderEditorArguments(Order? Order = null);

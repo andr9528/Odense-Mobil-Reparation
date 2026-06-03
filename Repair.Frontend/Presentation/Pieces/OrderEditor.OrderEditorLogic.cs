@@ -8,10 +8,15 @@ internal sealed partial class OrderEditor
     {
         public OrderEditorLogic(OrderEditorViewModel viewModel) : base(viewModel)
         {
-            ViewModel.IsReadOnlyChanged += ToggleReadOnlyState;
+            ViewModel.IsReadOnlyChanged += OnIsReadOnlyChanged;
         }
 
-        private void ToggleReadOnlyState(object? sender, EventArgs e)
+        private void OnIsReadOnlyChanged(object? sender, EventArgs e)
+        {
+            UpdateReadOnlyState();
+        }
+
+        internal void UpdateReadOnlyState()
         {
             bool isEditable = !ViewModel.IsReadOnly;
 
