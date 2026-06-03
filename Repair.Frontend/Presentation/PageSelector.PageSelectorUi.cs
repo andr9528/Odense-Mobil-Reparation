@@ -27,9 +27,15 @@ namespace Repair.Frontend.Presentation
                 const double contentColumnWeight = 100 - PANE_COLUMN_WEIGHT;
 
                 grid.ColumnDefinitions.Add(new ColumnDefinition
-                    {Width = new GridLength(PANE_COLUMN_WEIGHT, GridUnitType.Star),});
+                {
+                    Width = new GridLength(PANE_COLUMN_WEIGHT, GridUnitType.Star),
+                    MinWidth = 180,
+                });
+
                 grid.ColumnDefinitions.Add(new ColumnDefinition
-                    {Width = new GridLength(contentColumnWeight, GridUnitType.Star),});
+                {
+                    Width = new GridLength(contentColumnWeight, GridUnitType.Star),
+                });
             }
 
             protected override void AddControlsToGrid(Grid grid)

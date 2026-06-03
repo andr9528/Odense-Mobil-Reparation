@@ -16,9 +16,9 @@ public partial class App : Application
         //RequestedTheme = ApplicationTheme.Light;
     }
 
-    protected Window? MainWindow { get; private set; }
+    private Window? MainWindow { get; set; }
     protected IHost? Host { get; private set; }
-    internal static UnoStartup Startup { get; set; }
+    internal static UnoStartup Startup { get; private set; } = null!;
 
     [SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "Uno.Extensions APIs are used in a way that is safe for trimming in this template context.")]
     protected override void OnLaunched(LaunchActivatedEventArgs args)

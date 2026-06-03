@@ -15,14 +15,34 @@ internal sealed partial class OrdersGrid
         /// <inheritdoc />
         protected override void ConfigureGrid(Grid grid)
         {
-            const int totalHeight = 200;
-            const int searchRowsHeight = 18;
-            const int dataRowHeight = totalHeight - 3 * searchRowsHeight;
+            const double searchColumnMinWidth = 290;
+            const double searchRowMinHeight = 70;
 
             grid.RowSpacing = 8;
-            grid.DefineRows(new GridLength(dataRowHeight, GridUnitType.Star));
-            grid.DefineRows(GridUnitType.Star, [searchRowsHeight, searchRowsHeight, searchRowsHeight,]);
-            grid.DefineColumns(GridUnitType.Star, [1, 1, 1, 1,]);
+            grid.ColumnSpacing = 4;
+
+            grid.RowDefinitions.Add(new RowDefinition
+            {
+                Height = new GridLength(1, GridUnitType.Star),
+            });
+
+            for (var i = 0; i < 3; i++)
+            {
+                grid.RowDefinitions.Add(new RowDefinition
+                {
+                    Height = GridLength.Auto,
+                    MinHeight = searchRowMinHeight,
+                });
+            }
+
+            for (var i = 0; i < 4; i++)
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition
+                {
+                    Width = new GridLength(1, GridUnitType.Star),
+                    MinWidth = searchColumnMinWidth,
+                });
+            }
         }
 
         /// <inheritdoc />
