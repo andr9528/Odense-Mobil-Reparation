@@ -65,6 +65,7 @@ internal sealed partial class OrderDetailsPage
 
             ViewModel.IsEditing = isEditing;
             ViewModel.OrderEditor.ViewModel.IsReadOnly = !isEditing;
+            ViewModel.CanDelete = isEditing;
         }
 
         internal async void PrintClicked(object sender, RoutedEventArgs e)
@@ -173,6 +174,7 @@ internal sealed partial class OrderDetailsPage
             ViewModel.IsEditing = false;
             ViewModel.EditCheckBox.IsChecked = false;
             ViewModel.OrderEditor.ViewModel.IsReadOnly = true;
+            ViewModel.CanDelete = false;
         }
 
         private void ApplyOrderToEditor()
@@ -201,6 +203,38 @@ internal sealed partial class OrderDetailsPage
 
             ViewModel.SaveButtonText = ViewModel.HasChanges ? "Save" : "Okay";
             ViewModel.CancelButtonText = ViewModel.HasChanges ? "Cancel" : "Back";
+        }
+
+        internal async Task DeleteClicked(object sender, RoutedEventArgs e)
+        {
+            ContentDialogResult result = await ShowDeleteConfirmation(
+                "Delete order?", "This will permanently delete the current order.");
+
+            if (result != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            await queryService.DeleteEntityById(ViewModel.Order.Id);
+
+            logger.LogInformation("Deleted order {OrderId}", ViewModel.Order.Id);
+
+            ViewModel.Arguments.NavigationService.NavigateBack();
+        }
+
+        private async Task<ContentDialogResult> ShowDeleteConfirmation(string title, string content)
+        {
+            ContentDialog dialog = new()
+            {
+                Title = title,
+                Content = content,
+                PrimaryButtonText = "Delete",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = ViewModel.DeleteButton.XamlRoot,
+            };
+
+            return await dialog.ShowAsync();
         }
     }
 }

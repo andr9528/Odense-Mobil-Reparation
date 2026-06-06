@@ -10,13 +10,12 @@ internal sealed partial class CustomerDetailsPage
         public CustomerDetailsPageArguments Arguments { get; } = arguments;
 
         [ObservableProperty] private Customer customer = null!;
-
         [ObservableProperty] private bool isEditing;
-
         [ObservableProperty] private bool hasChanges;
         [ObservableProperty] private string saveButtonText = "Okay";
-
         [ObservableProperty] private string cancelButtonText = "Back";
+        [ObservableProperty] private bool canDelete;
+        public Button DeleteButton { get; set; } = null!;
 
         public CustomerEditor CustomerEditor { get; set; } = null!;
 

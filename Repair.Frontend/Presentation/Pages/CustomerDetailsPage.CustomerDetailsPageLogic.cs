@@ -61,6 +61,7 @@ internal sealed partial class CustomerDetailsPage
 
             ViewModel.IsEditing = isEditing;
             ViewModel.CustomerEditor.ViewModel.IsReadOnly = !isEditing;
+            ViewModel.CanDelete = isEditing;
         }
 
         internal async Task SaveClicked(object sender, RoutedEventArgs e)
@@ -121,6 +122,7 @@ internal sealed partial class CustomerDetailsPage
             ViewModel.IsEditing = false;
             ViewModel.EditCheckBox.IsChecked = false;
             ViewModel.CustomerEditor.ViewModel.IsReadOnly = true;
+            ViewModel.CanDelete = false;
         }
 
         private void ApplyCustomerToEditor()
@@ -167,6 +169,38 @@ internal sealed partial class CustomerDetailsPage
             var page = new OrderCreationPage(arguments);
 
             ViewModel.Arguments.NavigationService.NavigateTo(page, "Create Order");
+        }
+
+        internal async Task DeleteClicked(object sender, RoutedEventArgs e)
+        {
+            ContentDialogResult result = await ShowDeleteConfirmation("Delete customer?",
+                "This will permanently delete the current customer and all orders belonging to that customer.");
+
+            if (result != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            await queryService.DeleteEntityById(ViewModel.Customer.Id);
+
+            logger.LogInformation("Deleted customer {CustomerId}", ViewModel.Customer.Id);
+
+            ViewModel.Arguments.NavigationService.NavigateBack();
+        }
+
+        private async Task<ContentDialogResult> ShowDeleteConfirmation(string title, string content)
+        {
+            ContentDialog dialog = new()
+            {
+                Title = title,
+                Content = content,
+                PrimaryButtonText = "Delete",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = ViewModel.DeleteButton.XamlRoot,
+            };
+
+            return await dialog.ShowAsync();
         }
     }
 }
