@@ -67,9 +67,32 @@ internal sealed partial class OrderDetailsPage
             ViewModel.OrderEditor.ViewModel.IsReadOnly = !isEditing;
         }
 
-        internal void PrintClicked(object sender, RoutedEventArgs e)
+        internal async void PrintClicked(object sender, RoutedEventArgs e)
         {
-            // TODO: Call print service for ViewModel.Order.
+            try
+            {
+                if (ViewModel.IsPrinting)
+                {
+                    logger.LogDebug("Ignoring print request while another print is already running.");
+                    return;
+                }
+
+                ViewModel.IsPrinting = true;
+                ViewModel.PrintButtonText = "Printing...";
+
+                await ViewModel.Arguments.ReportService.CreateReport(ViewModel.Order);
+            }
+            catch (Exception exe)
+            {
+                logger.LogError(exe, "Failed to generate report.");
+            }
+            finally
+            {
+                await Task.Delay(2000);
+
+                ViewModel.IsPrinting = false;
+                ViewModel.PrintButtonText = "Print";
+            }
         }
 
         internal async Task SaveClicked(object sender, RoutedEventArgs e)

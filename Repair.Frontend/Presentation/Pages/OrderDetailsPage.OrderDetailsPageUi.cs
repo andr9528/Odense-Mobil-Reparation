@@ -52,11 +52,17 @@ internal sealed partial class OrderDetailsPage
         {
             ViewModel.PrintButton = new Button
             {
-                Content = "Print",
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Center,
+                MinWidth = 120,
                 Padding = new Thickness(20, 8, 20, 8),
             };
+
+            ViewModel.PrintButton.SetBinding(ContentControl.ContentProperty, new Binding
+            {
+                Path = new PropertyPath(nameof(OrderDetailsPageViewModel.PrintButtonText)),
+                Mode = BindingMode.OneWay,
+            });
 
             ViewModel.PrintButton.Click += Logic.PrintClicked;
 

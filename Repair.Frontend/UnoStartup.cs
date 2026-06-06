@@ -1,11 +1,13 @@
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.UI.Dispatching;
+using Repair.Abstractions.Services;
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.NavigationRegions;
 using Repair.Frontend.Services;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
+using Repair.Models.Settings;
 using Repair.Persistence;
 using Repair.Persistence.Services;
 using Repair.Services;
@@ -70,6 +72,9 @@ internal class UnoStartup : ModularStartup<IApplicationBuilder>
 
         services.AddSingleton(configurationService);
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IReportService, ReportService>();
+
+        services.Configure<ReportDataSettings>(configuration.GetSection(ConfigurationService.REPORT_DATA_SECTION));
 
         DispatcherQueue? uiDispatcherQueue = DispatcherQueue.GetForCurrentThread();
         services.AddSingleton(uiDispatcherQueue);

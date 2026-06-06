@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Repair.Models.Settings;
 
 namespace Repair.Services;
 
@@ -9,6 +10,7 @@ namespace Repair.Services;
 /// </summary>
 public class ConfigurationService
 {
+    public const string REPORT_DATA_SECTION = "ReportData";
     private const string SHARED_ROOT_FOLDER_NAME = "Fang Software";
     private const string APP_FOLDER_NAME = "Odense Mobil Rep";
     private const string APP_SETTINGS_FILE = "appsettings.json";
@@ -81,18 +83,47 @@ public class ConfigurationService
     /// <summary>
     /// Ensures the appsettings file exists, creating an empty one if needed.
     /// </summary>
+    /// <summary>
+    /// Ensures the appsettings file exists and contains required sections.
+    /// </summary>
     private void EnsureAppSettingsFileExists()
     {
         string fullAppFilePath = Path.Combine(GetApplicationDataPath(), APP_SETTINGS_FILE);
 
-        if (File.Exists(fullAppFilePath))
+        if (!File.Exists(fullAppFilePath))
+        {
+            CreateFile(fullAppFilePath, CreateDefaultAppSettings());
+            return;
+        }
+
+        EnsureReportDataSectionExists(fullAppFilePath);
+    }
+
+    private object CreateDefaultAppSettings()
+    {
+        return new
+        {
+            ReportData = new ReportDataSettings(),
+        };
+    }
+
+    private void EnsureReportDataSectionExists(string fullAppFilePath)
+    {
+        string json = File.ReadAllText(fullAppFilePath);
+
+        Dictionary<string, JsonElement>? appSettings =
+            JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+
+        if (appSettings?.ContainsKey(REPORT_DATA_SECTION) == true)
         {
             return;
         }
 
-        var template = new { };
+        Dictionary<string, object> updatedSettings = appSettings?.ToDictionary(x => x.Key, x => (object) x.Value) ?? [];
 
-        CreateFile(fullAppFilePath, template);
+        updatedSettings[REPORT_DATA_SECTION] = new ReportDataSettings();
+
+        CreateFile(fullAppFilePath, updatedSettings);
     }
 
     /// <summary>

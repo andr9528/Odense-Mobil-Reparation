@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Entity\" />
-    <Folder Include="Services\" />
     <Folder Include="Startup\" />
   </ItemGroup>
 

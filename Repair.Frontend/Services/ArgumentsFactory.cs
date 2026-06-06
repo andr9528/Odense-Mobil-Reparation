@@ -1,5 +1,6 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Abstractions.Services;
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Pages;
 using Repair.Frontend.Presentation.Pieces;
@@ -13,7 +14,8 @@ internal class ArgumentsFactory(
     IEntityQueryService<Order, SearchableOrder> orderQueryService,
     DispatcherQueue dispatcherQueue,
     ILoggerFactory loggerFactory,
-    INavigationService navigationService)
+    INavigationService navigationService,
+    IReportService reportService)
 {
     internal CustomerDetailsPage.CustomerDetailsPageArguments CreateCustomerDetailsPageArguments(int customerId)
     {
@@ -78,8 +80,8 @@ internal class ArgumentsFactory(
 
     internal OrderDetailsPage.OrderDetailsPageArguments CreateOrderDetailsPageArguments(int orderId)
     {
-        return new OrderDetailsPage.OrderDetailsPageArguments(orderId, orderQueryService, customerQueryService,
-            dispatcherQueue, loggerFactory, navigationService);
+        return new OrderDetailsPage.OrderDetailsPageArguments(orderId, orderQueryService, dispatcherQueue,
+            loggerFactory, navigationService, reportService);
     }
 }
     

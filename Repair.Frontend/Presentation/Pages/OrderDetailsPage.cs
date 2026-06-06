@@ -1,5 +1,6 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Abstractions.Services;
 using Repair.Frontend.Abstraction;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
@@ -30,8 +31,8 @@ internal sealed partial class OrderDetailsPage : Border
     internal sealed record OrderDetailsPageArguments(
         int OrderId,
         IEntityQueryService<Order, SearchableOrder> OrderQueryService,
-        IEntityQueryService<Customer, SearchableCustomer> CustomerQueryService,
         DispatcherQueue DispatcherQueue,
         ILoggerFactory LoggerFactory,
-        INavigationService NavigationService);
+        INavigationService NavigationService,
+        IReportService ReportService);
 }
