@@ -28,30 +28,12 @@ internal sealed partial class CustomersPage
 
         private UIElement CreateButtonGrid()
         {
-            Grid buttonGrid = GridFactory.CreateDefaultGrid()
-                .DefineColumns(GridLength.Auto, new GridLength(1, GridUnitType.Star));
-
-            buttonGrid.Children.Add(CreateCreateCustomerButton().SetColumn(0));
-
-            return buttonGrid;
+            return SimplePieceFactory.CreateLeftButtonGrid("Create Customer", Logic.CreateCustomerClicked);
         }
 
         private UIElement CreateHeader()
         {
             return TextBlockFactory.CreateHeader("Customers");
-        }
-
-        private Button CreateCreateCustomerButton()
-        {
-            var button = new Button
-            {
-                Content = "Create Customer",
-                HorizontalAlignment = HorizontalAlignment.Left,
-            };
-
-            button.Click += Logic.CreateCustomerClicked;
-
-            return button;
         }
 
         private CustomersGrid CreateCustomersGrid()

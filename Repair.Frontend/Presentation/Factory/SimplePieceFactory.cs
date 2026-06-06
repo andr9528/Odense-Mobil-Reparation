@@ -91,4 +91,22 @@ internal static class SimplePieceFactory
 
         return cancelButton;
     }
+
+    public static Grid CreateLeftButtonGrid(string buttonText, RoutedEventHandler clicked)
+    {
+        Grid grid = GridFactory.CreateDefaultGrid()
+            .DefineColumns(GridLength.Auto, new GridLength(1, GridUnitType.Star));
+
+        Button button = new()
+        {
+            Content = buttonText,
+            HorizontalAlignment = HorizontalAlignment.Left,
+        };
+
+        button.Click += clicked;
+
+        grid.Children.Add(button.SetColumn(0));
+
+        return grid;
+    }
 }

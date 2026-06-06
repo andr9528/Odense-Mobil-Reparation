@@ -27,30 +27,12 @@ internal sealed partial class OrdersPage
 
         private Grid CreateButtonsGrid()
         {
-            Grid grid = GridFactory.CreateDefaultGrid()
-                .DefineColumns(GridLength.Auto, new GridLength(1, GridUnitType.Star));
-
-            grid.Children.Add(CreateCreateOrderButton().SetColumn(0));
-
-            return grid;
+            return SimplePieceFactory.CreateLeftButtonGrid("Create Order", Logic.CreateOrderClicked);
         }
 
         private UIElement CreateHeader()
         {
             return TextBlockFactory.CreateHeader("Orders");
-        }
-
-        private Button CreateCreateOrderButton()
-        {
-            var button = new Button
-            {
-                Content = "Create Order",
-                HorizontalAlignment = HorizontalAlignment.Left,
-            };
-
-            button.Click += Logic.CreateOrderClicked;
-
-            return button;
         }
 
         private OrdersGrid CreateOrdersGrid()
