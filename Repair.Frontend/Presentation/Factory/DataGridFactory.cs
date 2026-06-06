@@ -1,7 +1,9 @@
 using System.Collections;
 using System.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
+using Repair.Frontend.Presentation.Converters;
 using Repair.Models.Extensions;
+using BooleanConverter = Repair.Frontend.Presentation.Converters.BooleanConverter;
 
 namespace Repair.Frontend.Presentation.Factory;
 

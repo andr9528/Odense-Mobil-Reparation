@@ -2,6 +2,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Core.Details;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -9,7 +10,7 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class CustomerDetailsPage
 {
-    private sealed class CustomerDetailsPageLogic : BaseLogic<CustomerDetailsPageViewModel>
+    private sealed class CustomerDetailsPageLogic : BaseDetailsPageLogic<CustomerDetailsPageViewModel>
     {
         private readonly IEntityQueryService<Customer, SearchableCustomer> queryService;
         private readonly DispatcherQueue dispatcherQueue;
@@ -55,50 +56,6 @@ internal sealed partial class CustomerDetailsPage
             UpdateHasChanges();
         }
 
-        internal void EditCheckBoxChanged(object sender, RoutedEventArgs e)
-        {
-            bool isEditing = ViewModel.EditCheckBox.IsChecked == true;
-
-            ViewModel.IsEditing = isEditing;
-            ViewModel.CustomerEditor.ViewModel.IsReadOnly = !isEditing;
-            ViewModel.CanDelete = isEditing;
-        }
-
-        internal async Task SaveClicked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (!ViewModel.HasChanges)
-                {
-                    ViewModel.Arguments.NavigationService.NavigateBack();
-                    return;
-                }
-
-                ApplyEditorValuesToCustomer();
-
-                await queryService.UpdateEntity(ViewModel.Customer);
-
-                UpdateHasChanges();
-                DisableEditing();
-            }
-            catch (Exception exe)
-            {
-                logger.LogError(exe, $"Failed to save changes to the customer.");
-            }
-        }
-
-        internal void CancelClicked(object sender, RoutedEventArgs e)
-        {
-            if (!ViewModel.HasChanges)
-            {
-                ViewModel.Arguments.NavigationService.NavigateBack();
-                return;
-            }
-
-            ApplyCustomerToEditor();
-            DisableEditing();
-        }
-
         private void ApplyEditorValuesToCustomer()
         {
             logger.LogDebug("Applying customer changes. Id={CustomerId}", ViewModel.Customer.Id);
@@ -117,29 +74,11 @@ internal sealed partial class CustomerDetailsPage
             ViewModel.Customer.Phone = ViewModel.CustomerEditor.ViewModel.Phone;
         }
 
-        private void DisableEditing()
-        {
-            ViewModel.IsEditing = false;
-            ViewModel.EditCheckBox.IsChecked = false;
-            ViewModel.CustomerEditor.ViewModel.IsReadOnly = true;
-            ViewModel.CanDelete = false;
-        }
-
         private void ApplyCustomerToEditor()
         {
             ViewModel.CustomerEditor.ViewModel.Name = ViewModel.Customer.Name;
             ViewModel.CustomerEditor.ViewModel.Email = ViewModel.Customer.Email;
             ViewModel.CustomerEditor.ViewModel.Phone = ViewModel.Customer.Phone;
-        }
-
-        private void UpdateHasChanges()
-        {
-            ViewModel.HasChanges = ViewModel.CustomerEditor.ViewModel.Name != ViewModel.Customer.Name ||
-                                   ViewModel.CustomerEditor.ViewModel.Email != ViewModel.Customer.Email ||
-                                   ViewModel.CustomerEditor.ViewModel.Phone != ViewModel.Customer.Phone;
-
-            ViewModel.SaveButtonText = ViewModel.HasChanges ? "Save" : "Okay";
-            ViewModel.CancelButtonText = ViewModel.HasChanges ? "Cancel" : "Back";
         }
 
         public void OrderClicked(object sender, SelectionChangedEventArgs e)
@@ -171,7 +110,7 @@ internal sealed partial class CustomerDetailsPage
             ViewModel.Arguments.NavigationService.NavigateTo(page, "Create Order");
         }
 
-        internal async Task DeleteClicked(object sender, RoutedEventArgs e)
+        internal override async Task DeleteClicked(object sender, RoutedEventArgs e)
         {
             ContentDialogResult result = await ShowDeleteConfirmation("Delete customer?",
                 "This will permanently delete the current customer and all orders belonging to that customer.");
@@ -188,19 +127,40 @@ internal sealed partial class CustomerDetailsPage
             ViewModel.Arguments.NavigationService.NavigateBack();
         }
 
-        private async Task<ContentDialogResult> ShowDeleteConfirmation(string title, string content)
+        protected override void SetEditorReadOnly(bool isReadOnly)
         {
-            ContentDialog dialog = new()
-            {
-                Title = title,
-                Content = content,
-                PrimaryButtonText = "Delete",
-                CloseButtonText = "Cancel",
-                DefaultButton = ContentDialogButton.Close,
-                XamlRoot = ViewModel.DeleteButton.XamlRoot,
-            };
+            ViewModel.CustomerEditor.ViewModel.IsReadOnly = isReadOnly;
+        }
 
-            return await dialog.ShowAsync();
+        protected override async Task SaveChanges()
+        {
+            ApplyEditorValuesToCustomer();
+
+            await queryService.UpdateEntity(ViewModel.Customer);
+        }
+
+        protected override void ApplyEntityToEditor()
+        {
+            ApplyCustomerToEditor();
+        }
+
+        protected override void UpdateHasChanges()
+        {
+            ViewModel.HasChanges = ViewModel.CustomerEditor.ViewModel.Name != ViewModel.Customer.Name ||
+                                   ViewModel.CustomerEditor.ViewModel.Email != ViewModel.Customer.Email ||
+                                   ViewModel.CustomerEditor.ViewModel.Phone != ViewModel.Customer.Phone;
+
+            UpdateSaveAndCancelText();
+        }
+
+        protected override void NavigateBack()
+        {
+            ViewModel.Arguments.NavigationService.NavigateBack();
+        }
+
+        protected override void LogSaveError(Exception exception)
+        {
+            logger.LogError(exception, "Failed to save changes to the customer.");
         }
     }
 }

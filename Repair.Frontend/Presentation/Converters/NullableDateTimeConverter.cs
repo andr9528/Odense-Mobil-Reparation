@@ -1,4 +1,4 @@
-namespace Repair.Frontend.Presentation.Factory;
+namespace Repair.Frontend.Presentation.Converters;
 
 internal sealed class NullableDateTimeConverter : IValueConverter
 {

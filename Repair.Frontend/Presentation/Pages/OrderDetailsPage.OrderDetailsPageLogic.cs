@@ -1,6 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Core.Details;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -8,7 +9,7 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrderDetailsPage
 {
-    private sealed class OrderDetailsPageLogic : BaseLogic<OrderDetailsPageViewModel>
+    private sealed class OrderDetailsPageLogic : BaseDetailsPageLogic<OrderDetailsPageViewModel>
     {
         private readonly IEntityQueryService<Order, SearchableOrder> queryService;
         private readonly DispatcherQueue dispatcherQueue;
@@ -59,15 +60,6 @@ internal sealed partial class OrderDetailsPage
             UpdateHasChanges();
         }
 
-        internal void EditCheckBoxChanged(object sender, RoutedEventArgs e)
-        {
-            bool isEditing = ViewModel.EditCheckBox.IsChecked == true;
-
-            ViewModel.IsEditing = isEditing;
-            ViewModel.OrderEditor.ViewModel.IsReadOnly = !isEditing;
-            ViewModel.CanDelete = isEditing;
-        }
-
         internal async void PrintClicked(object sender, RoutedEventArgs e)
         {
             try
@@ -94,45 +86,6 @@ internal sealed partial class OrderDetailsPage
                 ViewModel.IsPrinting = false;
                 ViewModel.PrintButtonText = "Print";
             }
-        }
-
-        internal async Task SaveClicked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (!ViewModel.HasChanges)
-                {
-                    ViewModel.Arguments.NavigationService.NavigateBack();
-                    return;
-                }
-
-                ApplyEditorValuesToOrder();
-
-                await queryService.UpdateEntity(ViewModel.Order!);
-
-                logger.LogDebug(
-                    "Order changes saved to Db. Customer navigation after save: Id={CustomerId}, Name='{CustomerName}'",
-                    ViewModel.Order.Customer?.Id, ViewModel.Order.Customer?.Name);
-
-                UpdateHasChanges();
-                DisableEditing();
-            }
-            catch (Exception exe)
-            {
-                logger.LogError(exe, "Failed to save changes to the order.");
-            }
-        }
-
-        internal void CancelClicked(object sender, RoutedEventArgs e)
-        {
-            if (!ViewModel.HasChanges)
-            {
-                ViewModel.Arguments.NavigationService.NavigateBack();
-                return;
-            }
-
-            ApplyOrderToEditor();
-            DisableEditing();
         }
 
         private void ApplyEditorValuesToOrder()
@@ -169,14 +122,6 @@ internal sealed partial class OrderDetailsPage
             ViewModel.Order.CustomerId = ViewModel.OrderEditor.ViewModel.CustomerId;
         }
 
-        private void DisableEditing()
-        {
-            ViewModel.IsEditing = false;
-            ViewModel.EditCheckBox.IsChecked = false;
-            ViewModel.OrderEditor.ViewModel.IsReadOnly = true;
-            ViewModel.CanDelete = false;
-        }
-
         private void ApplyOrderToEditor()
         {
             ViewModel.OrderEditor.ViewModel.HandInWhenPicker.ViewModel.SetSelectedDateTime(ViewModel.Order.HandInWhen);
@@ -190,22 +135,7 @@ internal sealed partial class OrderDetailsPage
             ViewModel.OrderEditor.ViewModel.CustomersGrid.ViewModel.SelectedCustomerId = ViewModel.Order.CustomerId;
         }
 
-        private void UpdateHasChanges()
-        {
-            ViewModel.HasChanges = ViewModel.OrderEditor.ViewModel.HandInWhen != ViewModel.Order.HandInWhen ||
-                                   ViewModel.OrderEditor.ViewModel.ReturnedWhen != ViewModel.Order.ReturnedWhen ||
-                                   ViewModel.OrderEditor.ViewModel.HandInWhat != ViewModel.Order.HandInWhat ||
-                                   ViewModel.OrderEditor.ViewModel.RepairWhat != ViewModel.Order.RepairWhat ||
-                                   ViewModel.OrderEditor.ViewModel.IsOrderComplete != ViewModel.Order.IsOrderComplete ||
-                                   ViewModel.OrderEditor.ViewModel.HasBorrowedPhone !=
-                                   ViewModel.Order.HasBorrowedPhone || ViewModel.OrderEditor.ViewModel.CustomerId !=
-                                   ViewModel.Order.CustomerId;
-
-            ViewModel.SaveButtonText = ViewModel.HasChanges ? "Save" : "Okay";
-            ViewModel.CancelButtonText = ViewModel.HasChanges ? "Cancel" : "Back";
-        }
-
-        internal async Task DeleteClicked(object sender, RoutedEventArgs e)
+        internal override async Task DeleteClicked(object sender, RoutedEventArgs e)
         {
             ContentDialogResult result = await ShowDeleteConfirmation(
                 "Delete order?", "This will permanently delete the current order.");
@@ -219,22 +149,52 @@ internal sealed partial class OrderDetailsPage
 
             logger.LogInformation("Deleted order {OrderId}", ViewModel.Order.Id);
 
+            NavigateBack();
+        }
+
+        protected override void SetEditorReadOnly(bool isReadOnly)
+        {
+            ViewModel.OrderEditor.ViewModel.IsReadOnly = isReadOnly;
+        }
+
+        protected override async Task SaveChanges()
+        {
+            ApplyEditorValuesToOrder();
+
+            await queryService.UpdateEntity(ViewModel.Order!);
+
+            logger.LogDebug(
+                "Order changes saved to Db. Customer navigation after save: Id={CustomerId}, Name='{CustomerName}'",
+                ViewModel.Order.Customer?.Id, ViewModel.Order.Customer?.Name);
+        }
+
+        protected override void ApplyEntityToEditor()
+        {
+            ApplyOrderToEditor();
+        }
+
+        protected override void UpdateHasChanges()
+        {
+            ViewModel.HasChanges = ViewModel.OrderEditor.ViewModel.HandInWhen != ViewModel.Order.HandInWhen ||
+                                   ViewModel.OrderEditor.ViewModel.ReturnedWhen != ViewModel.Order.ReturnedWhen ||
+                                   ViewModel.OrderEditor.ViewModel.HandInWhat != ViewModel.Order.HandInWhat ||
+                                   ViewModel.OrderEditor.ViewModel.RepairWhat != ViewModel.Order.RepairWhat ||
+                                   ViewModel.OrderEditor.ViewModel.IsOrderComplete != ViewModel.Order.IsOrderComplete ||
+                                   ViewModel.OrderEditor.ViewModel.HasBorrowedPhone !=
+                                   ViewModel.Order.HasBorrowedPhone || ViewModel.OrderEditor.ViewModel.CustomerId !=
+                                   ViewModel.Order.CustomerId;
+
+            UpdateSaveAndCancelText();
+        }
+
+        protected override void NavigateBack()
+        {
             ViewModel.Arguments.NavigationService.NavigateBack();
         }
 
-        private async Task<ContentDialogResult> ShowDeleteConfirmation(string title, string content)
+        protected override void LogSaveError(Exception exception)
         {
-            ContentDialog dialog = new()
-            {
-                Title = title,
-                Content = content,
-                PrimaryButtonText = "Delete",
-                CloseButtonText = "Cancel",
-                DefaultButton = ContentDialogButton.Close,
-                XamlRoot = ViewModel.DeleteButton.XamlRoot,
-            };
-
-            return await dialog.ShowAsync();
+            logger.LogError(exception, "Failed to save changes to the order.");
         }
     }
 }
