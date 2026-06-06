@@ -23,6 +23,15 @@ namespace Repair.Frontend.Presentation.Core
             return grid;
         }
 
+        protected void ConfigureDefaultPageGrid(Grid grid)
+        {
+            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            grid.VerticalAlignment = VerticalAlignment.Stretch;
+            grid.Margin = new Thickness(0);
+            grid.Padding = new Thickness(8);
+            grid.RowSpacing = 8;
+        }
+
         protected abstract void ConfigureGrid(Grid grid);
 
         protected abstract void AddControlsToGrid(Grid grid);

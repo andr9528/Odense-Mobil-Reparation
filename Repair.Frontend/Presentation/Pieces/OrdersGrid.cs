@@ -2,6 +2,7 @@ using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Abstraction;
+using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -14,6 +15,7 @@ internal sealed partial class OrdersGrid : Border, INavigationRefreshable
     public OrdersGrid(OrdersGridArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
+        this.ConfigurePieceBorder();
 
         DataContext = new OrdersGridViewModel(arguments);
 

@@ -1,6 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Abstraction;
+using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -14,9 +15,9 @@ internal sealed partial class CustomerDetailsPage : Border
     public CustomerDetailsPage(CustomerDetailsPageArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
+        this.ConfigurePageBorder();
 
         DataContext = new CustomerDetailsPageViewModel(arguments);
-        Margin = new Thickness(0);
 
         var viewModel = (CustomerDetailsPageViewModel) DataContext;
         var logic = new CustomerDetailsPageLogic(viewModel);

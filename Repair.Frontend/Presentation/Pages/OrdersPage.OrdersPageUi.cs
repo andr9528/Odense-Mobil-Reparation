@@ -13,9 +13,8 @@ internal sealed partial class OrdersPage
     {
         protected override void ConfigureGrid(Grid grid)
         {
-            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
-            grid.VerticalAlignment = VerticalAlignment.Stretch;
-            grid.Margin = new Thickness(0);
+            ConfigureDefaultPageGrid(grid);
+
             grid.DefineRows(GridLength.Auto, new GridLength(1, GridUnitType.Star));
         }
 

@@ -13,10 +13,9 @@ internal sealed partial class CustomersPage
     {
         protected override void ConfigureGrid(Grid grid)
         {
-            grid.RowSpacing = 8;
+            ConfigureDefaultPageGrid(grid);
 
             grid.DefineRows(GridLength.Auto, new GridLength(1, GridUnitType.Star));
-
             grid.DefineColumns(GridUnitType.Star, [1,]);
         }
 

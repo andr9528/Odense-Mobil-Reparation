@@ -1,3 +1,5 @@
+using Repair.Frontend.Presentation.Factory;
+
 namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class CustomerEditor : Border
@@ -10,6 +12,7 @@ internal sealed partial class CustomerEditor : Border
     public CustomerEditor(CustomerEditorArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
+        this.ConfigurePieceBorder();
 
         DataContext = new CustomerEditorViewModel(arguments);
 

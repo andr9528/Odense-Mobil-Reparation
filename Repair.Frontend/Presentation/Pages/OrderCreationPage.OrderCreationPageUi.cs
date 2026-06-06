@@ -12,10 +12,7 @@ internal sealed partial class OrderCreationPage
     {
         protected override void ConfigureGrid(Grid grid)
         {
-            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
-            grid.VerticalAlignment = VerticalAlignment.Stretch;
-            grid.Margin = new Thickness(0);
-            grid.Padding = new Thickness(10);
+            ConfigureDefaultPageGrid(grid);
 
             grid.DefineRows(GridLength.Auto, new GridLength(1, GridUnitType.Star));
             grid.DefineColumns(new GridLength(1, GridUnitType.Star));

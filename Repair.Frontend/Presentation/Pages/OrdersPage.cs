@@ -1,5 +1,6 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Repair.Frontend.Abstraction;
+using Repair.Frontend.Presentation.Factory;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -13,10 +14,9 @@ internal sealed partial class OrdersPage : Border, INavigationRefreshable
     public OrdersPage(OrdersPageArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
+        this.ConfigurePageBorder();
 
         DataContext = new OrdersPageViewModel(arguments);
-        Margin = new Thickness(0);
-
         var logic = new OrdersPageLogic(ViewModel);
         var ui = new OrdersPageUi(logic, ViewModel);
 

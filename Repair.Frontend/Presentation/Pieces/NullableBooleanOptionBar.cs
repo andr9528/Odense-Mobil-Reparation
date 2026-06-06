@@ -1,4 +1,5 @@
 using Repair.Frontend.Presentation.Converters;
+using Repair.Frontend.Presentation.Factory;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
@@ -13,6 +14,7 @@ internal sealed partial class NullableBooleanOptionBar : Border
     public NullableBooleanOptionBar(NullableBooleanOptionBarArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
+        this.ConfigurePieceBorder();
 
         DataContext = new NullableBooleanOptionBarViewModel(arguments);
 

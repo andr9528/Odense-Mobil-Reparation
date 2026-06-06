@@ -1,3 +1,4 @@
+using Repair.Frontend.Presentation.Factory;
 using Repair.Frontend.Services;
 using Repair.Models.Entity.Model;
 
@@ -13,6 +14,7 @@ internal sealed partial class OrderEditor : Border
     public OrderEditor(OrderEditorArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
+        this.ConfigurePieceBorder();
 
         DataContext = new OrderEditorViewModel(arguments);
 

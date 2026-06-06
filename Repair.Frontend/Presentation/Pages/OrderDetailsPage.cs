@@ -2,6 +2,7 @@ using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Abstractions.Services;
 using Repair.Frontend.Abstraction;
+using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -15,9 +16,9 @@ internal sealed partial class OrderDetailsPage : Border
     public OrderDetailsPage(OrderDetailsPageArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
+        this.ConfigurePageBorder();
 
         DataContext = new OrderDetailsPageViewModel(arguments);
-        Margin = new Thickness(0);
 
         var viewModel = (OrderDetailsPageViewModel) DataContext;
         var logic = new OrderDetailsPageLogic(viewModel);

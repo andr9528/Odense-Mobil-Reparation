@@ -1,3 +1,5 @@
+using Repair.Frontend.Presentation.Factory;
+
 namespace Repair.Frontend.Presentation.Pieces;
 
 internal sealed partial class DateTimePicker : Border
@@ -7,6 +9,7 @@ internal sealed partial class DateTimePicker : Border
     public DateTimePicker(DateTimePickerArguments arguments)
     {
         DataContext = new DateTimePickerViewModel(arguments);
+        this.ConfigurePieceBorder();
 
         var logic = new DateTimePickerLogic(ViewModel);
         var ui = new DateTimePickerUi(logic, ViewModel);

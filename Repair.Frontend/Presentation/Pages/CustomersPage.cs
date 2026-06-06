@@ -1,4 +1,5 @@
 using Repair.Frontend.Abstraction;
+using Repair.Frontend.Presentation.Factory;
 
 namespace Repair.Frontend.Presentation.Pages;
 
@@ -12,9 +13,9 @@ internal sealed partial class CustomersPage : Border, INavigationRefreshable
     public CustomersPage(CustomersPageArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
+        this.ConfigurePageBorder();
 
         DataContext = new CustomersPageViewModel(arguments);
-        Margin = new Thickness(0);
 
         var logic = new CustomersPageLogic(ViewModel);
         var ui = new CustomersPageUi(logic, ViewModel);

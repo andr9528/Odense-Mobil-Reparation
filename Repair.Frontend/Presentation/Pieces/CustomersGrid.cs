@@ -1,6 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
 using Repair.Frontend.Abstraction;
+using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
 
@@ -13,6 +14,7 @@ internal sealed partial class CustomersGrid : Border, INavigationRefreshable
     public CustomersGrid(CustomersGridArguments arguments)
     {
         ArgumentNullException.ThrowIfNull(arguments);
+        this.ConfigurePieceBorder();
 
         DataContext = new CustomersGridViewModel(arguments);
 
