@@ -14,28 +14,37 @@ internal sealed partial class OrderCreationPage
     {
         private readonly IEntityQueryService<Order, SearchableOrder> queryService;
         private readonly INavigationService navigationService;
+        private readonly ILogger<OrderCreationPageLogic> logger;
 
         public OrderCreationPageLogic(OrderCreationPageViewModel viewModel) : base(viewModel)
         {
             queryService = ViewModel.Arguments.OrderQueryService;
             navigationService = ViewModel.Arguments.NavigationService;
+            logger = ViewModel.Arguments.LoggerFactory.CreateLogger<OrderCreationPageLogic>();
         }
 
-        internal async void SaveClicked(object sender, RoutedEventArgs e)
+        internal async Task SaveClicked(object sender, RoutedEventArgs e)
         {
-            if (!IsUserInputValid())
+            try
             {
-                return;
+                if (!IsUserInputValid())
+                {
+                    return;
+                }
+
+                Order newOrder = BuildNewOrder();
+                await queryService.AddEntity(newOrder);
+
+                OrderDetailsPage.OrderDetailsPageArguments arguments = GetArgumentsFactory()
+                    .CreateOrderDetailsPageArguments(newOrder.Id);
+
+                var details = new OrderDetailsPage(arguments);
+                navigationService.NavigateTo(details, "Order Details Page");
             }
-
-            Order newOrder = BuildNewOrder();
-            await queryService.AddEntity(newOrder);
-
-            OrderDetailsPage.OrderDetailsPageArguments arguments = GetArgumentsFactory()
-                .CreateOrderDetailsPageArguments(newOrder.Id);
-
-            var details = new OrderDetailsPage(arguments);
-            navigationService.NavigateTo(details, "Order Details Page");
+            catch (Exception exe)
+            {
+                logger.LogError(exe, $"Caught exception while trying to create a new Order.");
+            }
         }
 
         private bool IsUserInputValid()

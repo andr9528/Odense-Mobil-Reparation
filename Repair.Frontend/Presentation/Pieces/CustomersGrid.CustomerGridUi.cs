@@ -66,7 +66,7 @@ internal sealed partial class CustomersGrid
 
         private Grid CreateFuzzySearchGrid()
         {
-            Grid grid = SearchModeFactory.CreateFuzzySearchGrid(nameof(CustomersGridViewModel.UseFuzzySearch),
+            Grid grid = SimplePieceFactory.CreateFuzzySearchGrid(nameof(CustomersGridViewModel.UseFuzzySearch),
                 nameof(CustomersGridViewModel.SearchModeText), out CheckBox fuzzySearchCheckBox);
 
             ViewModel.FuzzySearchToggle = fuzzySearchCheckBox;

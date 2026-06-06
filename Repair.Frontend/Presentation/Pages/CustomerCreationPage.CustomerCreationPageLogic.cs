@@ -14,27 +14,36 @@ internal sealed partial class CustomerCreationPage
     {
         private readonly IEntityQueryService<Customer, SearchableCustomer> queryService;
         private readonly INavigationService navigationService;
+        private readonly ILogger<CustomerCreationPageLogic> logger;
 
         public CustomerCreationPageLogic(CustomerCreationPageViewModel viewModel) : base(viewModel)
         {
             queryService = ViewModel.Arguments.CustomerQueryService;
             navigationService = ViewModel.Arguments.NavigationService;
+            logger = ViewModel.Arguments.LoggerFactory.CreateLogger<CustomerCreationPageLogic>();
         }
 
         internal async Task SaveClicked(object sender, RoutedEventArgs e)
         {
-            if (!IsUserInputValid())
+            try
             {
-                return;
+                if (!IsUserInputValid())
+                {
+                    return;
+                }
+
+                Customer newCustomer = BuildNewCustomer();
+                await queryService.AddEntity(newCustomer);
+                CustomerDetailsPage.CustomerDetailsPageArguments arguments =
+                    GetArgumentsFactory().CreateCustomerDetailsPageArguments(newCustomer.Id);
+
+                var details = new CustomerDetailsPage(arguments);
+                navigationService.NavigateTo(details, "Customer Details Page");
             }
-
-            Customer newCustomer = BuildNewCustomer();
-            await queryService.AddEntity(newCustomer);
-            CustomerDetailsPage.CustomerDetailsPageArguments arguments = App.Startup.ServiceProvider
-                .GetRequiredService<ArgumentsFactory>().CreateCustomerDetailsPageArguments(newCustomer.Id);
-
-            var details = new CustomerDetailsPage(arguments);
-            navigationService.NavigateTo(details, "Customer Details Page");
+            catch (Exception exe)
+            {
+                logger.LogError(exe, $"Caught exception while trying to create a Customer.");
+            }
         }
 
         private bool IsUserInputValid()

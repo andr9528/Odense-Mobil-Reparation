@@ -27,5 +27,6 @@ internal sealed partial class CustomerCreationPage : Border
 
     internal sealed record CustomerCreationPageArguments(
         IEntityQueryService<Customer, SearchableCustomer> CustomerQueryService,
-        INavigationService NavigationService);
+        INavigationService NavigationService,
+        ILoggerFactory LoggerFactory);
 }

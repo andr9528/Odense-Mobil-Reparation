@@ -40,7 +40,8 @@ internal class ArgumentsFactory(
 
     internal CustomerCreationPage.CustomerCreationPageArguments CreateCustomerCreationPageArguments()
     {
-        return new CustomerCreationPage.CustomerCreationPageArguments(customerQueryService, navigationService);
+        return new CustomerCreationPage.CustomerCreationPageArguments(customerQueryService, navigationService,
+            loggerFactory);
     }
 
     internal CustomerEditor.CustomerEditorArguments CreateCustomerEditorArguments(bool isSearchMode = false)
@@ -56,7 +57,7 @@ internal class ArgumentsFactory(
 
     internal OrderCreationPage.OrderCreationPageArguments CreateOrderCreationPageArguments(int selectedCustomerId = 0)
     {
-        return new OrderCreationPage.OrderCreationPageArguments(orderQueryService, navigationService,
+        return new OrderCreationPage.OrderCreationPageArguments(orderQueryService, navigationService, loggerFactory,
             selectedCustomerId);
     }
 

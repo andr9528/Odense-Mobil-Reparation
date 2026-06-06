@@ -48,23 +48,7 @@ internal sealed partial class OrderCreationPage
 
         private Grid CreateButtonsGrid()
         {
-            Grid grid = GridFactory.CreateDefaultGrid();
-
-            grid.HorizontalAlignment = HorizontalAlignment.Right;
-            grid.VerticalAlignment = VerticalAlignment.Center;
-            grid.ColumnSpacing = 8;
-            grid.DefineColumns(new GridLength(1, GridUnitType.Star), GridLength.Auto, GridLength.Auto);
-
-            var saveButton = new Button {Content = "Save",};
-            saveButton.Click += Logic.SaveClicked;
-
-            var cancelButton = new Button {Content = "Cancel",};
-            cancelButton.Click += Logic.CancelClicked;
-
-            grid.Children.Add(saveButton.SetColumn(1));
-            grid.Children.Add(cancelButton.SetColumn(2));
-
-            return grid;
+            return SimplePieceFactory.CreateSaveCancelButtonGrid(Logic.SaveClicked, Logic.CancelClicked);
         }
     }
 }

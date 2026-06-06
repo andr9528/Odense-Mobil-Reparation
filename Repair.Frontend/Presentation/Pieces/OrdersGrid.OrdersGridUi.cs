@@ -185,7 +185,7 @@ internal sealed partial class OrdersGrid
 
         private Grid CreateFuzzySearchGrid()
         {
-            Grid grid = SearchModeFactory.CreateFuzzySearchGrid(nameof(OrdersGridViewModel.UseFuzzySearch),
+            Grid grid = SimplePieceFactory.CreateFuzzySearchGrid(nameof(OrdersGridViewModel.UseFuzzySearch),
                 nameof(OrdersGridViewModel.SearchModeText), out CheckBox fuzzySearchCheckBox);
 
             ViewModel.FuzzySearchToggle = fuzzySearchCheckBox;

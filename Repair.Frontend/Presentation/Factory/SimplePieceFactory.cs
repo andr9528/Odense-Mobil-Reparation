@@ -2,7 +2,7 @@ using Repair.Frontend.Extensions;
 
 namespace Repair.Frontend.Presentation.Factory;
 
-internal static class SearchModeFactory
+internal static class SimplePieceFactory
 {
     public static Grid CreateFuzzySearchGrid(
         string useFuzzySearchPath, string searchModeTextPath, out CheckBox fuzzySearchCheckBox)
@@ -45,5 +45,50 @@ internal static class SearchModeFactory
         });
 
         return textBlock;
+    }
+
+    public static Grid CreateSaveCancelButtonGrid(
+        Func<object, RoutedEventArgs, Task> saveClicked, RoutedEventHandler cancelClicked)
+    {
+        Grid grid = GridFactory.CreateDefaultGrid();
+
+        grid.HorizontalAlignment = HorizontalAlignment.Right;
+        grid.VerticalAlignment = VerticalAlignment.Center;
+        grid.ColumnSpacing = 8;
+        grid.DefineColumns(new GridLength(1, GridUnitType.Star), GridLength.Auto, GridLength.Auto);
+
+        Button saveButton = CreateSaveButton(saveClicked);
+        Button cancelButton = CreateCancelButton(cancelClicked);
+
+        grid.Children.Add(saveButton.SetColumn(1));
+        grid.Children.Add(cancelButton.SetColumn(2));
+
+        return grid;
+    }
+
+    public static Button CreateSaveButton(Func<object, RoutedEventArgs, Task> saveClicked)
+    {
+        Button saveButton = new()
+        {
+            Content = "Save",
+            Padding = new Thickness(20, 8, 20, 8),
+        };
+
+        saveButton.Click += async (sender, args) => await saveClicked(sender, args);
+
+        return saveButton;
+    }
+
+    public static Button CreateCancelButton(RoutedEventHandler cancelClicked)
+    {
+        Button cancelButton = new()
+        {
+            Content = "Cancel",
+            Padding = new Thickness(20, 8, 20, 8),
+        };
+
+        cancelButton.Click += cancelClicked;
+
+        return cancelButton;
     }
 }

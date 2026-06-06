@@ -34,7 +34,7 @@ internal abstract class BaseDetailsPageUi<TLogic, TViewModel>(TLogic logic, TVie
 
         ViewModel.DeleteButton.SetBinding(Control.IsEnabledProperty, new Binding
         {
-            Path = new PropertyPath(nameof(Core.BaseDetailsPageViewModel.CanDelete)),
+            Path = new PropertyPath(nameof(BaseDetailsPageViewModel.CanDelete)),
             Mode = BindingMode.OneWay,
         });
 
@@ -61,7 +61,7 @@ internal abstract class BaseDetailsPageUi<TLogic, TViewModel>(TLogic logic, TVie
 
     private CheckBox CreateEditCheckBox()
     {
-        CheckBox checkBox = CheckBoxFactory.CreateLightCheckBox(nameof(Core.BaseDetailsPageViewModel.IsEditing));
+        CheckBox checkBox = CheckBoxFactory.CreateLightCheckBox(nameof(BaseDetailsPageViewModel.IsEditing));
 
         checkBox.VerticalAlignment = VerticalAlignment.Center;
         checkBox.HorizontalAlignment = HorizontalAlignment.Left;
@@ -76,40 +76,26 @@ internal abstract class BaseDetailsPageUi<TLogic, TViewModel>(TLogic logic, TVie
 
     private Button CreateSaveButton()
     {
-        ViewModel.SaveButton = new Button
-        {
-            HorizontalAlignment = HorizontalAlignment.Right,
-            VerticalAlignment = VerticalAlignment.Center,
-            Padding = new Thickness(20, 8, 20, 8),
-        };
+        ViewModel.SaveButton = SimplePieceFactory.CreateSaveButton(Logic.SaveClicked);
 
         ViewModel.SaveButton.SetBinding(ContentControl.ContentProperty, new Binding
         {
-            Path = new PropertyPath(nameof(Core.BaseDetailsPageViewModel.SaveButtonText)),
+            Path = new PropertyPath(nameof(BaseDetailsPageViewModel.SaveButtonText)),
             Mode = BindingMode.OneWay,
         });
-
-        ViewModel.SaveButton.Click += async (sender, args) => await Logic.SaveClicked(sender, args);
 
         return ViewModel.SaveButton;
     }
 
     private Button CreateCancelButton()
     {
-        ViewModel.CancelButton = new Button
-        {
-            HorizontalAlignment = HorizontalAlignment.Right,
-            VerticalAlignment = VerticalAlignment.Center,
-            Padding = new Thickness(20, 8, 20, 8),
-        };
+        ViewModel.CancelButton = SimplePieceFactory.CreateCancelButton(Logic.CancelClicked);
 
         ViewModel.CancelButton.SetBinding(ContentControl.ContentProperty, new Binding
         {
-            Path = new PropertyPath(nameof(Core.BaseDetailsPageViewModel.CancelButtonText)),
+            Path = new PropertyPath(nameof(BaseDetailsPageViewModel.CancelButtonText)),
             Mode = BindingMode.OneWay,
         });
-
-        ViewModel.CancelButton.Click += Logic.CancelClicked;
 
         return ViewModel.CancelButton;
     }
