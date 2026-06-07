@@ -6,6 +6,7 @@
     See https://aka.platform.uno/using-uno-sdk#implicit-packages for more information regarding the Implicit Packages.
   -->
   <ItemGroup>
+    <PackageVersion Include="Bogus" Version="35.6.5" />
     <PackageVersion Include="FluentAssertions" Version="8.9.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />

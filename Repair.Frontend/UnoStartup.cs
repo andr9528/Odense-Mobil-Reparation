@@ -39,6 +39,9 @@ internal class UnoStartup : ModularStartup<IApplicationBuilder>
 
         AddModule(new EntityQueryServiceStartupModule<CustomerQueryService, Customer, SearchableCustomer>());
         AddModule(new EntityQueryServiceStartupModule<OrderQueryService, Order, SearchableOrder>());
+#if DEBUG
+        AddModule(new BogusStartupModule(40));
+#endif
     }
 
     protected override void ConfigureApplication(IApplicationBuilder app)
