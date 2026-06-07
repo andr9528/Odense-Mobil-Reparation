@@ -1,6 +1,6 @@
 namespace Repair.Frontend.Extensions
 {
-    public static class UiElementExtensions
+    public static class GridExtensions
     {
         public static T SetRow<T>(this T element, int row, int span = 1) where T : UIElement
         {

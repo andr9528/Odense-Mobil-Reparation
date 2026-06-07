@@ -56,8 +56,6 @@
 </ItemGroup>
 
 <ItemGroup>
-  <Folder Include="Presentation\Core\Create\" />
-  <Folder Include="Presentation\Core\Overview\" />
   <Folder Include="Presentation\Pages\" />
 </ItemGroup>
 

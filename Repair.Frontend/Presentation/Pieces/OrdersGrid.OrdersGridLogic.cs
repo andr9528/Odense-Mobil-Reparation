@@ -1,10 +1,12 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
+using Repair.Models.Extensions;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
@@ -42,6 +44,7 @@ internal sealed partial class OrdersGrid
             ComplexSearchableOrder searchable = CreateSearchableOrder();
 
             List<Order> orders = (await orderQueryService.GetEntitiesComplex(searchable)).ToList();
+            orders = ViewModel.DataGrid.ApplyCurrentSort(orders).ToList();
 
             logger.LogDebug("Orders query returned {OrderCount} orders.", orders.Count);
 
@@ -49,16 +52,7 @@ internal sealed partial class OrdersGrid
             {
                 logger.LogDebug("Updating Orders collection. Existing count: {ExistingCount}", ViewModel.Orders.Count);
 
-                ViewModel.Orders.Clear();
-
-                foreach (Order order in orders)
-                {
-                    logger.LogDebug(
-                        "Showing {OrderName} '{OrderId}' in DataGrid, with {CustomerName} {NameName} '{Name}'", nameof(
-                            Order), order.Id, nameof(Customer), nameof(Customer.Name), order.Customer.Name);
-                    ViewModel.Orders.Add(order);
-                }
-
+                ViewModel.Orders.ReplaceItems(orders);
                 ViewModel.DataGrid.Refresh();
 
                 logger.LogDebug("Orders collection updated. New count: {NewCount}", ViewModel.Orders.Count);

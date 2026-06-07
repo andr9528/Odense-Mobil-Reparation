@@ -1,10 +1,12 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.ComplexSearchable;
 using Repair.Models.Entity.Model;
 using Repair.Models.Entity.Searchable;
+using Repair.Models.Extensions;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
@@ -44,6 +46,7 @@ internal sealed partial class CustomersGrid
             ComplexSearchableCustomer searchable = CreateSearchableCustomer();
 
             List<Customer> customers = (await queryService.GetEntitiesComplex(searchable)).ToList();
+            customers = ViewModel.DataGrid.ApplyCurrentSort(customers).ToList();
 
             logger.LogDebug("Customers query returned {CustomerCount} customers.", customers.Count);
 
@@ -52,13 +55,7 @@ internal sealed partial class CustomersGrid
                 logger.LogDebug("Updating Customers collection. Existing count: {ExistingCount}",
                     ViewModel.Customers.Count);
 
-                ViewModel.Customers.Clear();
-
-                foreach (Customer customer in customers)
-                {
-                    ViewModel.Customers.Add(customer);
-                }
-
+                ViewModel.Customers.ReplaceItems(customers);
                 ViewModel.DataGrid.Refresh();
 
                 RestoreSelectedCustomer();
