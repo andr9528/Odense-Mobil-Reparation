@@ -8,7 +8,7 @@ public static class GridFactory
     {
         return new Grid
         {
-            Margin = new Thickness(2),
+            Margin = new Thickness(0),
             IsTabStop = false,
             Background = GetBackgroundBrush(false),
         };
