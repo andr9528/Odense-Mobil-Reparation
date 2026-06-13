@@ -1,3 +1,4 @@
+using Microsoft.UI.Text;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
@@ -14,7 +15,8 @@ internal sealed partial class OrderEditor
             grid.RowSpacing = 8;
             grid.ColumnSpacing = 8;
 
-            grid.DefineRows(GridLength.Auto, GridLength.Auto, GridLength.Auto, new GridLength(1, GridUnitType.Star));
+            grid.DefineRows(GridLength.Auto, GridLength.Auto, GridLength.Auto, GridLength.Auto,
+                new GridLength(1, GridUnitType.Star));
             grid.DefineColumns(GridUnitType.Star, [1, 1, 1,]);
         }
 
@@ -27,7 +29,27 @@ internal sealed partial class OrderEditor
             grid.Children.Add(CreateIsOrderCompleteCheckBox().SetRow(2).SetColumn(0));
 
             grid.Children.Add(CreateRepairWhatTextBox().SetRow(1, 2).SetColumn(1, 2));
-            grid.Children.Add(CreateCustomersGrid().SetRow(3).SetColumn(0, 3));
+            grid.Children.Add(CreateSelectedCustomerTextBlock().SetRow(3).SetColumn(0, 3));
+            grid.Children.Add(CreateCustomersGrid().SetRow(4).SetColumn(0, 3));
+        }
+
+        private TextBlock CreateSelectedCustomerTextBlock()
+        {
+            ViewModel.SelectedCustomerTextBlock = new TextBlock
+            {
+                FontWeight = FontWeights.SemiBold,
+                TextWrapping = TextWrapping.Wrap,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Foreground = new SolidColorBrush(Colors.Black),
+            };
+
+            ViewModel.SelectedCustomerTextBlock.SetBinding(TextBlock.TextProperty, new Binding
+            {
+                Path = new PropertyPath(nameof(OrderEditorViewModel.SelectedCustomerText)),
+                Mode = BindingMode.OneWay,
+            });
+
+            return ViewModel.SelectedCustomerTextBlock;
         }
 
         private DateTimePicker CreateHandInWhenPicker()
@@ -91,6 +113,7 @@ internal sealed partial class OrderEditor
                                               ViewModel.Arguments.SelectedCustomerId);
 
             ViewModel.CustomersGrid = new CustomersGrid(arguments);
+            Logic.RegisterCustomerSelectionIndicator();
 
             return ViewModel.CustomersGrid;
         }

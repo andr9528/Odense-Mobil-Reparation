@@ -19,7 +19,9 @@ internal sealed partial class OrderEditor
         internal TextBox HandInWhatTextBox { get; set; } = null!;
         internal TextBox RepairWhatTextBox { get; set; } = null!;
         internal CustomersGrid CustomersGrid { get; set; } = null!;
+        internal TextBlock SelectedCustomerTextBlock { get; set; } = null!;
 
+        [ObservableProperty] private string selectedCustomerText = "Current Selected Customer: Missing Selection";
         [ObservableProperty] private string handInWhat = arguments.Order?.HandInWhat ?? string.Empty;
         [ObservableProperty] private string repairWhat = arguments.Order?.RepairWhat ?? string.Empty;
         [ObservableProperty] private string borrowedPhone = arguments.Order?.BorrowedPhone ?? string.Empty;

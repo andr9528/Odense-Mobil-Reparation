@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using Repair.Frontend.Presentation.Core;
+using Repair.Models.Entity.Model;
 
 namespace Repair.Frontend.Presentation.Pieces;
 
@@ -33,6 +35,32 @@ internal sealed partial class OrderEditor
             ViewModel.ReturnedWhenPicker.ViewModel.TimeButton.IsHitTestVisible = isEditable;
 
             ViewModel.CustomersGrid.ViewModel.DataGrid.IsHitTestVisible = isEditable;
+        }
+
+        internal void RegisterCustomerSelectionIndicator()
+        {
+            ViewModel.CustomersGrid.ViewModel.PropertyChanged += CustomersGridViewModelPropertyChanged;
+
+            UpdateSelectedCustomerText();
+        }
+
+        private void CustomersGridViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(ViewModel.CustomersGrid.ViewModel.SelectedCustomerId))
+                return;
+
+            UpdateSelectedCustomerText();
+        }
+
+        private void UpdateSelectedCustomerText()
+        {
+            Customer? customer =
+                ViewModel.CustomersGrid.ViewModel.Customers.FirstOrDefault(x =>
+                    x.Id == ViewModel.CustomersGrid.ViewModel.SelectedCustomerId);
+
+            ViewModel.SelectedCustomerText = customer is null
+                ? "Current Selected Customer: Missing Selection"
+                : $"Current Selected Customer: {customer.Name}";
         }
     }
 }
