@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.UI.Dispatching;
 using Repair.Frontend.Abstraction;
+using Repair.Frontend.Presentation.Pages;
 
 namespace Repair.Frontend.Services
 {
@@ -37,12 +38,26 @@ namespace Repair.Frontend.Services
             string previousPageName = navigationStack.Peek().Name;
 
             navigationStack.Pop();
+            PopCreatePageIfNeeded();
 
             TimeSpan elapsed = UpdateFrameToTopElement();
             string currentPageName = navigationStack.Peek().Name;
 
             logger.LogDebug("Navigated back from {PreviousPageName} to {CurrentPageName} in {ElapsedMilliseconds} ms",
                 previousPageName, currentPageName, elapsed.TotalMilliseconds);
+        }
+
+        private void PopCreatePageIfNeeded()
+        {
+            if (navigationStack.Count <= 1)
+                return;
+
+            UIElement element = navigationStack.Peek().Element;
+
+            if (element is not CustomerCreationPage && element is not OrderCreationPage)
+                return;
+
+            navigationStack.Pop();
         }
 
         private TimeSpan UpdateFrameToTopElement()
