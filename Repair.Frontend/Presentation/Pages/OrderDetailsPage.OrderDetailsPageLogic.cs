@@ -60,7 +60,7 @@ internal sealed partial class OrderDetailsPage
             UpdateHasChanges();
         }
 
-        internal async void PrintClicked(object sender, RoutedEventArgs e)
+        protected internal override async void PrintClicked(object sender, RoutedEventArgs e)
         {
             try
             {

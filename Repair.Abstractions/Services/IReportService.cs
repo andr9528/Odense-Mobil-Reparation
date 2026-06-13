@@ -5,4 +5,5 @@ namespace Repair.Abstractions.Services;
 public interface IReportService
 {
     Task<string> CreateReport(IOrder order);
+    Task<string> CreateReport(ICustomer customer);
 }

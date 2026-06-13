@@ -162,5 +162,34 @@ internal sealed partial class CustomerDetailsPage
         {
             logger.LogError(exception, "Failed to save changes to the customer.");
         }
+
+        /// <inheritdoc />
+        protected internal override async void PrintClicked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (ViewModel.IsPrinting)
+                {
+                    logger.LogDebug("Ignoring print request while another print is already running.");
+                    return;
+                }
+
+                ViewModel.IsPrinting = true;
+                ViewModel.PrintButtonText = "Printing...";
+
+                await ViewModel.Arguments.ReportService.CreateReport(ViewModel.Customer);
+            }
+            catch (Exception exe)
+            {
+                logger.LogError(exe, "Failed to generate customer report.");
+            }
+            finally
+            {
+                await Task.Delay(2000);
+
+                ViewModel.IsPrinting = false;
+                ViewModel.PrintButtonText = "Print";
+            }
+        }
     }
 }

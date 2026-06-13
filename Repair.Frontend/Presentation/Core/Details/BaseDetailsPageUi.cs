@@ -7,18 +7,27 @@ internal abstract class BaseDetailsPageUi<TLogic, TViewModel>(TLogic logic, TVie
     : BaseUi<TLogic, TViewModel>(logic, viewModel) where TLogic : BaseDetailsPageLogic<TViewModel>
     where TViewModel : BaseDetailsPageViewModel
 {
-    protected Grid CreateDetailsButtonsGrid(UIElement leftButton)
+    protected Grid CreateDetailsButtonsGrid(params UIElement[] leftButtons)
     {
-        Grid grid = GridFactory.CreateDefaultGrid().DefineColumns(GridLength.Auto, new GridLength(1, GridUnitType.Star),
-            GridLength.Auto, GridLength.Auto, GridLength.Auto, GridLength.Auto);
+        var columns = leftButtons.Select(_ => GridLength.Auto).Prepend(GridLength.Auto)
+            .Append(new GridLength(1, GridUnitType.Star)).Append(GridLength.Auto).Append(GridLength.Auto)
+            .Append(GridLength.Auto).Append(GridLength.Auto).ToArray();
+
+        Grid grid = GridFactory.CreateDefaultGrid().DefineColumns(columns);
 
         grid.ColumnSpacing = 8;
 
-        grid.Children.Add(leftButton.SetColumn(0));
-        grid.Children.Add(CreateDeleteButton().SetColumn(2));
-        grid.Children.Add(CreateEditCheckBoxGrid().SetColumn(3));
-        grid.Children.Add(CreateSaveButton().SetColumn(4));
-        grid.Children.Add(CreateCancelButton().SetColumn(5));
+        grid.Children.Add(CreatePrintButton().SetColumn(0));
+
+        for (var i = 0; i < leftButtons.Length; i++)
+            grid.Children.Add(leftButtons[i].SetColumn(i + 1));
+
+        int rightSideStartColumn = leftButtons.Length + 2;
+
+        grid.Children.Add(CreateDeleteButton().SetColumn(rightSideStartColumn));
+        grid.Children.Add(CreateEditCheckBoxGrid().SetColumn(rightSideStartColumn + 1));
+        grid.Children.Add(CreateSaveButton().SetColumn(rightSideStartColumn + 2));
+        grid.Children.Add(CreateCancelButton().SetColumn(rightSideStartColumn + 3));
 
         return grid;
     }
@@ -98,5 +107,26 @@ internal abstract class BaseDetailsPageUi<TLogic, TViewModel>(TLogic logic, TVie
         });
 
         return ViewModel.CancelButton;
+    }
+
+    private Button CreatePrintButton()
+    {
+        ViewModel.PrintButton = new Button
+        {
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center,
+            MinWidth = 120,
+            Padding = new Thickness(20, 8, 20, 8),
+        };
+
+        ViewModel.PrintButton.SetBinding(ContentControl.ContentProperty, new Binding
+        {
+            Path = new PropertyPath(nameof(BaseDetailsPageViewModel.PrintButtonText)),
+            Mode = BindingMode.OneWay,
+        });
+
+        ViewModel.PrintButton.Click += Logic.PrintClicked;
+
+        return ViewModel.PrintButton;
     }
 }

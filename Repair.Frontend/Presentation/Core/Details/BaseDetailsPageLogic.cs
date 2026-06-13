@@ -89,4 +89,6 @@ internal abstract class BaseDetailsPageLogic<TViewModel>(TViewModel viewModel)
     protected abstract void NavigateBack();
 
     protected abstract void LogSaveError(Exception exception);
+
+    protected internal abstract void PrintClicked(object sender, RoutedEventArgs e);
 }

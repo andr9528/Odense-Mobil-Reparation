@@ -22,34 +22,13 @@ internal sealed partial class OrderDetailsPage
         protected override void AddControlsToGrid(Grid grid)
         {
             grid.Children.Add(CreateHeader().SetRow(0));
-            grid.Children.Add(CreateDetailsButtonsGrid(CreatePrintButton()).SetRow(0));
+            grid.Children.Add(CreateDetailsButtonsGrid().SetRow(0));
             grid.Children.Add(CreateOrderEditor().SetRow(1));
         }
 
         private UIElement CreateHeader()
         {
             return TextBlockFactory.CreateHeader("Order Details");
-        }
-
-        private Button CreatePrintButton()
-        {
-            ViewModel.PrintButton = new Button
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center,
-                MinWidth = 120,
-                Padding = new Thickness(20, 8, 20, 8),
-            };
-
-            ViewModel.PrintButton.SetBinding(ContentControl.ContentProperty, new Binding
-            {
-                Path = new PropertyPath(nameof(OrderDetailsPageViewModel.PrintButtonText)),
-                Mode = BindingMode.OneWay,
-            });
-
-            ViewModel.PrintButton.Click += Logic.PrintClicked;
-
-            return ViewModel.PrintButton;
         }
 
         private OrderEditor CreateOrderEditor()

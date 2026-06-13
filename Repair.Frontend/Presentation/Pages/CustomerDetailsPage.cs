@@ -1,5 +1,6 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Abstractions.Services;
 using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Models.Entity.Model;
@@ -34,5 +35,6 @@ internal sealed partial class CustomerDetailsPage : Border
         IEntityQueryService<Order, SearchableOrder> OrderQueryService,
         DispatcherQueue DispatcherQueue,
         ILoggerFactory LoggerFactory,
-        INavigationService NavigationService);
+        INavigationService NavigationService,
+        IReportService ReportService);
 }

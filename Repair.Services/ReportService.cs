@@ -36,6 +36,84 @@ public class ReportService(
     private const string REPAIR_NOTES_HEADER = "Reparationsnoter";
     private const string NO_DATE_TIME_SET = "Ingen dato/tid angivet";
 
+    private const string CUSTOMER_ORDERS_HEADER = "Kundens ordrer";
+    private const string IS_ORDER_COMPLETE_LABEL = "Ordre færdig";
+    private const string YES_TEXT = "Ja";
+    private const string NO_TEXT = "Nej";
+    private const string NO_ORDERS_TEXT = "Kunden har ingen ordrer";
+
+    public Task<string> CreateReport(ICustomer customer)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(customer);
+
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            string reportFolder = Path.Combine(configurationService.GetApplicationDataPath(), REPORT_FOLDER_NAME);
+
+            Directory.CreateDirectory(reportFolder);
+
+            string filePath = Path.Combine(reportFolder, CreateReportFileName(customer));
+
+            Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(40);
+                    page.DefaultTextStyle(x => x.FontSize(11));
+
+                    page.Content().Column(column =>
+                    {
+                        column.Spacing(25);
+
+                        AddCompanyDetails(column);
+                        AddCustomerDetails(column, customer);
+                        AddCustomerOrders(column, customer);
+                    });
+                });
+            }).GeneratePdf(filePath);
+
+            logger.LogInformation("Created report for customer '{CustomerId}' at {ReportPath}", customer.Id, filePath);
+
+            return Task.FromResult(filePath);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Caught exception while trying to create a Report for Customer '{CustomerId}'.",
+                customer.Id);
+            throw;
+        }
+    }
+
+    private void AddCustomerOrders(ColumnDescriptor column, ICustomer customer)
+    {
+        column.Item().Column(ordersColumn =>
+        {
+            ordersColumn.Spacing(15);
+
+            ordersColumn.Item().Text(CUSTOMER_ORDERS_HEADER).FontSize(15).Bold();
+
+            if (customer.Orders.Count == 0)
+            {
+                ordersColumn.Item().Text(NO_ORDERS_TEXT);
+                return;
+            }
+
+            foreach (IOrder order in customer.Orders.OrderByDescending(x => x.HandInWhen))
+                AddOrderDetails(ordersColumn, order);
+        });
+    }
+
+    private string CreateReportFileName(ICustomer customer)
+    {
+        string customerName = SanitizeFileNamePart(customer.Name);
+        var createdAt = DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
+
+        return $"{customerName} - {createdAt} - Ordrer.pdf";
+    }
+
     /// <inheritdoc />
     public Task<string> CreateReport(IOrder order)
     {
@@ -177,6 +255,7 @@ public class ReportService(
 
             orderColumn.Item().Text($"{HANDED_IN_LABEL}: {FormatDateTime(order.HandInWhen)}");
             orderColumn.Item().Text($"{RETURNED_LABEL}: {FormatNullableDateTime(order.ReturnedWhen)}");
+            orderColumn.Item().Text($"{IS_ORDER_COMPLETE_LABEL}: {FormatBoolean(order.IsOrderComplete)}");
 
             orderColumn.Item().PaddingTop(10).Text(BORROWED_PHONE_HEADER).Bold();
             orderColumn.Item().Text(GetTextValue(order.BorrowedPhone, NO_BORROWED_PHONE));
@@ -197,5 +276,10 @@ public class ReportService(
     private string FormatNullableDateTime(DateTime? dateTime)
     {
         return dateTime.HasValue ? FormatDateTime(dateTime.Value) : NO_DATE_TIME_SET;
+    }
+
+    private string FormatBoolean(bool value)
+    {
+        return value ? YES_TEXT : NO_TEXT;
     }
 }

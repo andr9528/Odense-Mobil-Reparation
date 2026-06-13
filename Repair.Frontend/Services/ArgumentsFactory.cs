@@ -20,7 +20,7 @@ internal class ArgumentsFactory(
     internal CustomerDetailsPage.CustomerDetailsPageArguments CreateCustomerDetailsPageArguments(int customerId)
     {
         return new CustomerDetailsPage.CustomerDetailsPageArguments(customerId, customerQueryService, orderQueryService,
-            dispatcherQueue, loggerFactory, navigationService);
+            dispatcherQueue, loggerFactory, navigationService, reportService);
     }
 
     internal OrdersGrid.OrdersGridArguments CreateOrderGridArguments(int customerId = 0)
