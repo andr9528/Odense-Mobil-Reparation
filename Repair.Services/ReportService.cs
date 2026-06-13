@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using QuestPDF.Fluent;
@@ -74,6 +75,7 @@ public class ReportService(
                     });
                 });
             }).GeneratePdf(filePath);
+            OpenReportInDefaultViewer(filePath);
 
             logger.LogInformation("Created report for customer '{CustomerId}' at {ReportPath}", customer.Id, filePath);
 
@@ -85,6 +87,17 @@ public class ReportService(
                 customer.Id);
             throw;
         }
+    }
+
+    private void OpenReportInDefaultViewer(string filePath)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = filePath,
+            UseShellExecute = true,
+        });
+
+        logger.LogInformation("Opened report '{ReportPath}'.", filePath);
     }
 
     private void AddCustomerOrders(ColumnDescriptor column, ICustomer customer)
@@ -147,6 +160,7 @@ public class ReportService(
                     });
                 });
             }).GeneratePdf(filePath);
+            OpenReportInDefaultViewer(filePath);
 
             logger.LogInformation("Created report for order '{OrderId}' at {ReportPath}", order.Id, filePath);
 
