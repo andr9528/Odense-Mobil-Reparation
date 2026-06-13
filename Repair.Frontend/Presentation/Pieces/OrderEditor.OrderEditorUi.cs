@@ -23,9 +23,8 @@ internal sealed partial class OrderEditor
             grid.Children.Add(CreateHandInWhatTextBox().SetRow(0).SetColumn(0));
             grid.Children.Add(CreateHandInWhenPicker().SetRow(0).SetColumn(1));
             grid.Children.Add(CreateReturnedWhenPicker().SetRow(0).SetColumn(2));
-
-            grid.Children.Add(CreateIsOrderCompleteCheckBox().SetRow(1).SetColumn(0));
-            grid.Children.Add(CreateHasBorrowedPhoneCheckBox().SetRow(2).SetColumn(0));
+            grid.Children.Add(CreateBorrowedPhoneTextBox().SetRow(1).SetColumn(0));
+            grid.Children.Add(CreateIsOrderCompleteCheckBox().SetRow(2).SetColumn(0));
 
             grid.Children.Add(CreateRepairWhatTextBox().SetRow(1, 2).SetColumn(1, 2));
             grid.Children.Add(CreateCustomersGrid().SetRow(3).SetColumn(0, 3));
@@ -61,14 +60,12 @@ internal sealed partial class OrderEditor
             return grid;
         }
 
-        private Grid CreateHasBorrowedPhoneCheckBox()
+        private TextBox CreateBorrowedPhoneTextBox()
         {
-            Grid grid = CheckBoxFactory.CreateLightCheckBoxWithLabel("Did customer borrow phone?",
-                nameof(OrderEditorViewModel.HasBorrowedPhone), out CheckBox checkBox);
+            ViewModel.BorrowedPhoneTextBox = TextBoxFactory.CreateSearchBox("Borrowed phone?", "Borrowed phone...",
+                nameof(OrderEditorViewModel.BorrowedPhone));
 
-            ViewModel.HasBorrowedPhoneCheckBox = checkBox;
-
-            return grid;
+            return ViewModel.BorrowedPhoneTextBox;
         }
 
         private TextBox CreateHandInWhatTextBox()

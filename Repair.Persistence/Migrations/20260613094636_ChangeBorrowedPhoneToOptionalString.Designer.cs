@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repair.Persistence;
 
@@ -10,9 +11,11 @@ using Repair.Persistence;
 namespace Repair.Persistence.Migrations
 {
     [DbContext(typeof(RepairDatabaseContext))]
-    partial class RepairDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260613094636_ChangeBorrowedPhoneToOptionalString")]
+    partial class ChangeBorrowedPhoneToOptionalString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.2");

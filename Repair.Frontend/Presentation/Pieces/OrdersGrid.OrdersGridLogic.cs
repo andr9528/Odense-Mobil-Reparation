@@ -70,18 +70,19 @@ internal sealed partial class OrdersGrid
                 UseFuzzy = ViewModel.UseFuzzySearch,
                 CustomerName = ViewModel.CustomerNameSearchText,
                 IsOrderComplete = ViewModel.IsOrderComplete,
-                HasBorrowedPhone = ViewModel.HasBorrowedPhone,
             };
 
             if (ViewModel.UseFuzzySearch)
             {
                 complex.HandInWhat = ViewModel.HandInWhatSearchText;
                 complex.RepairWhat = ViewModel.RepairWhatSearchText;
+                complex.BorrowedPhone = ViewModel.BorrowedPhoneSearchText;
             }
             else
             {
                 complex.Searchable.HandInWhat = ViewModel.HandInWhatSearchText;
                 complex.Searchable.RepairWhat = ViewModel.RepairWhatSearchText;
+                complex.Searchable.BorrowedPhone = ViewModel.BorrowedPhoneSearchText;
             }
 
             AddDateTimeFilters(complex);
@@ -115,11 +116,6 @@ internal sealed partial class OrdersGrid
         public void IsOrderCompleteSelectionChanged(object? sender, EventArgs e)
         {
             ViewModel.IsOrderComplete = ViewModel.IsOrderCompleteOptionBar.ViewModel.SelectedValue;
-        }
-
-        public void HasBorrowedPhoneSelectionChanged(object? sender, EventArgs e)
-        {
-            ViewModel.HasBorrowedPhone = ViewModel.HasBorrowedPhoneOptionBar.ViewModel.SelectedValue;
         }
     }
 }

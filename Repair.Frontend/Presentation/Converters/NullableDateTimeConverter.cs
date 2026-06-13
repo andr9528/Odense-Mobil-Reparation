@@ -1,12 +1,12 @@
 namespace Repair.Frontend.Presentation.Converters;
 
-internal sealed class NullableDateTimeConverter : IValueConverter
+internal sealed class NullableDateTimeConverter(string nullText) : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
         return value switch
         {
-            null => "No Date/Time Set",
+            null => nullText,
             DateTime dateTime => dateTime.ToString("dd.MM.yyyy HH:mm"),
             DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("dd.MM.yyyy HH:mm"),
             var _ => value,

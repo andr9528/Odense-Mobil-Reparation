@@ -9,4 +9,6 @@ public interface ISearchableOrder : ISearchable
     string RepairWhat { get; set; }
 
     int CustomerId { get; set; }
+
+    string? BorrowedPhone { get; set; }
 }

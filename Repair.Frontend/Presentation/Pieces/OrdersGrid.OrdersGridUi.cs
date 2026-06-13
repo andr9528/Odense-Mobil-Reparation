@@ -1,5 +1,6 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Repair.Frontend.Extensions;
+using Repair.Frontend.Presentation.Converters;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
 using Repair.Frontend.Services;
@@ -53,24 +54,23 @@ internal sealed partial class OrdersGrid
             AddTextSearchFilterControls(grid);
             AddDateTimeFilterControls(grid);
 
-            NullableBooleanOptionBar isOrderCompleteBar = CreateIsOrderCompleteOptionBar().SetRow(1).SetColumn(1);
-            NullableBooleanOptionBar hasBorrowedPhoneBar = CreateHasBorrowedPhoneOptionBar().SetRow(2).SetColumn(1);
+            NullableBooleanOptionBar isOrderCompleteBar = CreateIsOrderCompleteOptionBar().SetRow(3).SetColumn(1);
 
             grid.Children.Add(dataGrid);
             grid.Children.Add(isOrderCompleteBar);
-            grid.Children.Add(hasBorrowedPhoneBar);
         }
 
         private void AddTextSearchFilterControls(Grid grid)
         {
             TextBox handInWhatSearchBox = CreateHandInWhatSearchBox().SetRow(1).SetColumn(0);
             TextBox repairWhatSearchBox = CreateRepairWhatSearchBox().SetRow(2).SetColumn(0);
-            TextBox customerNameSearchBox = CreateCustomerNameSearchBox().SetRow(3).SetColumn(0);
-
-            Grid fuzzyToggle = CreateFuzzySearchGrid().SetRow(3).SetColumn(1);
+            TextBox borrowedPhoneSearchBox = CreateBorrowedPhoneSearchBox().SetRow(2).SetColumn(1);
+            TextBox customerNameSearchBox = CreateCustomerNameSearchBox().SetRow(1).SetColumn(1);
+            Grid fuzzyToggle = CreateFuzzySearchGrid().SetRow(3).SetColumn(0);
 
             grid.Children.Add(handInWhatSearchBox);
             grid.Children.Add(repairWhatSearchBox);
+            grid.Children.Add(borrowedPhoneSearchBox);
             grid.Children.Add(customerNameSearchBox);
 
             grid.Children.Add(fuzzyToggle);
@@ -156,15 +156,12 @@ internal sealed partial class OrdersGrid
             return ViewModel.IsOrderCompleteOptionBar;
         }
 
-        private NullableBooleanOptionBar CreateHasBorrowedPhoneOptionBar()
+        private TextBox CreateBorrowedPhoneSearchBox()
         {
-            NullableBooleanOptionBar.NullableBooleanOptionBarArguments arguments =
-                Logic.GetArgumentsFactory().CreateNullableBooleanOptionBarArguments("Borrowed phone");
-            ViewModel.HasBorrowedPhoneOptionBar = new NullableBooleanOptionBar(arguments);
+            ViewModel.BorrowedPhoneSearchBox = TextBoxFactory.CreateSearchBox("Borrowed phone",
+                "Search borrowed phone...", nameof(OrdersGridViewModel.BorrowedPhoneSearchText));
 
-            ViewModel.HasBorrowedPhoneOptionBar.ViewModel.SelectionChanged += Logic.HasBorrowedPhoneSelectionChanged;
-
-            return ViewModel.HasBorrowedPhoneOptionBar;
+            return ViewModel.BorrowedPhoneSearchBox;
         }
 
         private TextBox CreateHandInWhatSearchBox()
@@ -196,7 +193,7 @@ internal sealed partial class OrdersGrid
         private DataGrid CreateOrderDataGrid()
         {
             ViewModel.DataGrid =
-                DataGridFactory.Create<OrderGridColumns>(ViewModel.Orders, GetColumnBindingPath, GetColumnType);
+                DataGridFactory.Create<OrderGridColumns>(ViewModel.Orders, GetColumnBindingPath, GetColumnConverter);
             ViewModel.DataGrid.Margin = new Thickness(4);
 
             return ViewModel.DataGrid;
@@ -211,20 +208,20 @@ internal sealed partial class OrdersGrid
                 OrderGridColumns.HANDED_IN_WHEN => nameof(Order.HandInWhen),
                 OrderGridColumns.RETURNED_WHEN => nameof(Order.ReturnedWhen),
                 OrderGridColumns.IS_ORDER_COMPLETE => nameof(Order.IsOrderComplete),
-                OrderGridColumns.HAS_BORROWED_PHONE => nameof(Order.HasBorrowedPhone),
+                OrderGridColumns.BORROWED_PHONE => nameof(Order.BorrowedPhone),
                 OrderGridColumns.CUSTOMER_NAME => $"{nameof(Order.Customer)}.{nameof(Customer.Name)}",
                 var _ => throw new ArgumentOutOfRangeException(nameof(column), column, null),
             };
         }
 
-        private Type GetColumnType(OrderGridColumns column)
+        private IValueConverter? GetColumnConverter(OrderGridColumns column)
         {
             return column switch
             {
-                OrderGridColumns.RETURNED_WHEN => typeof(DateTime?),
-                OrderGridColumns.IS_ORDER_COMPLETE => typeof(bool),
-                OrderGridColumns.HAS_BORROWED_PHONE => typeof(bool),
-                var _ => typeof(string),
+                OrderGridColumns.RETURNED_WHEN => new NullableDateTimeConverter($"No Date/Time Set"),
+                OrderGridColumns.IS_ORDER_COMPLETE => new BooleanConverter(),
+                OrderGridColumns.BORROWED_PHONE => new NullableStringConverter("No Borrowed Phone"),
+                var _ => null,
             };
         }
 
@@ -235,7 +232,7 @@ internal sealed partial class OrdersGrid
             HANDED_IN_WHEN = 2,
             RETURNED_WHEN = 3,
             IS_ORDER_COMPLETE = 4,
-            HAS_BORROWED_PHONE = 5,
+            BORROWED_PHONE = 5,
             CUSTOMER_NAME = 6,
         }
     }

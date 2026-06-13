@@ -22,9 +22,9 @@ internal sealed partial class OrderEditor
 
             ViewModel.HandInWhatTextBox.IsReadOnly = ViewModel.IsReadOnly;
             ViewModel.RepairWhatTextBox.IsReadOnly = ViewModel.IsReadOnly;
+            ViewModel.BorrowedPhoneTextBox.IsReadOnly = ViewModel.IsReadOnly;
 
             ViewModel.IsOrderCompleteCheckBox.IsEnabled = isEditable;
-            ViewModel.HasBorrowedPhoneCheckBox.IsEnabled = isEditable;
 
             ViewModel.HandInWhenPicker.ViewModel.DateButton.IsHitTestVisible = isEditable;
             ViewModel.HandInWhenPicker.ViewModel.TimeButton.IsHitTestVisible = isEditable;

@@ -66,7 +66,7 @@ internal sealed partial class OrderCreationPage
                 HandInWhen = orderEditorViewModel.HandInWhenPicker.ViewModel.SelectedDateTime!.Value,
                 ReturnedWhen = orderEditorViewModel.ReturnedWhenPicker.ViewModel.SelectedDateTime,
                 IsOrderComplete = orderEditorViewModel.IsOrderComplete,
-                HasBorrowedPhone = orderEditorViewModel.HasBorrowedPhone,
+                BorrowedPhone = orderEditorViewModel.BorrowedPhone,
                 HandInWhat = orderEditorViewModel.HandInWhat,
                 RepairWhat = orderEditorViewModel.RepairWhat,
                 CustomerId = GetSelectedCustomerId(),

@@ -10,20 +10,20 @@ internal sealed partial class OrderEditor
         public event EventHandler? HandInWhatChanged;
         public event EventHandler? RepairWhatChanged;
         public event EventHandler? IsOrderCompleteChanged;
-        public event EventHandler? HasBorrowedPhoneChanged;
+        public event EventHandler? BorrowedPhoneChanged;
 
         internal DateTimePicker HandInWhenPicker { get; set; } = null!;
         internal DateTimePicker ReturnedWhenPicker { get; set; } = null!;
         internal CheckBox IsOrderCompleteCheckBox { get; set; } = null!;
-        internal CheckBox HasBorrowedPhoneCheckBox { get; set; } = null!;
+        internal TextBox BorrowedPhoneTextBox { get; set; } = null!;
         internal TextBox HandInWhatTextBox { get; set; } = null!;
         internal TextBox RepairWhatTextBox { get; set; } = null!;
         internal CustomersGrid CustomersGrid { get; set; } = null!;
 
         [ObservableProperty] private string handInWhat = arguments.Order?.HandInWhat ?? string.Empty;
         [ObservableProperty] private string repairWhat = arguments.Order?.RepairWhat ?? string.Empty;
+        [ObservableProperty] private string borrowedPhone = arguments.Order?.BorrowedPhone ?? string.Empty;
         [ObservableProperty] private bool isOrderComplete = arguments.Order?.IsOrderComplete ?? false;
-        [ObservableProperty] private bool hasBorrowedPhone = arguments.Order?.HasBorrowedPhone ?? false;
         [ObservableProperty] private bool isReadOnly = true;
 
         public DateTime HandInWhen => HandInWhenPicker.ViewModel.SelectedDateTime ?? DateTime.Now;
@@ -50,9 +50,9 @@ internal sealed partial class OrderEditor
             IsOrderCompleteChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        partial void OnHasBorrowedPhoneChanged(bool value)
+        partial void OnBorrowedPhoneChanged(string value)
         {
-            HasBorrowedPhoneChanged?.Invoke(this, EventArgs.Empty);
+            BorrowedPhoneChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

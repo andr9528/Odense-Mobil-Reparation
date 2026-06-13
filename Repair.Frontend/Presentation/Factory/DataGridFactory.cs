@@ -2,17 +2,15 @@ using System.Collections;
 using System.ComponentModel;
 using CommunityToolkit.WinUI.UI.Controls;
 using Repair.Frontend.Extensions;
-using Repair.Frontend.Presentation.Converters;
 using Repair.Models.Extensions;
-using BooleanConverter = Repair.Frontend.Presentation.Converters.BooleanConverter;
 
 namespace Repair.Frontend.Presentation.Factory;
 
 internal static class DataGridFactory
 {
     public static DataGrid Create<TColumn>(
-        IEnumerable<object> itemsSource, Func<TColumn, string> getBindingPath, Func<TColumn, Type> getColumnType)
-        where TColumn : struct, Enum
+        IEnumerable<object> itemsSource, Func<TColumn, string> getBindingPath,
+        Func<TColumn, IValueConverter?>? getColumnConverter = null) where TColumn : struct, Enum
     {
         var dataGrid = new DataGrid
         {
@@ -29,9 +27,9 @@ internal static class DataGridFactory
         {
             string header = column.ToColumnHeader();
             string bindingPath = getBindingPath(column);
-            Type columnType = getColumnType(column);
+            IValueConverter? converter = getColumnConverter?.Invoke(column);
 
-            dataGrid.Columns.Add(CreateColumn(header, bindingPath, columnType));
+            dataGrid.Columns.Add(CreateTextColumn(header, bindingPath, converter));
         }
 
         return dataGrid;
@@ -110,21 +108,6 @@ internal static class DataGridFactory
         return currentValue;
     }
 
-    private static DataGridColumn CreateColumn(string header, string bindingPath, Type columnType)
-    {
-        if (columnType == typeof(DateTime?))
-        {
-            return CreateNullableDateTimeColumn(header, bindingPath);
-        }
-
-        if (columnType == typeof(bool))
-        {
-            return CreateBooleanColumn(header, bindingPath);
-        }
-
-        return CreateTextColumn(header, bindingPath);
-    }
-
     private static DataGridTextColumn CreateTextColumn(
         string header, string bindingPath, IValueConverter? converter = null)
     {
@@ -140,16 +123,6 @@ internal static class DataGridFactory
                 Converter = converter,
             },
         };
-    }
-
-    private static DataGridTextColumn CreateNullableDateTimeColumn(string header, string bindingPath)
-    {
-        return CreateTextColumn(header, bindingPath, new NullableDateTimeConverter());
-    }
-
-    private static DataGridTextColumn CreateBooleanColumn(string header, string bindingPath)
-    {
-        return CreateTextColumn(header, bindingPath, new BooleanConverter());
     }
 
     public static void Refresh(this DataGrid dataGrid)

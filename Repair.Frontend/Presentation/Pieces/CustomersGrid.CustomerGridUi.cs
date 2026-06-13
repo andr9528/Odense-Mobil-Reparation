@@ -33,7 +33,8 @@ internal sealed partial class CustomersGrid
         private DataGrid CreateCustomerDataGrid()
         {
             ViewModel.DataGrid =
-                DataGridFactory.Create<CustomerGridColumns>(ViewModel.Customers, GetColumnBindingPath, GetColumnType);
+                DataGridFactory.Create<CustomerGridColumns>(ViewModel.Customers, GetColumnBindingPath,
+                    GetColumnConverter);
 
             ViewModel.DataGrid.SetBinding(DataGrid.SelectedItemProperty, new Binding
             {
@@ -74,11 +75,11 @@ internal sealed partial class CustomersGrid
             return grid;
         }
 
-        private Type GetColumnType(CustomerGridColumns column)
+        private IValueConverter? GetColumnConverter(CustomerGridColumns column)
         {
             return column switch
             {
-                var _ => typeof(string),
+                var _ => null,
             };
         }
 

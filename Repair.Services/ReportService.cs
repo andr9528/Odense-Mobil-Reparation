@@ -162,7 +162,7 @@ public class ReportService(
 
             orderColumn.Item().Text($"Handed In: {FormatDateTime(order.HandInWhen)}");
             orderColumn.Item().Text($"Returned: {FormatNullableDateTime(order.ReturnedWhen)}");
-            orderColumn.Item().Text($"Borrowed Phone: {FormatBoolean(order.HasBorrowedPhone)}");
+            orderColumn.Item().Text($"Borrowed Phone: {GetTextValue(order.BorrowedPhone, "No Borrowed Phone")}");
 
             orderColumn.Item().PaddingTop(10).Text("Hand In What").Bold();
             orderColumn.Item().Text(order.HandInWhat);
@@ -180,10 +180,5 @@ public class ReportService(
     private string FormatNullableDateTime(DateTime? dateTime)
     {
         return dateTime.HasValue ? FormatDateTime(dateTime.Value) : "No Date/Time Set";
-    }
-
-    private string FormatBoolean(bool value)
-    {
-        return value ? "Yes" : "No";
     }
 }

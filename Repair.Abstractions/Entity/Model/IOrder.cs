@@ -11,7 +11,5 @@ public interface IOrder : ISearchableOrder, IEntity
 
     bool IsOrderComplete { get; set; }
 
-    bool HasBorrowedPhone { get; set; }
-
     ICustomer Customer { get; set; }
 }

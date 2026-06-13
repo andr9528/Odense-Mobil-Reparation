@@ -18,7 +18,7 @@ internal sealed partial class OrdersGrid
         internal CheckBox FuzzySearchToggle { get; set; } = null!;
         internal TextBox CustomerNameSearchBox { get; set; } = null!;
         internal NullableBooleanOptionBar IsOrderCompleteOptionBar { get; set; } = null!;
-        internal NullableBooleanOptionBar HasBorrowedPhoneOptionBar { get; set; } = null!;
+        internal TextBox BorrowedPhoneSearchBox { get; set; } = null!;
         internal CheckBox UseHandInFromFilterCheckBox { get; set; } = null!;
         internal CheckBox UseHandInToFilterCheckBox { get; set; } = null!;
         internal CheckBox UseReturnedFromFilterCheckBox { get; set; } = null!;
@@ -36,16 +36,14 @@ internal sealed partial class OrdersGrid
         public ObservableCollection<Order> Orders { get; } = [];
 
         [ObservableProperty] private string handInWhatSearchText = string.Empty;
-
+        [ObservableProperty] private string borrowedPhoneSearchText = string.Empty;
         [ObservableProperty] private string repairWhatSearchText = string.Empty;
+        [ObservableProperty] private string customerNameSearchText = string.Empty;
 
         [ObservableProperty] [NotifyPropertyChangedFor(nameof(SearchModeText))]
         private bool useFuzzySearch = true;
 
-        [ObservableProperty] private string customerNameSearchText = string.Empty;
-
         [ObservableProperty] private bool? isOrderComplete = null;
-        [ObservableProperty] private bool? hasBorrowedPhone = null;
 
         [ObservableProperty] private bool useHandInFromFilter;
         [ObservableProperty] private bool useHandInToFilter;
@@ -75,7 +73,7 @@ internal sealed partial class OrdersGrid
             FireSearchChanged();
         }
 
-        partial void OnHasBorrowedPhoneChanged(bool? value)
+        partial void OnBorrowedPhoneSearchTextChanged(string value)
         {
             FireSearchChanged();
         }
