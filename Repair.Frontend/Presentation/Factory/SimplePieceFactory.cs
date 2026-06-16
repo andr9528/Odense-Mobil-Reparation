@@ -1,3 +1,4 @@
+using Microsoft.UI.Text;
 using Repair.Frontend.Extensions;
 
 namespace Repair.Frontend.Presentation.Factory;
@@ -106,6 +107,37 @@ internal static class SimplePieceFactory
         button.Click += clicked;
 
         grid.Children.Add(button.SetColumn(0));
+
+        return grid;
+    }
+
+    internal static Grid CreateFilterHeader()
+    {
+        Grid grid = GridFactory.CreateDefaultGrid();
+
+        grid.DefineRows(new GridLength(1, GridUnitType.Star));
+
+        TextBlock header = new()
+        {
+            Text = "Search & Filters",
+            FontSize = 18,
+            FontWeight = FontWeights.SemiBold,
+            Foreground = new SolidColorBrush(Colors.Black),
+            Margin = new Thickness(4, 0, 12, 0),
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+        };
+
+        Border divider = new()
+        {
+            Height = 1,
+            Background = new SolidColorBrush(PageSelector.MenuBackgroundColour),
+            VerticalAlignment = VerticalAlignment.Bottom,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+        };
+
+        grid.Children.Add(header);
+        grid.Children.Add(divider);
 
         return grid;
     }

@@ -1,4 +1,5 @@
 using CommunityToolkit.WinUI.UI.Controls;
+using Microsoft.UI.Text;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Converters;
 using Repair.Frontend.Presentation.Core;
@@ -22,10 +23,7 @@ internal sealed partial class OrdersGrid
             grid.RowSpacing = 8;
             grid.ColumnSpacing = 4;
 
-            grid.RowDefinitions.Add(new RowDefinition
-            {
-                Height = new GridLength(1, GridUnitType.Star),
-            });
+            grid.DefineRows(new GridLength(1, GridUnitType.Star), GridLength.Auto);
 
             for (var i = 0; i < 3; i++)
             {
@@ -54,19 +52,21 @@ internal sealed partial class OrdersGrid
             AddTextSearchFilterControls(grid);
             AddDateTimeFilterControls(grid);
 
-            NullableBooleanOptionBar isOrderCompleteBar = CreateIsOrderCompleteOptionBar().SetRow(3).SetColumn(1);
+            NullableBooleanOptionBar isOrderCompleteBar = CreateIsOrderCompleteOptionBar().SetRow(4).SetColumn(1);
+            Grid filterHeader = SimplePieceFactory.CreateFilterHeader().SetRow(1).SetColumn(0, 4);
 
             grid.Children.Add(dataGrid);
+            grid.Children.Add(filterHeader);
             grid.Children.Add(isOrderCompleteBar);
         }
 
         private void AddTextSearchFilterControls(Grid grid)
         {
-            TextBox handInWhatSearchBox = CreateHandInWhatSearchBox().SetRow(1).SetColumn(0);
-            TextBox repairWhatSearchBox = CreateRepairWhatSearchBox().SetRow(2).SetColumn(0);
-            TextBox borrowedPhoneSearchBox = CreateBorrowedPhoneSearchBox().SetRow(2).SetColumn(1);
-            TextBox customerNameSearchBox = CreateCustomerNameSearchBox().SetRow(1).SetColumn(1);
-            Grid fuzzyToggle = CreateFuzzySearchGrid().SetRow(3).SetColumn(0);
+            TextBox handInWhatSearchBox = CreateHandInWhatSearchBox().SetRow(2).SetColumn(0);
+            TextBox repairWhatSearchBox = CreateRepairWhatSearchBox().SetRow(3).SetColumn(0);
+            TextBox borrowedPhoneSearchBox = CreateBorrowedPhoneSearchBox().SetRow(3).SetColumn(1);
+            TextBox customerNameSearchBox = CreateCustomerNameSearchBox().SetRow(2).SetColumn(1);
+            Grid fuzzyToggle = CreateFuzzySearchGrid().SetRow(4).SetColumn(0);
 
             grid.Children.Add(handInWhatSearchBox);
             grid.Children.Add(repairWhatSearchBox);
@@ -81,28 +81,28 @@ internal sealed partial class OrdersGrid
             Grid handInFromGrid = CreateDateTimeFilterGrid(nameof(OrdersGridViewModel.UseHandInFromFilter),
                     DateTime.Now, "From - Hand In", out CheckBox handInFromCheckBox,
                     out DateTimePicker handInFromPicker)
-                .SetRow(2).SetColumn(2);
+                .SetRow(3).SetColumn(2);
 
             ViewModel.UseHandInFromFilterCheckBox = handInFromCheckBox;
             ViewModel.HandInFromDateTimePicker = handInFromPicker;
 
             Grid handInToGrid = CreateDateTimeFilterGrid(nameof(OrdersGridViewModel.UseHandInToFilter), DateTime.Now,
                 "To - Hand In", out CheckBox handInToCheckBox,
-                out DateTimePicker handInToPicker).SetRow(3).SetColumn(2);
+                out DateTimePicker handInToPicker).SetRow(4).SetColumn(2);
 
             ViewModel.UseHandInToFilterCheckBox = handInToCheckBox;
             ViewModel.HandInToDateTimePicker = handInToPicker;
 
             Grid returnedFromGrid = CreateDateTimeFilterGrid(nameof(OrdersGridViewModel.UseReturnedFromFilter),
                 DateTime.Now, "From - Returned", out CheckBox returnedFromCheckBox,
-                out DateTimePicker returnedFromPicker).SetRow(2).SetColumn(3);
+                out DateTimePicker returnedFromPicker).SetRow(3).SetColumn(3);
 
             ViewModel.UseReturnedFromFilterCheckBox = returnedFromCheckBox;
             ViewModel.ReturnedFromDateTimePicker = returnedFromPicker;
 
             Grid returnedToGrid = CreateDateTimeFilterGrid(nameof(OrdersGridViewModel.UseReturnedToFilter),
                     DateTime.Now, "To - Returned", out CheckBox returnedToCheckBox, out DateTimePicker returnedToPicker)
-                .SetRow(3).SetColumn(3);
+                .SetRow(4).SetColumn(3);
 
             ViewModel.UseReturnedToFilterCheckBox = returnedToCheckBox;
             ViewModel.ReturnedToDateTimePicker = returnedToPicker;

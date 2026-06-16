@@ -1,4 +1,5 @@
 using CommunityToolkit.WinUI.UI.Controls;
+using Microsoft.UI.Text;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
@@ -18,7 +19,7 @@ internal sealed partial class CustomersGrid
             grid.RowSpacing = 8;
 
             grid.DefineRows(new GridLength(1, GridUnitType.Star));
-            grid.DefineRows(GridLength.Auto, GridLength.Auto);
+            grid.DefineRows(GridLength.Auto, GridLength.Auto, GridLength.Auto);
 
             grid.DefineColumns(GridUnitType.Star, [1, 1, 1,]);
         }
@@ -26,8 +27,9 @@ internal sealed partial class CustomersGrid
         protected override void AddControlsToGrid(Grid grid)
         {
             grid.Children.Add(CreateCustomerDataGrid().SetRow(0).SetColumn(0, 3));
-            grid.Children.Add(CreateCustomerSearchEditor().SetRow(1).SetColumn(0, 3));
-            grid.Children.Add(CreateFuzzySearchGrid().SetRow(2).SetColumn(1));
+            grid.Children.Add(SimplePieceFactory.CreateFilterHeader().SetRow(1).SetColumn(0, 3));
+            grid.Children.Add(CreateCustomerSearchEditor().SetRow(2).SetColumn(0, 3));
+            grid.Children.Add(CreateFuzzySearchGrid().SetRow(3).SetColumn(1));
         }
 
         private DataGrid CreateCustomerDataGrid()

@@ -7,6 +7,8 @@ namespace Repair.Frontend.Presentation
 {
     internal sealed partial class PageSelector
     {
+        public static Color MenuBackgroundColour = Color.FromArgb(255, 32, 32, 32);
+
         private sealed class PageSelectorUi(
             PageSelectorLogic logic,
             PageSelectorViewModel viewModel,
@@ -63,7 +65,7 @@ namespace Repair.Frontend.Presentation
                 Grid paneRoot = GridFactory.CreateDefaultGrid().DefineRows(GridLength.Auto,
                     new GridLength(1, GridUnitType.Star), GridLength.Auto);
 
-                paneRoot.Background = new SolidColorBrush(Color.FromArgb(255, 32, 32, 32));
+                paneRoot.Background = new SolidColorBrush(MenuBackgroundColour);
                 paneRoot.HorizontalAlignment = HorizontalAlignment.Stretch;
                 paneRoot.VerticalAlignment = VerticalAlignment.Stretch;
                 paneRoot.Margin = new Thickness(0);
