@@ -65,7 +65,7 @@ internal sealed partial class NullableBooleanOptionBar
 
         private RadioButton CreateAnyButton()
         {
-            ViewModel.AnyButton = ButtonFactory.CreateNullableBooleanOptionButton("Any");
+            ViewModel.AnyButton = ButtonFactory.CreateNullableBooleanOptionButton("Either");
             ViewModel.AnyButton.Click += Logic.AnyClicked;
             ViewModel.AnyButton.IsChecked = true;
 
