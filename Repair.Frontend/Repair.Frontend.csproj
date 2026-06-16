@@ -6,16 +6,17 @@
     <UnoSingleProject>true</UnoSingleProject>
 
     <!-- Display name -->
-    <ApplicationTitle>Repair.Frontend</ApplicationTitle>
+    <ApplicationTitle>Repair</ApplicationTitle>
+    <AssemblyName>Repair</AssemblyName>
     <!-- App Identifier -->
-    <ApplicationId>com.companyname.Repair.Frontend</ApplicationId>
+    <ApplicationId>com.FangSoftware.Repair</ApplicationId>
     <!-- Versions -->
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
     <!-- Package Publisher -->
-    <ApplicationPublisher>andre</ApplicationPublisher>
+    <ApplicationPublisher>André</ApplicationPublisher>
     <!-- Package Description -->
-    <Description>Repair.Frontend powered by Uno Platform.</Description>
+    <Description>Repair powered by Uno Platform.</Description>
 
     <!--
       UnoFeatures are used to quickly add and manage features enabled for your app.
