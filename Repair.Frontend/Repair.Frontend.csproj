@@ -60,4 +60,11 @@
   <Folder Include="Presentation\Pages\" />
 </ItemGroup>
 
+<ItemGroup>
+    <EmbeddedResource Include="..\README.md">
+        <Link>README.md</Link>
+        <LogicalName>README.md</LogicalName>
+    </EmbeddedResource>
+</ItemGroup>
+
 </Project>

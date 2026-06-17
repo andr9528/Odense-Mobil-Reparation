@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,19 +9,16 @@ namespace Repair.Services;
 /// <summary>
 /// Handles application configuration loading, file creation and database option setup.
 /// </summary>
-public class ConfigurationService
+public class ConfigurationService(Assembly resourceAssembly)
 {
     public const string REPORT_DATA_SECTION = "ReportData";
     private const string SHARED_ROOT_FOLDER_NAME = "Fang Software";
     private const string APP_FOLDER_NAME = "Odense Mobil Rep";
     private const string APP_SETTINGS_FILE = "appsettings.json";
     private const string DATABASE_FILE_NAME = "repair.db";
+    private const string README_FILE = "README.md";
 
     private IConfiguration? configuration;
-
-    public ConfigurationService()
-    {
-    }
 
     private string GetExecutionDirectory()
     {
@@ -39,6 +37,7 @@ public class ConfigurationService
         if (!IsRunningInCi())
         {
             EnsureAppSettingsFileExists();
+            CopyReadmeFile();
 
             string fullAppFilePath = Path.Combine(GetApplicationDataPath(), APP_SETTINGS_FILE);
 
@@ -47,6 +46,23 @@ public class ConfigurationService
 
         configuration = configBuilder.Build();
         return configuration;
+    }
+
+    private void CopyReadmeFile()
+    {
+        using Stream? stream = resourceAssembly.GetManifestResourceStream(README_FILE);
+
+        if (stream is null)
+        {
+            return;
+        }
+
+        string readmePath = Path.Combine(GetApplicationDataPath(), README_FILE);
+
+        Directory.CreateDirectory(GetApplicationDataPath());
+
+        using FileStream fileStream = File.Create(readmePath);
+        stream.CopyTo(fileStream);
     }
 
     private bool IsRunningInCi()

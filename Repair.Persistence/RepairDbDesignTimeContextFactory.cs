@@ -8,7 +8,7 @@ public sealed class RepairDbDesignTimeContextFactory : IDesignTimeDbContextFacto
 {
     public RepairDatabaseContext CreateDbContext(string[] args)
     {
-        var configurationService = new ConfigurationService();
+        var configurationService = new ConfigurationService(GetType().Assembly);
 
         var optionsBuilder = new DbContextOptionsBuilder<RepairDatabaseContext>();
 

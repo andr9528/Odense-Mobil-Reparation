@@ -25,7 +25,7 @@ internal class UnoStartup : ModularStartup<IApplicationBuilder>
 
     public UnoStartup()
     {
-        configurationService = new ConfigurationService();
+        configurationService = new ConfigurationService(GetType().Assembly);
         configuration = configurationService.BuildConfiguration();
 
         AddModule(new LoggingStartupModule(new[]
