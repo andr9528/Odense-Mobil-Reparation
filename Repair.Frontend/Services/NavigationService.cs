@@ -5,8 +5,10 @@ using Repair.Frontend.Presentation.Pages;
 
 namespace Repair.Frontend.Services
 {
-    public class NavigationService(DispatcherQueue dispatcherQueue, ILogger<NavigationService> logger)
-        : INavigationService
+    public class NavigationService(
+        DispatcherQueue dispatcherQueue,
+        ILogger<NavigationService> logger,
+        TrialService trialService) : INavigationService
     {
         private Frame? contentFrame;
         private readonly Stack<(UIElement Element, string Name)> navigationStack = new();
@@ -65,18 +67,17 @@ namespace Repair.Frontend.Services
             var stopwatch = Stopwatch.StartNew();
 
             UIElement peekedElement = navigationStack.Peek().Element;
+            UIElement elementToShow = trialService.GetNavigationElementOrDefault(peekedElement);
 
             dispatcherQueue.TryEnqueue(() =>
             {
-                contentFrame?.Content = peekedElement;
+                contentFrame?.Content = elementToShow;
 
-                // ReSharper disable once SuspiciousTypeConversion.Global
-                if (peekedElement is INavigationRefreshable refreshable)
+                if (elementToShow == peekedElement && peekedElement is INavigationRefreshable refreshable)
                 {
                     refreshable.RefreshAfterNavigation();
                 }
             });
-
 
             stopwatch.Stop();
 
