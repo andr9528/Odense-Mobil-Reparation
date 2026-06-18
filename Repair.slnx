@@ -10,6 +10,8 @@
   <Project Path="Repair.Persistence/Repair.Persistence.csproj" />
   <Project Path="Repair.Services/Repair.Services.csproj" />
   <Project Path="Repair.Startup/Repair.Startup.csproj" />
+  <Project Path="Repair.Tests.Frontend/Repair.Tests.Frontend.csproj" />
+  <Project Path="Repair.Tests.Shared/Repair.Tests.Shared.csproj" Id="15d8f1a5-8a00-492b-9bb6-ca3974df952f" />
   <Project Path="Repair.Tests/Repair.Tests.csproj">
     <Deploy />
   </Project>

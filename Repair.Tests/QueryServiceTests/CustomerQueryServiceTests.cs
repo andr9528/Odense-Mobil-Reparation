@@ -6,8 +6,9 @@ using Repair.Models.Entity.Searchable;
 using Repair.Persistence;
 using Repair.Persistence.Services;
 using Repair.Tests.Core;
+using Repair.Tests.Shared.Factory;
 
-namespace Repair.Tests;
+namespace Repair.Tests.QueryServiceTests;
 
 public class CustomerQueryServiceTests
 {
