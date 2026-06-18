@@ -32,7 +32,7 @@ internal sealed partial class OrderDetailsPage : Border
     internal sealed record OrderDetailsPageArguments(
         int OrderId,
         IEntityQueryService<Order, SearchableOrder> OrderQueryService,
-        DispatcherQueue DispatcherQueue,
+        IUiDispatcher UiDispatcher,
         ILoggerFactory LoggerFactory,
         INavigationService NavigationService,
         IReportService ReportService);

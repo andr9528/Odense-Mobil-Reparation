@@ -32,8 +32,7 @@ internal sealed partial class CustomerDetailsPage : Border
     internal sealed record CustomerDetailsPageArguments(
         int CustomerId,
         IEntityQueryService<Customer, SearchableCustomer> CustomerQueryService,
-        IEntityQueryService<Order, SearchableOrder> OrderQueryService,
-        DispatcherQueue DispatcherQueue,
+        IUiDispatcher UiDispatcher,
         ILoggerFactory LoggerFactory,
         INavigationService NavigationService,
         IReportService ReportService);

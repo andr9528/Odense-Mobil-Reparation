@@ -30,7 +30,7 @@ internal sealed partial class CustomersGrid : Border, INavigationRefreshable
 
     internal record CustomersGridArguments(
         IEntityQueryService<Customer, SearchableCustomer> QueryService,
-        DispatcherQueue DispatcherQueue,
+        IUiDispatcher UiDispatcher,
         ILoggerFactory LoggerFactory,
         int SelectedCustomerId = 0)
     {

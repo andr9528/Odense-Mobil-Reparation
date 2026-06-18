@@ -1,5 +1,6 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
@@ -15,13 +16,13 @@ internal sealed partial class OrdersGrid
     internal sealed partial class OrdersGridLogic : BaseLogic<OrdersGridViewModel>
     {
         private readonly IEntityQueryService<Order, SearchableOrder> orderQueryService;
-        private readonly DispatcherQueue dispatcherQueue;
+        private readonly IUiDispatcher uiDispatcher;
         private readonly ILogger<OrdersGridLogic> logger;
 
         public OrdersGridLogic(OrdersGridViewModel viewModel) : base(viewModel)
         {
             orderQueryService = ViewModel.Arguments.OrderQueryService;
-            dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
+            uiDispatcher = ViewModel.Arguments.UiDispatcher;
             logger = ViewModel.Arguments.LoggerFactory.CreateLogger<OrdersGridLogic>();
 
             ViewModel.SearchChanged += SearchChanged;
@@ -48,7 +49,7 @@ internal sealed partial class OrdersGrid
 
             logger.LogDebug("Orders query returned {OrderCount} orders.", orders.Count);
 
-            dispatcherQueue.TryEnqueue(() =>
+            uiDispatcher.TryEnqueue(() =>
             {
                 logger.LogDebug("Updating Orders collection. Existing count: {ExistingCount}", ViewModel.Orders.Count);
 

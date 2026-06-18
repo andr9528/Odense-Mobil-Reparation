@@ -31,7 +31,7 @@ internal sealed partial class OrdersGrid : Border, INavigationRefreshable
 
     internal record OrdersGridArguments(
         IEntityQueryService<Order, SearchableOrder> OrderQueryService,
-        DispatcherQueue DispatcherQueue,
+        IUiDispatcher UiDispatcher,
         ILoggerFactory LoggerFactory,
         int CustomerId = 0)
     {

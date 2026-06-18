@@ -1,6 +1,7 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Core.Details;
 using Repair.Models.Entity.Model;
@@ -13,13 +14,13 @@ internal sealed partial class CustomerDetailsPage
     private sealed class CustomerDetailsPageLogic : BaseDetailsPageLogic<CustomerDetailsPageViewModel>
     {
         private readonly IEntityQueryService<Customer, SearchableCustomer> queryService;
-        private readonly DispatcherQueue dispatcherQueue;
+        private readonly IUiDispatcher uiDispatcher;
         private readonly ILogger<CustomerDetailsPageLogic> logger;
 
         public CustomerDetailsPageLogic(CustomerDetailsPageViewModel viewModel) : base(viewModel)
         {
             queryService = ViewModel.Arguments.CustomerQueryService;
-            dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
+            uiDispatcher = ViewModel.Arguments.UiDispatcher;
             logger = ViewModel.Arguments.LoggerFactory.CreateLogger<CustomerDetailsPageLogic>();
         }
 
@@ -32,7 +33,7 @@ internal sealed partial class CustomerDetailsPage
                 return;
             }
 
-            dispatcherQueue.TryEnqueue(() =>
+            uiDispatcher.TryEnqueue(() =>
             {
                 ViewModel.Customer = customer;
                 ApplyCustomerToEditor();

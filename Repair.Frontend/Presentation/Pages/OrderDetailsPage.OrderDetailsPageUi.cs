@@ -9,7 +9,7 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrderDetailsPage
 {
-    private sealed class OrderDetailsPageUi(OrderDetailsPageLogic logic, OrderDetailsPageViewModel viewModel)
+    internal sealed class OrderDetailsPageUi(OrderDetailsPageLogic logic, OrderDetailsPageViewModel viewModel)
         : BaseDetailsPageUi<OrderDetailsPageLogic, OrderDetailsPageViewModel>(logic, viewModel)
     {
         protected override void ConfigureGrid(Grid grid)

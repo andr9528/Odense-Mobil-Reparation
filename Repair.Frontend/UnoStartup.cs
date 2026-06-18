@@ -79,8 +79,9 @@ internal class UnoStartup : ModularStartup<IApplicationBuilder>
 
         services.Configure<ReportDataSettings>(configuration.GetSection(ConfigurationService.REPORT_DATA_SECTION));
 
-        DispatcherQueue? uiDispatcherQueue = DispatcherQueue.GetForCurrentThread();
+        DispatcherQueue uiDispatcherQueue = DispatcherQueue.GetForCurrentThread();
         services.AddSingleton(uiDispatcherQueue);
+        services.AddSingleton<IUiDispatcher, UiDispatcher>();
         services.AddSingleton<ArgumentsFactory>();
         services.AddSingleton<TrialService>();
 

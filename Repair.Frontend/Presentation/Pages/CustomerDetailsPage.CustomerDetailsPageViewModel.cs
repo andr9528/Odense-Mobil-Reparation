@@ -1,7 +1,7 @@
 using Repair.Frontend.Presentation.Core;
+using Repair.Frontend.Presentation.Core.Details;
 using Repair.Frontend.Presentation.Pieces;
 using Repair.Models.Entity.Model;
-using BaseDetailsPageViewModel = Repair.Frontend.Presentation.Core.Details.BaseDetailsPageViewModel;
 
 namespace Repair.Frontend.Presentation.Pages;
 

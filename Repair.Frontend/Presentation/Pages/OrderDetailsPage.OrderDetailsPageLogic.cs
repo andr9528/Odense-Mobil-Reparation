@@ -1,5 +1,6 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Core.Details;
 using Repair.Models.Entity.Model;
@@ -9,16 +10,16 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrderDetailsPage
 {
-    private sealed class OrderDetailsPageLogic : BaseDetailsPageLogic<OrderDetailsPageViewModel>
+    internal sealed class OrderDetailsPageLogic : BaseDetailsPageLogic<OrderDetailsPageViewModel>
     {
         private readonly IEntityQueryService<Order, SearchableOrder> queryService;
-        private readonly DispatcherQueue dispatcherQueue;
+        private readonly IUiDispatcher uiDispatcher;
         private readonly ILogger<OrderDetailsPageLogic> logger;
 
         public OrderDetailsPageLogic(OrderDetailsPageViewModel viewModel) : base(viewModel)
         {
             queryService = ViewModel.Arguments.OrderQueryService;
-            dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
+            uiDispatcher = ViewModel.Arguments.UiDispatcher;
             logger = ViewModel.Arguments.LoggerFactory.CreateLogger<OrderDetailsPageLogic>();
         }
 
@@ -31,7 +32,7 @@ internal sealed partial class OrderDetailsPage
                 return;
             }
 
-            dispatcherQueue.TryEnqueue(() =>
+            uiDispatcher.TryEnqueue(() =>
             {
                 ViewModel.Order = order;
                 ApplyOrderToEditor();

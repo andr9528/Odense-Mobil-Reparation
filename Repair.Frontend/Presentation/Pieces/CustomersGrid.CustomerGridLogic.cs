@@ -1,5 +1,6 @@
 using Microsoft.UI.Dispatching;
 using Repair.Abstractions.Persistence;
+using Repair.Frontend.Abstraction;
 using Repair.Frontend.Extensions;
 using Repair.Frontend.Presentation.Core;
 using Repair.Frontend.Presentation.Factory;
@@ -15,13 +16,13 @@ internal sealed partial class CustomersGrid
     internal sealed partial class CustomersGridLogic : BaseLogic<CustomersGridViewModel>
     {
         private readonly IEntityQueryService<Customer, SearchableCustomer> queryService;
-        private readonly DispatcherQueue dispatcherQueue;
+        private readonly IUiDispatcher uiDispatcher;
         private readonly ILogger<CustomersGridLogic> logger;
 
         public CustomersGridLogic(CustomersGridViewModel viewModel) : base(viewModel)
         {
             queryService = ViewModel.Arguments.QueryService;
-            dispatcherQueue = ViewModel.Arguments.DispatcherQueue;
+            uiDispatcher = ViewModel.Arguments.UiDispatcher;
             logger = ViewModel.Arguments.LoggerFactory.CreateLogger<CustomersGridLogic>();
 
             ViewModel.SearchChanged += SearchChanged;
@@ -50,7 +51,7 @@ internal sealed partial class CustomersGrid
 
             logger.LogDebug("Customers query returned {CustomerCount} customers.", customers.Count);
 
-            dispatcherQueue.TryEnqueue(() =>
+            uiDispatcher.TryEnqueue(() =>
             {
                 logger.LogDebug("Updating Customers collection. Existing count: {ExistingCount}",
                     ViewModel.Customers.Count);

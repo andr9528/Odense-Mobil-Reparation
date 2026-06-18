@@ -7,7 +7,7 @@ namespace Repair.Frontend.Presentation.Pages;
 
 internal sealed partial class OrderDetailsPage
 {
-    private sealed partial class OrderDetailsPageViewModel(OrderDetailsPageArguments arguments)
+    internal sealed partial class OrderDetailsPageViewModel(OrderDetailsPageArguments arguments)
         : BaseDetailsPageViewModel
     {
         public OrderDetailsPageArguments Arguments { get; } = arguments;

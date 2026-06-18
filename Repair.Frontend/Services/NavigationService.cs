@@ -6,7 +6,7 @@ using Repair.Frontend.Presentation.Pages;
 namespace Repair.Frontend.Services
 {
     public class NavigationService(
-        DispatcherQueue dispatcherQueue,
+        IUiDispatcher uiDispatcher,
         ILogger<NavigationService> logger,
         TrialService trialService) : INavigationService
     {
@@ -69,7 +69,7 @@ namespace Repair.Frontend.Services
             UIElement peekedElement = navigationStack.Peek().Element;
             UIElement elementToShow = trialService.GetNavigationElementOrDefault(peekedElement);
 
-            dispatcherQueue.TryEnqueue(() =>
+            uiDispatcher.TryEnqueue(() =>
             {
                 contentFrame?.Content = elementToShow;
 
