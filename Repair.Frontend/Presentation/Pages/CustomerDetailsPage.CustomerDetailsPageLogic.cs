@@ -138,6 +138,7 @@ internal sealed partial class CustomerDetailsPage
             ApplyEditorValuesToCustomer();
 
             await queryService.UpdateEntity(ViewModel.Customer);
+            logger.LogInformation("Saved changes to customer {CustomerId}.", ViewModel.Customer.Id);
         }
 
         protected override void ApplyEntityToEditor()
@@ -179,6 +180,7 @@ internal sealed partial class CustomerDetailsPage
                 ViewModel.PrintButtonText = "Printing...";
 
                 await ViewModel.Arguments.ReportService.CreateReport(ViewModel.Customer);
+                logger.LogInformation("Generated customer report for customer {CustomerId}.", ViewModel.Customer.Id);
             }
             catch (Exception exe)
             {

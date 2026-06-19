@@ -29,11 +29,14 @@ internal sealed partial class CustomerCreationPage
             {
                 if (!IsUserInputValid())
                 {
+                    logger.LogInformation("Customer creation was blocked by invalid input.");
                     return;
                 }
 
                 Customer newCustomer = BuildNewCustomer();
                 await queryService.AddEntity(newCustomer);
+                logger.LogInformation("Created customer {CustomerId}.", newCustomer.Id);
+
                 CustomerDetailsPage.CustomerDetailsPageArguments arguments =
                     GetArgumentsFactory().CreateCustomerDetailsPageArguments(newCustomer.Id);
 

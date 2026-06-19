@@ -12,25 +12,26 @@ public class TrialService
 
     private bool hasShownTrialCountdown;
 
-    public UIElement GetNavigationElementOrDefault(UIElement requestedElement)
+    internal NavigationResult GetNavigationElementOrDefault(UIElement requestedElement, string requestedName)
     {
         if (!USE_TRIAL_SERVICE)
         {
-            return requestedElement;
+            return new NavigationResult(requestedElement, requestedName);
         }
 
         if (IsTrialExpired())
         {
-            return CreateTrialExpiredElement();
+            return new NavigationResult(CreateTrialExpiredElement(), "Trial Expired");
         }
 
         if (hasShownTrialCountdown)
         {
-            return requestedElement;
+            return new NavigationResult(requestedElement, requestedName);
         }
 
         hasShownTrialCountdown = true;
-        return CreateTrialCountdownElement();
+
+        return new NavigationResult(CreateTrialCountdownElement(), "Trial Countdown");
     }
 
     private bool IsTrialExpired()
@@ -75,4 +76,6 @@ public class TrialService
 
         return grid;
     }
+
+    internal record NavigationResult(UIElement Element, string DisplayName);
 }

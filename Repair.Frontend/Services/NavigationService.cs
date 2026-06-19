@@ -66,20 +66,26 @@ namespace Repair.Frontend.Services
         {
             var stopwatch = Stopwatch.StartNew();
 
-            UIElement peekedElement = navigationStack.Peek().Element;
-            UIElement elementToShow = trialService.GetNavigationElementOrDefault(peekedElement);
+            (UIElement peekedElement, string requestedPageName) = navigationStack.Peek();
+
+            TrialService.NavigationResult navigationResult =
+                trialService.GetNavigationElementOrDefault(peekedElement, requestedPageName);
 
             uiDispatcher.TryEnqueue(() =>
             {
-                contentFrame?.Content = elementToShow;
+                contentFrame?.Content = navigationResult.Element;
 
-                if (elementToShow == peekedElement && peekedElement is INavigationRefreshable refreshable)
+                if (navigationResult.Element == peekedElement && peekedElement is INavigationRefreshable refreshable)
                 {
                     refreshable.RefreshAfterNavigation();
                 }
             });
 
             stopwatch.Stop();
+
+            logger.LogInformation(
+                "Navigated to {DisplayedPageName} (requested: {RequestedPageName}) in {ElapsedMilliseconds} ms",
+                navigationResult.DisplayName, requestedPageName, stopwatch.Elapsed.TotalMilliseconds);
 
             return stopwatch.Elapsed;
         }

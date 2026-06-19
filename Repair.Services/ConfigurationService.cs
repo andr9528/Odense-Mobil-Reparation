@@ -15,7 +15,8 @@ public class ConfigurationService(Assembly resourceAssembly)
     private const string SHARED_ROOT_FOLDER_NAME = "Fang Software";
     private const string APP_FOLDER_NAME = "Odense Mobil Rep";
     private const string APP_SETTINGS_FILE = "appsettings.json";
-    private const string DATABASE_FILE_NAME = "repair.db";
+    private const string RELEASE_DATABASE_FILE_NAME = "repair.db";
+    private const string DEBUG_DATABASE_FILE_NAME = "repair-dev.db";
     private const string README_FILE = "README.md";
 
     private IConfiguration? configuration;
@@ -77,7 +78,13 @@ public class ConfigurationService(Assembly resourceAssembly)
     {
         Directory.CreateDirectory(GetApplicationDataPath());
 
-        string databasePath = Path.Combine(GetApplicationDataPath(), DATABASE_FILE_NAME);
+        string databaseFileName = RELEASE_DATABASE_FILE_NAME;
+
+#if DEBUG
+        databaseFileName = DEBUG_DATABASE_FILE_NAME;
+#endif
+
+        string databasePath = Path.Combine(GetApplicationDataPath(), databaseFileName);
 
         options.UseSqlite($"Data Source={databasePath}");
 

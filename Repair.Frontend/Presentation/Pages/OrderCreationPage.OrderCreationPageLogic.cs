@@ -29,11 +29,14 @@ internal sealed partial class OrderCreationPage
             {
                 if (!IsUserInputValid())
                 {
+                    logger.LogInformation("Order creation was blocked by invalid input.");
                     return;
                 }
 
                 Order newOrder = BuildNewOrder();
                 await queryService.AddEntity(newOrder);
+                logger.LogInformation("Created order {OrderId} for customer {CustomerId}.", newOrder.Id,
+                    newOrder.CustomerId);
 
                 OrderDetailsPage.OrderDetailsPageArguments arguments = GetArgumentsFactory()
                     .CreateOrderDetailsPageArguments(newOrder.Id);

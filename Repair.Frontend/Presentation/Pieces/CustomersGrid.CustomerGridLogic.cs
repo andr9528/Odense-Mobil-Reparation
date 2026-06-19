@@ -49,7 +49,8 @@ internal sealed partial class CustomersGrid
             List<Customer> customers = (await queryService.GetEntitiesComplex(searchable)).ToList();
             customers = ViewModel.DataGrid.ApplyCurrentSort(customers).ToList();
 
-            logger.LogDebug("Customers query returned {CustomerCount} customers.", customers.Count);
+            logger.LogInformation("Customer search returned {CustomerCount} customers. Fuzzy search: {UseFuzzySearch}",
+                customers.Count, ViewModel.UseFuzzySearch);
 
             uiDispatcher.TryEnqueue(() =>
             {

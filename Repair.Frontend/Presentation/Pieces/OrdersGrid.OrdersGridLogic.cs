@@ -47,7 +47,9 @@ internal sealed partial class OrdersGrid
             List<Order> orders = (await orderQueryService.GetEntitiesComplex(searchable)).ToList();
             orders = ViewModel.DataGrid.ApplyCurrentSort(orders).ToList();
 
-            logger.LogDebug("Orders query returned {OrderCount} orders.", orders.Count);
+            logger.LogInformation(
+                "Order search returned {OrderCount} orders. CustomerId filter: {CustomerId}, Fuzzy search: {UseFuzzySearch}",
+                orders.Count, ViewModel.CustomerId, ViewModel.UseFuzzySearch);
 
             uiDispatcher.TryEnqueue(() =>
             {

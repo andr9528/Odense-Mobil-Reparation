@@ -75,6 +75,7 @@ internal sealed partial class OrderDetailsPage
                 ViewModel.PrintButtonText = "Printing...";
 
                 await ViewModel.Arguments.ReportService.CreateReport(ViewModel.Order);
+                logger.LogInformation("Generated order report for order {OrderId}.", ViewModel.Order.Id);
             }
             catch (Exception exe)
             {
@@ -163,7 +164,7 @@ internal sealed partial class OrderDetailsPage
             ApplyEditorValuesToOrder();
 
             await queryService.UpdateEntity(ViewModel.Order!);
-
+            logger.LogInformation("Saved changes to order {OrderId}.", ViewModel.Order.Id);
             logger.LogDebug(
                 "Order changes saved to Db. Customer navigation after save: Id={CustomerId}, Name='{CustomerName}'",
                 ViewModel.Order.Customer?.Id, ViewModel.Order.Customer?.Name);
