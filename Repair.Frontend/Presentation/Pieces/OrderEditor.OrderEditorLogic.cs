@@ -40,6 +40,7 @@ internal sealed partial class OrderEditor
         internal void RegisterCustomerSelectionIndicator()
         {
             ViewModel.CustomersGrid.ViewModel.PropertyChanged += CustomersGridViewModelPropertyChanged;
+            ViewModel.CustomersGrid.ViewModel.Customers.CollectionChanged += (_, _) => UpdateSelectedCustomerText();
 
             UpdateSelectedCustomerText();
         }
